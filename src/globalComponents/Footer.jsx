@@ -1,5 +1,5 @@
 import { Ticket, MessageSquareHeart, MapPin } from 'lucide-react';
-import { THEMES } from '../data/onlineData';
+import { THEMES } from '../theme/themes';
 
 export default function OnlineFooter({
   theme,

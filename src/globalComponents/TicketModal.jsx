@@ -1,43 +1,43 @@
 import { useState } from 'react';
-import { Ticket, X, Building2, QrCode } from 'lucide-react';
-import { AGENCIES } from '../data/onlineData';
+import { useDispatch } from 'react-redux';
+import { Ticket, X, Building2, QrCode, Loader2 } from 'lucide-react';
+import { AGENCIES_MOCK } from '../mocks/agenciesMock';
+import { ticketService } from '../services/ticketService';
+import { setCreatedTicket as setReduxTicket } from '../features/ticketSlice';
 
-export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIES }) {
+export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
+  const dispatch = useDispatch();
   const [step, setStep] = useState(1);
   const [agency, setAgency] = useState(agencies[0]?.name || 'Agence Centrale - Plateau');
   const [serviceCategory, setServiceCategory] = useState('reclamation');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdTicket, setCreatedTicket] = useState(null);
 
   if (!isOpen) return null;
 
-  const handleGenerateTicket = (e) => {
+  const handleGenerateTicket = async (e) => {
     e.preventDefault();
     if (!fullName.trim() || !phoneNumber.trim()) return;
 
-    const prefix = serviceCategory === 'reclamation' ? 'REC' : serviceCategory === 'commercial' ? 'COM' : 'CAI';
-    const randNum = Math.floor(100 + Math.random() * 900);
-    const wait = Math.floor(5 + Math.random() * 15);
-    const dateNow = new Date();
+    try {
+      setIsSubmitting(true);
+      const ticket = await ticketService.createTicket({
+        agency,
+        serviceCategory,
+        fullName,
+        phoneNumber,
+      });
 
-    setCreatedTicket({
-      code: `${prefix}-${randNum}`,
-      agency,
-      serviceName:
-        serviceCategory === 'reclamation'
-          ? 'Service Réclamations & SAV'
-          : serviceCategory === 'commercial'
-          ? 'Conseil Client & Nouveaux Contrats'
-          : 'Opérations de Caisse & Règlements',
-      fullName,
-      phoneNumber,
-      date: dateNow.toLocaleDateString('fr-FR'),
-      time: dateNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      estimatedWait: `${wait} min`,
-      queuePosition: Math.max(1, Math.floor(wait / 3))
-    });
-    setStep(2);
+      setCreatedTicket(ticket);
+      dispatch(setReduxTicket(ticket));
+      setStep(2);
+    } catch (error) {
+      console.error('Erreur lors de la création du ticket:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAll = () => {
@@ -145,11 +145,21 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-6 rounded-2xl text-white font-bold text-sm shadow-lg transition-transform active:scale-[0.98] flex items-center justify-center gap-2 hover:opacity-95"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 px-6 rounded-2xl text-white font-bold text-sm shadow-lg transition-transform active:scale-[0.98] flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-70 cursor-pointer"
                   style={{ backgroundColor: theme.colors.primary }}
                 >
-                  <Ticket className="w-5 h-5" />
-                  Valider et Générer le Ticket
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Génération en cours...
+                    </>
+                  ) : (
+                    <>
+                      <Ticket className="w-5 h-5" />
+                      Valider et Générer le Ticket
+                    </>
+                  )}
                 </button>
               </div>
             </form>

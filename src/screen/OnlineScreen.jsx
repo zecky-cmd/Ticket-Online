@@ -1,6 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
-import { THEMES, SLIDES, AGENCIES } from '../data/onlineData';
-import OnlineHeader from '../globalComponents/Header';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { THEMES } from '../theme/themes';
+import { SLIDES } from '../mocks/slidesMock';
+import { AGENCIES } from '../mocks/agenciesMock';
+import { setTheme } from '../features/themeSlice';
+import { openModal, closeModal } from '../features/modalSlice';
+
+import Header from '../globalComponents/Header';
 import OnlineHero from '../globalComponents/Hero';
 import OnlineServiceCards from '../globalComponents/ServiceCards';
 import OnlineFooter from '../globalComponents/Footer';
@@ -15,16 +21,16 @@ export default function OnlineScreen({
 	slideLinks,
 	onSlideAction
 }) {
-	const [currentThemeKey, setCurrentThemeKey] = useState('vertBlanc');
-	const [showThemePicker, setShowThemePicker] = useState(false);
-	const theme = useMemo(() => THEMES[currentThemeKey], [currentThemeKey]);
+	const dispatch = useDispatch();
+
+	// Données issues du Store Redux
+	const theme = useSelector((state) => state.theme.theme);
+	const currentThemeKey = useSelector((state) => state.theme.currentThemeKey);
+	const activeModal = useSelector((state) => state.modal.activeModal);
 
 	// Carrousel publicitaire
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isPaused, setIsPaused] = useState(false);
-
-	// Modales ('ticket' | 'satisfaction' | 'map' | null)
-	const [activeModal, setActiveModal] = useState(null);
 
 	// Rotation automatique du carrousel de pub
 	useEffect(() => {
@@ -43,7 +49,7 @@ export default function OnlineScreen({
 		setCurrentSlide((prev) => (prev + 1) % slides.length);
 	};
 
-	// Gestion intelligente des liens de slides (redirection externe ou ouverture de modales)
+	// Gestion des clics sur slides (redirection externe ou ouverture de modales)
 	const handleSlideClick = (slide, index, e) => {
 		if (onSlideAction) {
 			onSlideAction(slide, index, e);
@@ -53,25 +59,23 @@ export default function OnlineScreen({
 		const targetLink = slide?.link || slide?.url || (slideLinks && slideLinks[slide?.id]);
 		if (targetLink === '#ticket') {
 			e?.preventDefault();
-			setActiveModal('ticket');
+			dispatch(openModal('ticket'));
 		} else if (targetLink === '#satisfaction') {
 			e?.preventDefault();
-			setActiveModal('satisfaction');
+			dispatch(openModal('satisfaction'));
 		} else if (targetLink === '#map') {
 			e?.preventDefault();
-			setActiveModal('map');
+			dispatch(openModal('map'));
 		}
 	};
 
 	return (
 		<div className="min-h-screen bg-slate-900 text-slate-900 font-sans flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
 			{/* En-tête / Header */}
-			<OnlineHeader
+			<Header
 				theme={theme}
 				currentThemeKey={currentThemeKey}
-				setCurrentThemeKey={setCurrentThemeKey}
-				showThemePicker={showThemePicker}
-				setShowThemePicker={setShowThemePicker}
+				onThemeChange={(key) => dispatch(setTheme(key))}
 				themes={THEMES}
 			/>
 
@@ -92,10 +96,10 @@ export default function OnlineScreen({
 					/>
 				</section>
 
-				{/* 2. SECTION DES CARTES DE SERVICES (EN DESSOUS DU CARROUSEL) */}
+				{/* 2. SECTION DES CARTES DE SERVICES */}
 				<OnlineServiceCards
 					theme={theme}
-					onSelectService={(service) => setActiveModal(service)}
+					onSelectService={(service) => dispatch(openModal(service))}
 				/>
 			</main>
 
@@ -103,28 +107,28 @@ export default function OnlineScreen({
 			<OnlineFooter
 				theme={theme}
 				currentThemeKey={currentThemeKey}
-				setCurrentThemeKey={setCurrentThemeKey}
+				setCurrentThemeKey={(key) => dispatch(setTheme(key))}
 				themes={THEMES}
-				onSelectService={(service) => setActiveModal(service)}
+				onSelectService={(service) => dispatch(openModal(service))}
 			/>
 
 			{/* Modales dédiées aux 3 services */}
 			<TicketModal
 				isOpen={activeModal === 'ticket'}
-				onClose={() => setActiveModal(null)}
+				onClose={() => dispatch(closeModal())}
 				theme={theme}
 				agencies={AGENCIES}
 			/>
 
 			<SatisfactionModal
 				isOpen={activeModal === 'satisfaction'}
-				onClose={() => setActiveModal(null)}
+				onClose={() => dispatch(closeModal())}
 				theme={theme}
 			/>
 
 			<AgencyMapModal
 				isOpen={activeModal === 'map'}
-				onClose={() => setActiveModal(null)}
+				onClose={() => dispatch(closeModal())}
 				theme={theme}
 				agencies={AGENCIES}
 			/>

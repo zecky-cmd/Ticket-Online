@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
-import { SLIDES } from '../data/onlineData';
+import { SLIDES } from '../mocks/slidesMock';
 
 // Normalisation des chemins d'images (gère "public/...", "/...", URLs externes)
 const getValidImageUrl = (src) => {

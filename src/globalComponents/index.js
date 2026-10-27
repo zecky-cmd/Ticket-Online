@@ -1,9 +1,9 @@
-export * from './onlineData';
+export * from '../theme/themes';
+export * from '../mocks';
+export { default as Header } from './Header';
+export { default as Hero } from './Hero';
+export { default as ServiceCards } from './ServiceCards';
+export { default as Footer } from './Footer';
 export { default as TicketModal } from './TicketModal';
 export { default as SatisfactionModal } from './SatisfactionModal';
 export { default as AgencyMapModal } from './AgencyMapModal';
-export { default as OnlineHeader } from './Header';
-export { default as OnlineHero } from './Hero';
-export { default as OnlineServiceCards } from './ServiceCards';
-export { default as OnlineFooter } from './Footer';
-

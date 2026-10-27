@@ -1,18 +1,32 @@
 import { useState } from 'react';
-import { MessageSquareHeart, X, Star, CheckCircle2 } from 'lucide-react';
+import { MessageSquareHeart, X, Star, CheckCircle2, Loader2 } from 'lucide-react';
+import { satisfactionService } from '../services/satisfactionService';
 
 export default function SatisfactionModal({ isOpen, onClose, theme }) {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [criterion, setCriterion] = useState('accueil');
   const [comment, setComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      setIsSubmitting(true);
+      await satisfactionService.submitSatisfaction({
+        rating,
+        criterion,
+        comment,
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Erreur soumission satisfaction:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
@@ -131,10 +145,18 @@ export default function SatisfactionModal({ isOpen, onClose, theme }) {
 
               <button
                 type="submit"
-                className="w-full py-3.5 px-4 rounded-2xl text-white font-bold text-sm shadow-lg transition-transform active:scale-[0.98] hover:opacity-95"
+                disabled={isSubmitting}
+                className="w-full py-3.5 px-4 rounded-2xl text-white font-bold text-sm shadow-lg transition-transform active:scale-[0.98] hover:opacity-95 disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
                 style={{ backgroundColor: theme.colors.primary }}
               >
-                Transmettre mon Évaluation
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Transmission en cours...
+                  </>
+                ) : (
+                  'Transmettre mon Évaluation'
+                )}
               </button>
             </form>
           ) : (

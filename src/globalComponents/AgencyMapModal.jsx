@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { MapPin, X, Search, Clock, Phone, Compass } from 'lucide-react';
-import { AGENCIES } from '../data/onlineData';
+import { AGENCIES_MOCK } from '../mocks/agenciesMock';
 
-export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGENCIES }) {
+export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAgency, setSelectedAgency] = useState(agencies[0] || null);
 
