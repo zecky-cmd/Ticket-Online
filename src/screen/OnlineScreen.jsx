@@ -3,13 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { THEMES } from '../theme/themes';
 import { SLIDES } from '../mocks/slidesMock';
 import { AGENCIES } from '../mocks/agenciesMock';
-import { setTheme } from '../features/themeSlice';
 import { openModal, closeModal } from '../features/modalSlice';
+import MainLayout from '../layout/Layout';
+import SectionLayout from '../layout/SectionLayout';
 
-import Header from '../globalComponents/Header';
-import OnlineHero from '../globalComponents/Hero';
-import OnlineServiceCards from '../globalComponents/ServiceCards';
-import OnlineFooter from '../globalComponents/Footer';
+import Hero from '../globalComponents/Hero';
+import ServiceCards from '../globalComponents/ServiceCards';
 import TicketModal from '../globalComponents/TicketModal';
 import SatisfactionModal from '../globalComponents/SatisfactionModal';
 import AgencyMapModal from '../globalComponents/AgencyMapModal';
@@ -23,16 +22,13 @@ export default function OnlineScreen({
 }) {
 	const dispatch = useDispatch();
 
-	// Données issues du Store Redux
 	const theme = useSelector((state) => state.theme.theme);
 	const currentThemeKey = useSelector((state) => state.theme.currentThemeKey);
 	const activeModal = useSelector((state) => state.modal.activeModal);
 
-	// Carrousel publicitaire
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isPaused, setIsPaused] = useState(false);
 
-	// Rotation automatique du carrousel de pub
 	useEffect(() => {
 		if (isPaused) return;
 		const interval = setInterval(() => {
@@ -49,7 +45,6 @@ export default function OnlineScreen({
 		setCurrentSlide((prev) => (prev + 1) % slides.length);
 	};
 
-	// Gestion des clics sur slides (redirection externe ou ouverture de modales)
 	const handleSlideClick = (slide, index, e) => {
 		if (onSlideAction) {
 			onSlideAction(slide, index, e);
@@ -70,49 +65,28 @@ export default function OnlineScreen({
 	};
 
 	return (
-		<div className="min-h-screen bg-slate-900 text-slate-900 font-sans flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
-			{/* En-tête / Header */}
-			<Header
-				theme={theme}
-				currentThemeKey={currentThemeKey}
-				onThemeChange={(key) => dispatch(setTheme(key))}
-				themes={THEMES}
-			/>
+		<MainLayout theme={theme} currentThemeKey={currentThemeKey} themes={THEMES}>
+			<SectionLayout fullWidth={true} padding={false}>
+				<Hero
+					theme={theme}
+					slides={slides}
+					currentSlide={currentSlide}
+					setCurrentSlide={setCurrentSlide}
+					handlePrevSlide={handlePrevSlide}
+					handleNextSlide={handleNextSlide}
+					setIsPaused={setIsPaused}
+					slideLinks={slideLinks}
+					onSlideAction={handleSlideClick}
+				/>
+			</SectionLayout>
 
-			{/* Contenu Principal */}
-			<main className="flex-1 flex flex-col w-full">
-				{/* 1. SECTION DU CARROUSEL BANNIÈRE */}
-				<section className="w-full">
-					<OnlineHero
-						theme={theme}
-						slides={slides}
-						currentSlide={currentSlide}
-						setCurrentSlide={setCurrentSlide}
-						handlePrevSlide={handlePrevSlide}
-						handleNextSlide={handleNextSlide}
-						setIsPaused={setIsPaused}
-						slideLinks={slideLinks}
-						onSlideAction={handleSlideClick}
-					/>
-				</section>
-
-				{/* 2. SECTION DES CARTES DE SERVICES */}
-				<OnlineServiceCards
+			<SectionLayout fullWidth={true} padding={false}>
+				<ServiceCards
 					theme={theme}
 					onSelectService={(service) => dispatch(openModal(service))}
 				/>
-			</main>
+			</SectionLayout>
 
-			{/* Pied de page / Footer */}
-			<OnlineFooter
-				theme={theme}
-				currentThemeKey={currentThemeKey}
-				setCurrentThemeKey={(key) => dispatch(setTheme(key))}
-				themes={THEMES}
-				onSelectService={(service) => dispatch(openModal(service))}
-			/>
-
-			{/* Modales dédiées aux 3 services */}
 			<TicketModal
 				isOpen={activeModal === 'ticket'}
 				onClose={() => dispatch(closeModal())}
@@ -132,6 +106,6 @@ export default function OnlineScreen({
 				theme={theme}
 				agencies={AGENCIES}
 			/>
-		</div>
+		</MainLayout>
 	);
 }

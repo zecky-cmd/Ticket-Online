@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
 import { SLIDES } from '../mocks/slidesMock';
+import Link from './ui/Link';
 
 // Normalisation des chemins d'images (gère "public/...", "/...", URLs externes)
 const getValidImageUrl = (src) => {
@@ -99,15 +100,13 @@ export default function OnlineHero({
         <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
 
-      {/* Bouton d'action si l'image est rattachée à un lien (Prop requise) */}
+      {/* Bouton d'action si l'image est rattachée à un lien */}
       {resolvedLink && (
         <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20">
-          <a
-            href={resolvedLink}
-            target={currentSlideData?.linkTarget || (isExternal ? '_blank' : '_self')}
-            rel={isExternal ? 'noopener noreferrer' : undefined}
+          <Link
+            to={resolvedLink}
             onClick={handleButtonClick}
-            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 focus:outline-none cursor-pointer group backdrop-blur-xs"
+            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 focus:outline-hidden cursor-pointer group backdrop-blur-xs"
             style={{ backgroundColor: theme.colors.primary }}
           >
             <span>{buttonLabel}</span>
@@ -116,7 +115,7 @@ export default function OnlineHero({
             ) : (
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             )}
-          </a>
+          </Link>
         </div>
       )}
 

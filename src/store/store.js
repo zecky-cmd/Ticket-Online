@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import themeReducer from './features/themeSlice';
-import modalReducer from './features/modalSlice';
-import ticketReducer from './features/ticketSlice';
-import agencyReducer from './features/agencySlice';
+import themeReducer from '../features/themeSlice';
+import modalReducer from '../features/modalSlice';
+import ticketReducer from '../features/ticketSlice';
+import agencyReducer from '../features/agencySlice';
 
 export const store = configureStore({
   reducer: {

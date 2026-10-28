@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from '../ui/Link';
 
 /**
  * Composant HeaderBrand (Identité de Marque)
@@ -20,7 +21,7 @@ export default function HeaderBrand({
   abbreviation = 'BNI',
   definition = "Banque Nationale d'Investissement",
   tag,
-  primaryColor = '#059669',
+  primaryColor = '#00843D',
   href,
   size = 'md',
   onClick,
@@ -95,16 +96,59 @@ export default function HeaderBrand({
     );
   };
 
-  const Component = href ? 'a' : 'div';
+  if (href) {
+    return (
+      <Link
+        to={href}
+        onClick={handleClick}
+        className={`group flex items-center gap-3 cursor-pointer select-none focus:outline-hidden ${className}`}
+      >
+        {/* Conteneur de l'icône/logo */}
+        <div
+          className={`${sizeClasses.box} flex items-center justify-center text-white shadow-md transition-all duration-200 group-hover:scale-105 group-hover:shadow-lg flex-shrink-0`}
+          style={{ backgroundColor: primaryColor }}
+        >
+          {renderLogoVisual()}
+        </div>
+
+        {/* Titre (Abréviation) & Sous-titre (Définition/Libellé) */}
+        <div className="flex flex-col justify-center leading-tight">
+          <div className="flex items-center gap-2">
+            <span className={`${sizeClasses.title} font-black tracking-tight text-slate-900 block leading-none`}>
+              <span style={{ color: primaryColor }}>{abbreviation}</span>
+            </span>
+
+            {tag && (
+              <span 
+                className={`${sizeClasses.badge} font-black uppercase tracking-wider rounded-md border`}
+                style={{
+                  color: primaryColor,
+                  backgroundColor: `${primaryColor}15`,
+                  borderColor: `${primaryColor}30`
+                }}
+              >
+                {tag}
+              </span>
+            )}
+          </div>
+
+          {definition && (
+            <span className={`${sizeClasses.definition} font-bold uppercase tracking-widest text-slate-400 mt-0.5 line-clamp-1`}>
+              {definition}
+            </span>
+          )}
+        </div>
+      </Link>
+    );
+  }
 
   return (
-    <Component
-      href={href}
+    <div
       onClick={handleClick}
-      role={href ? undefined : 'button'}
-      tabIndex={href ? undefined : 0}
+      role="button"
+      tabIndex={0}
       onKeyDown={(e) => {
-        if (!href && (e.key === 'Enter' || e.key === ' ')) {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleClick(e);
         }
@@ -147,6 +191,6 @@ export default function HeaderBrand({
           </span>
         )}
       </div>
-    </Component>
+    </div>
   );
 }

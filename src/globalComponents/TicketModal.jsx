@@ -1,19 +1,28 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Ticket, X, Building2, QrCode, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Ticket, X, Building2, QrCode, AlertCircle, Printer } from 'lucide-react';
+import Button from './ui/Button';
 import { AGENCIES_MOCK } from '../mocks/agenciesMock';
 import { ticketService } from '../services/ticketService';
 import { setCreatedTicket as setReduxTicket } from '../features/ticketSlice';
 
 export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
   const dispatch = useDispatch();
+  const reduxSelectedAgency = useSelector((state) => state.agency.selectedAgency);
   const [step, setStep] = useState(1);
   const [agency, setAgency] = useState(agencies[0]?.name || 'Agence Centrale - Plateau');
   const [serviceCategory, setServiceCategory] = useState('reclamation');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [createdTicket, setCreatedTicket] = useState(null);
+
+  useEffect(() => {
+    if (reduxSelectedAgency?.name) {
+      setAgency(reduxSelectedAgency.name);
+    }
+  }, [reduxSelectedAgency]);
 
   if (!isOpen) return null;
 
@@ -23,6 +32,7 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
 
     try {
       setIsSubmitting(true);
+      setErrorMessage('');
       const ticket = await ticketService.createTicket({
         agency,
         serviceCategory,
@@ -34,6 +44,8 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
       dispatch(setReduxTicket(ticket));
       setStep(2);
     } catch (error) {
+      const msg = error?.response?.data?.message || error.message || 'Impossible de joindre le serveur S2Q. Veuillez réessayer.';
+      setErrorMessage(msg);
       console.error('Erreur lors de la création du ticket:', error);
     } finally {
       setIsSubmitting(false);
@@ -45,6 +57,7 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
     setCreatedTicket(null);
     setFullName('');
     setPhoneNumber('');
+    setErrorMessage('');
     onClose();
   };
 
@@ -67,8 +80,9 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
             </div>
           </div>
           <button 
+            type="button"
             onClick={resetAll}
-            className="p-2 rounded-full hover:bg-white/20 transition-colors"
+            className="p-2 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5 text-white" />
           </button>
@@ -76,6 +90,13 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
 
         {/* Corps */}
         <div className="p-6 sm:p-8">
+          {errorMessage && (
+            <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-xs text-rose-700">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           {step === 1 ? (
             <form onSubmit={handleGenerateTicket} className="space-y-4">
               <div>
@@ -87,7 +108,7 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
                   <select
                     value={agency}
                     onChange={(e) => setAgency(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 font-medium focus:outline-hidden focus:ring-2 focus:ring-primary-500 cursor-pointer"
                   >
                     {agencies.map((a) => (
                       <option key={a.id} value={a.name}>
@@ -100,23 +121,37 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  2. Motif de votre venue
+                  2. Type d'opération souhaitée
                 </label>
-                <select
-                  value={serviceCategory}
-                  onChange={(e) => setServiceCategory(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="reclamation">Service Après-Vente & Réclamations</option>
-                  <option value="commercial">Conseil & Souscription d'Offres</option>
-                  <option value="caisse">Paiements & Opérations de Caisse</option>
-                </select>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'reclamation', label: 'Réclamation' },
+                    { id: 'commercial', label: 'Conseil' },
+                    { id: 'caisse', label: 'Caisse' }
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setServiceCategory(cat.id)}
+                      className={`text-xs py-2.5 px-2 rounded-xl font-bold transition-all border cursor-pointer ${
+                        serviceCategory === cat.id
+                          ? 'text-white border-transparent shadow-xs'
+                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
+                      style={{
+                        backgroundColor: serviceCategory === cat.id ? theme.colors.primary : 'transparent'
+                      }}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-3 pt-1">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Nom et Prénom
+                    Nom & Prénoms
                   </label>
                   <input
                     type="text"
@@ -124,7 +159,7 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
                     placeholder="ex: Jean Koffi"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
                 <div>
@@ -137,30 +172,22 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
                     placeholder="07 00 00 00 00"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-primary-500"
                   />
                 </div>
               </div>
 
               <div className="pt-2">
-                <button
+                <Button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3.5 px-6 rounded-2xl text-white font-bold text-sm shadow-lg transition-transform active:scale-[0.98] flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-70 cursor-pointer"
-                  style={{ backgroundColor: theme.colors.primary }}
+                  size="lg"
+                  isLoading={isSubmitting}
+                  primaryColor={theme.colors.primary}
+                  iconStart={Ticket}
+                  className="w-full"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Génération en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Ticket className="w-5 h-5" />
-                      Valider et Générer le Ticket
-                    </>
-                  )}
-                </button>
+                  {isSubmitting ? 'Génération en cours...' : 'Valider et Générer le Ticket'}
+                </Button>
               </div>
             </form>
           ) : (
@@ -220,12 +247,25 @@ export default function TicketModal({ isOpen, onClose, theme, agencies = AGENCIE
                 Un SMS contenant votre lien de suivi vient d'être envoyé au <b>{createdTicket?.phoneNumber}</b>.
               </p>
 
-              <button
-                onClick={resetAll}
-                className="w-full py-3 px-4 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-bold text-sm transition-colors"
-              >
-                Terminer & Retour
-              </button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="md"
+                  iconStart={Printer}
+                  onClick={() => window.print()}
+                  className="flex-1"
+                >
+                  Imprimer
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={resetAll}
+                  className="flex-1"
+                >
+                  Terminer
+                </Button>
+              </div>
             </div>
           )}
         </div>

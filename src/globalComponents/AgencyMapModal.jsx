@@ -1,8 +1,14 @@
 import { useState } from 'react';
-import { MapPin, X, Search, Clock, Phone, Compass } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { MapPin, X, Search, Clock, Phone, Compass, Ticket } from 'lucide-react';
 import { AGENCIES_MOCK } from '../mocks/agenciesMock';
+import Button from './ui/Button';
+import Link from './ui/Link';
+import { openModal } from '../features/modalSlice';
+import { setSelectedAgency as setReduxAgency } from '../features/agencySlice';
 
 export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
+  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAgency, setSelectedAgency] = useState(agencies[0] || null);
 
@@ -15,6 +21,13 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
       a.commune.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleTakeTicketForAgency = (agency) => {
+    dispatch(setReduxAgency(agency));
+    dispatch(openModal('ticket'));
+  };
+
+  const primaryColor = theme?.colors?.primary || '#00843D';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md transition-all">
       <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full h-[85vh] max-h-[720px] flex flex-col overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
@@ -22,7 +35,7 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
         {/* Header Modal */}
         <div 
           className="px-6 py-5 flex items-center justify-between text-white flex-shrink-0"
-          style={{ backgroundColor: theme.colors.primary }}
+          style={{ backgroundColor: primaryColor }}
         >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-xl backdrop-blur-xs">
@@ -34,8 +47,9 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
             </div>
           </div>
           <button 
+            type="button"
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/20 transition-colors"
+            className="p-2 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5 text-white" />
           </button>
@@ -50,7 +64,7 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
               placeholder="Rechercher par commune, ville ou boulevard (ex: Plateau, Cocody)..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm bg-white rounded-2xl border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-2xs"
+              className="w-full pl-10 pr-4 py-2.5 text-sm bg-white rounded-2xl border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary-500 shadow-2xs"
             />
           </div>
         </div>
@@ -76,7 +90,7 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
                         ? 'bg-white shadow-md'
                         : 'bg-white/80 hover:bg-white border-slate-200/90'
                     }`}
-                    style={{ borderColor: isSelected ? theme.colors.primary : undefined }}
+                    style={{ borderColor: isSelected ? primaryColor : undefined }}
                   >
                     <div className="flex items-start justify-between mb-1.5">
                       <h4 className="font-bold text-slate-900 text-sm">{agency.name}</h4>
@@ -98,7 +112,7 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
                         <Clock className="w-3.5 h-3.5 text-slate-400" />
                         Attente: <b className="text-slate-900">{agency.currentWaitTime}</b>
                       </span>
-                      <span className="text-xs font-bold" style={{ color: theme.colors.primary }}>
+                      <span className="text-xs font-bold" style={{ color: primaryColor }}>
                         Voir sur la carte →
                       </span>
                     </div>
@@ -127,7 +141,7 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
               <div className="relative z-10 flex flex-col items-center max-w-sm w-full animate-bounce-once">
                 <div 
                   className="p-3.5 rounded-2xl text-white shadow-2xl flex items-center justify-center"
-                  style={{ backgroundColor: theme.colors.primary }}
+                  style={{ backgroundColor: primaryColor }}
                 >
                   <MapPin className="w-8 h-8" />
                 </div>
@@ -153,26 +167,42 @@ export default function AgencyMapModal({ isOpen, onClose, theme, agencies = AGEN
                     </div>
                   </div>
 
-                  <div className="mt-4 flex gap-2">
-                    <a
-                      href={`tel:${selectedAgency.phone}`}
-                      className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                  {/* Boutons d'actions unifiés avec Button */}
+                  <div className="mt-4 flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <Link
+                        to={`tel:${selectedAgency.phone}`}
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                      >
+                        <Phone className="w-3.5 h-3.5" /> Appeler
+                      </Link>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        iconStart={Compass}
+                        onClick={() => alert(`Lancement de l'itinéraire GPS vers : ${selectedAgency.name}`)}
+                        className="flex-1"
+                      >
+                        Itinéraire
+                      </Button>
+                    </div>
+
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      primaryColor={primaryColor}
+                      iconStart={Ticket}
+                      onClick={() => handleTakeTicketForAgency(selectedAgency)}
+                      className="w-full"
                     >
-                      <Phone className="w-3.5 h-3.5" /> Appeler
-                    </a>
-                    <button
-                      onClick={() => alert(`Lancement de l'itinéraire GPS vers : ${selectedAgency.name}`)}
-                      className="flex-1 py-2.5 px-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-opacity hover:opacity-95"
-                      style={{ backgroundColor: theme.colors.primary }}
-                    >
-                      <Compass className="w-3.5 h-3.5" /> Itinéraire
-                    </button>
+                      Prendre un ticket dans cette agence
+                    </Button>
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm text-[11px] text-slate-600 px-3 py-1 rounded-full border border-slate-200 shadow-xs font-medium">
+            <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-xs text-[11px] text-slate-600 px-3 py-1 rounded-full border border-slate-200 shadow-xs font-medium">
               Simulation Réseau Géolocalisé
             </div>
           </div>

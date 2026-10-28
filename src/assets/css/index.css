@@ -1,5 +1,118 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   🎨 THÈME PERSONNALISÉ BNI — TAILWIND v4 CSS-FIRST CONFIG
+   Configuration via la directive @theme (aucun tailwind.config.js nécessaire)
+   Palette extraite de la charte graphique BNI (Banque Nationale d'Investissement)
+   ============================================================================ */
+@theme {
+
+  /* --------------------------------------------------------------------------
+     1. TYPOGRAPHIE — Police principale du projet
+     Segoe UI est la police standard Synapse (identique au projet Diffusseur)
+     -------------------------------------------------------------------------- */
+  --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, system-ui, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+
+  /* --------------------------------------------------------------------------
+     2. COULEURS CLIENT — Palette primaire configurable par client
+     Ces valeurs sont les défauts du template (vert BNI en exemple).
+     Pour un autre client, il suffit de changer ces 8 variables ici.
+     -------------------------------------------------------------------------- */
+
+  /* — Couleur principale du client (signature) — */
+  --color-primary-500: #00843D;   /* Couleur principale — header, boutons, wave */
+  --color-primary-400: #00A84F;   /* Clair — hover, accents */
+  --color-primary-600: #006B31;   /* Foncé — pressed, ombres */
+  --color-primary-700: #00521F;   /* Très foncé — secondary, depth */
+  --color-primary-50:  #E6F4EC;   /* Très pâle — fond de badge, highlight */
+  --color-primary-100: #C2E5CF;   /* Pâle — bordures légères */
+  --color-primary-200: #85CAA0;   /* Moyen-pâle */
+  --color-primary-300: #47B072;   /* Médium */
+
+  /* — Neutrals / Gris du site — */
+  --color-surface-white:   #FFFFFF;   /* Corps blanc principal */
+  --color-surface-light:   #F5F5F5;   /* Section grise claire (footer, "Nos offres") */
+  --color-surface-muted:   #EEEEEE;   /* Fond carte/input sur fond gris */
+  --color-surface-overlay: #00000014; /* Overlay léger */
+
+  /* — Textes — */
+  --color-text-primary:   #1A1A1A;   /* Titres, corps principal */
+  --color-text-secondary: #4B5563;   /* Texte secondaire, descriptions */
+  --color-text-muted:     #9CA3AF;   /* Placeholder, labels désactivés */
+  --color-text-inverse:   #FFFFFF;   /* Texte sur fond vert / sombre */
+
+  /* — Feedback / États — */
+  --color-success:        #00843D;   /* Succès = couleur primaire client */
+  --color-success-light:  #E6F4EC;
+  --color-warning:        #F59E0B;   /* Avertissement ambre */
+  --color-warning-light:  #FEF3C7;
+  --color-error:          #DC2626;   /* Erreur rouge */
+  --color-error-light:    #FEE2E2;
+  --color-info:           #2563EB;   /* Info bleu */
+  --color-info-light:     #DBEAFE;
+
+  /* — Bordures — */
+  --color-border-light:   #E5E7EB;   /* Bordure standard */
+  --color-border-medium:  #D1D5DB;   /* Bordure plus visible */
+  --color-border-focus:   #00843D;   /* Outline focus = couleur primaire client */
+
+  /* --------------------------------------------------------------------------
+     3. TAILLES DE TEXTE — Échelle typographique harmonieuse
+     -------------------------------------------------------------------------- */
+  --text-xs:   0.75rem;    /* 12px — labels, captions */
+  --text-sm:   0.875rem;   /* 14px — texte secondaire, helper */
+  --text-base: 1rem;       /* 16px — corps de texte */
+  --text-lg:   1.125rem;   /* 18px — sous-titres légers */
+  --text-xl:   1.25rem;    /* 20px — titres de section */
+  --text-2xl:  1.5rem;     /* 24px — titres cards */
+  --text-3xl:  1.875rem;   /* 30px — titres hero secondaires */
+  --text-4xl:  2.25rem;    /* 36px — titres hero */
+  --text-5xl:  3rem;       /* 48px — hero headline */
+
+  /* --------------------------------------------------------------------------
+     4. ESPACEMENTS — Extension de l'échelle Tailwind par défaut
+     -------------------------------------------------------------------------- */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-26: 6.5rem;
+  --spacing-30: 7.5rem;
+
+  /* --------------------------------------------------------------------------
+     5. BORDER RADIUS — Cohérence visuelle de toutes les cartes/boutons
+     -------------------------------------------------------------------------- */
+  --radius-card:   0.75rem;  /* 12px — cartes de service */
+  --radius-badge:  9999px;   /* Pills/badges */
+  --radius-modal:  1rem;     /* 16px — modales */
+  --radius-input:  0.5rem;   /* 8px  — champs de saisie */
+
+  /* --------------------------------------------------------------------------
+     6. OMBRES — Profondeur douce et corporate
+     -------------------------------------------------------------------------- */
+  --shadow-card:   0 2px 8px 0 rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 24px 0 rgba(0, 132, 61, 0.15);
+  --shadow-modal:  0 20px 60px -8px rgba(0, 0, 0, 0.25);
+  --shadow-header: 0 2px 12px 0 rgba(0, 0, 0, 0.12);
+
+  /* --------------------------------------------------------------------------
+     7. TRANSITIONS — Timing functions harmonisées
+     -------------------------------------------------------------------------- */
+  --ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce:  cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+}
+
+/* ============================================================================
+   🔧 RESET & BASE STYLES
+   ============================================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #root {
@@ -7,4 +120,72 @@ body,
   padding: 0;
   min-height: 100%;
   width: 100%;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-white);
+}
+
+/* Héritage de la police pour tous les éléments interactifs */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* ============================================================================
+   ✨ CLASSES UTILITAIRES CUSTOM (au-delà de Tailwind)
+   Utilisées directement dans les composants React — NE PAS MODIFIER
+   ============================================================================ */
+
+/* Scrollbar — couleur primaire client */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-300);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-500);
+}
+
+/* Focus ring — accessibilité */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-input);
+}
+
+/* Wave divider SVG — courbe verte BNI séparant les sections */
+.wave-divider {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+.wave-divider svg {
+  display: block;
+  width: 100%;
+}
+
+/* Transition universelle douce pour les éléments interactifs */
+.transition-smooth {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+/* Overlay de fond pour les modales */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

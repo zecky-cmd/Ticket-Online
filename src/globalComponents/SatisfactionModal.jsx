@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { MessageSquareHeart, X, Star, CheckCircle2, Loader2 } from 'lucide-react';
+import { MessageSquareHeart, X, Star, CheckCircle2 } from 'lucide-react';
+import Button from './ui/Button';
 import { satisfactionService } from '../services/satisfactionService';
 
 export default function SatisfactionModal({ isOpen, onClose, theme }) {
@@ -139,25 +140,19 @@ export default function SatisfactionModal({ isOpen, onClose, theme }) {
                   placeholder="Partagez votre appréciation ou une remarque pour nous aider à progresser..."
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
-              <button
+              <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full py-3.5 px-4 rounded-2xl text-white font-bold text-sm shadow-lg transition-transform active:scale-[0.98] hover:opacity-95 disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
-                style={{ backgroundColor: theme.colors.primary }}
+                size="lg"
+                isLoading={isSubmitting}
+                primaryColor={theme.colors.primary}
+                className="w-full"
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Transmission en cours...
-                  </>
-                ) : (
-                  'Transmettre mon Évaluation'
-                )}
-              </button>
+                {isSubmitting ? 'Transmission en cours...' : 'Transmettre mon Évaluation'}
+              </Button>
             </form>
           ) : (
             <div className="text-center py-6 space-y-4">

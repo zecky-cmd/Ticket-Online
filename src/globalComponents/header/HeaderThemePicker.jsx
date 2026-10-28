@@ -26,7 +26,7 @@ export default function HeaderThemePicker({
     };
   }, [isOpen]);
 
-  const activeColor = primaryColor || themes[currentThemeKey]?.colors?.primary || '#059669';
+  const activeColor = primaryColor || themes[currentThemeKey]?.colors?.primary || '#00843D';
 
   return (
     <div className="relative" ref={containerRef}>
