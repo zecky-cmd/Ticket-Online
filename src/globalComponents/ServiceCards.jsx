@@ -21,12 +21,12 @@ export default function ServiceCards({
   cardSize = 'md',
   cardVariant = 'white',
   sectionTitle = 'Accédez à vos démarches en ligne',
-  sectionTag = 'Services Disponibles',
+  // sectionTag = 'Services Disponibles',
   sectionSubtitle = 'Sélectionnez une option pour réserver votre passage, noter la qualité de notre service ou localiser une agence.'
 }) {
   return (
     <Section
-      tag={sectionTag}
+      // tag={sectionTag}
       title={sectionTitle}
       subtitle={sectionSubtitle}
       badgeBg={theme?.colors?.badgeBg}

@@ -5,7 +5,7 @@ import { openModal } from '../features/modalSlice';
 import Header from '../globalComponents/Header';
 import Footer from '../globalComponents/Footer';
 
-export default function MainLayout({
+export default function Layout({
   children,
   theme: themeProp,
   currentThemeKey: currentThemeKeyProp,

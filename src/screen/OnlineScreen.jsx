@@ -1,111 +1,123 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { THEMES } from '../theme/themes';
 import { SLIDES } from '../mocks/slidesMock';
 import { AGENCIES } from '../mocks/agenciesMock';
 import { openModal, closeModal } from '../features/modalSlice';
-import MainLayout from '../layout/Layout';
-import SectionLayout from '../layout/SectionLayout';
+import Layout from '../layout/Layout';
+import Container from '../layout/Container';
 
-import Hero from '../globalComponents/Hero';
+import Carousel from '../globalComponents/Carousel';
 import ServiceCards from '../globalComponents/ServiceCards';
-import TicketModal from '../globalComponents/TicketModal';
-import SatisfactionModal from '../globalComponents/SatisfactionModal';
-import AgencyMapModal from '../globalComponents/AgencyMapModal';
+import TicketScreen from './ticket/TicketScreen';
+import SatisfactionScreen from './satisfaction/SatisfactionScreen';
+import AgencyMapScreen from './map/AgencyMapScreen';
 
-export { THEMES, SLIDES, AGENCIES, OnlineScreen, OnlineScreen as OnlinePage };
+export { THEMES, SLIDES, AGENCIES };
 
+/**
+ * Screen Principal : Portail Client En Ligne (S2Q)
+ * 
+ * Encapsule l'ensemble de la page d'accueil en ligne :
+ * - Carrousel promotionnel (Hero)
+ * - Raccourcis des services (Ticket, Satisfaction, Agences)
+ * - Modales / Bottom Sheets tactiles
+ */
 export default function OnlineScreen({
-	slides = SLIDES,
-	slideLinks,
-	onSlideAction
+  slides = SLIDES,
+  slideLinks,
+  onSlideAction
 }) {
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	const theme = useSelector((state) => state.theme.theme);
-	const currentThemeKey = useSelector((state) => state.theme.currentThemeKey);
-	const activeModal = useSelector((state) => state.modal.activeModal);
+  const theme = useSelector((state) => state.theme.theme);
+  const currentThemeKey = useSelector((state) => state.theme.currentThemeKey);
+  const activeModal = useSelector((state) => state.modal.activeModal);
 
-	const [currentSlide, setCurrentSlide] = useState(0);
-	const [isPaused, setIsPaused] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-	useEffect(() => {
-		if (isPaused) return;
-		const interval = setInterval(() => {
-			setCurrentSlide((prev) => (prev + 1) % slides.length);
-		}, 6000);
-		return () => clearInterval(interval);
-	}, [isPaused, slides.length]);
+  // Défilement automatique du carrousel
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [isPaused, slides.length]);
 
-	const handlePrevSlide = () => {
-		setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-	};
+  const handlePrevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
 
-	const handleNextSlide = () => {
-		setCurrentSlide((prev) => (prev + 1) % slides.length);
-	};
+  const handleNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
 
-	const handleSlideClick = (slide, index, e) => {
-		if (onSlideAction) {
-			onSlideAction(slide, index, e);
-			return;
-		}
+  const handleSlideClick = (slide, index, e) => {
+    if (onSlideAction) {
+      onSlideAction(slide, index, e);
+      return;
+    }
 
-		const targetLink = slide?.link || slide?.url || (slideLinks && slideLinks[slide?.id]);
-		if (targetLink === '#ticket') {
-			e?.preventDefault();
-			dispatch(openModal('ticket'));
-		} else if (targetLink === '#satisfaction') {
-			e?.preventDefault();
-			dispatch(openModal('satisfaction'));
-		} else if (targetLink === '#map') {
-			e?.preventDefault();
-			dispatch(openModal('map'));
-		}
-	};
+    const targetLink = slide?.link || slide?.url || (slideLinks && slideLinks[slide?.id]);
+    if (targetLink === '#ticket') {
+      e?.preventDefault();
+      dispatch(openModal('ticket'));
+    } else if (targetLink === '#satisfaction') {
+      e?.preventDefault();
+      dispatch(openModal('satisfaction'));
+    } else if (targetLink === '#map') {
+      e?.preventDefault();
+      dispatch(openModal('map'));
+    }
+  };
 
-	return (
-		<MainLayout theme={theme} currentThemeKey={currentThemeKey} themes={THEMES}>
-			<SectionLayout fullWidth={true} padding={false}>
-				<Hero
-					theme={theme}
-					slides={slides}
-					currentSlide={currentSlide}
-					setCurrentSlide={setCurrentSlide}
-					handlePrevSlide={handlePrevSlide}
-					handleNextSlide={handleNextSlide}
-					setIsPaused={setIsPaused}
-					slideLinks={slideLinks}
-					onSlideAction={handleSlideClick}
-				/>
-			</SectionLayout>
+  return (
+    <Layout theme={theme} currentThemeKey={currentThemeKey} themes={THEMES}>
+      {/* 1. Section Carrousel Promotionnel */}
+      <Container fullWidth={true} padding={false}>
+        <Carousel
+          theme={theme}
+          slides={slides}
+          currentSlide={currentSlide}
+          setCurrentSlide={setCurrentSlide}
+          handlePrevSlide={handlePrevSlide}
+          handleNextSlide={handleNextSlide}
+          setIsPaused={setIsPaused}
+          slideLinks={slideLinks}
+          onSlideAction={handleSlideClick}
+        />
+      </Container>
 
-			<SectionLayout fullWidth={true} padding={false}>
-				<ServiceCards
-					theme={theme}
-					onSelectService={(service) => dispatch(openModal(service))}
-				/>
-			</SectionLayout>
+      {/* 2. Section Raccourcis Services */}
+      <Container fullWidth={true} padding={false}>
+        <ServiceCards
+          theme={theme}
+          onSelectService={(service) => dispatch(openModal(service))}
+        />
+      </Container>
 
-			<TicketModal
-				isOpen={activeModal === 'ticket'}
-				onClose={() => dispatch(closeModal())}
-				theme={theme}
-				agencies={AGENCIES}
-			/>
+      {/* 3. Écrans Modaux / Bottom Sheets Mobile-First */}
+      <TicketScreen
+        isOpen={activeModal === 'ticket'}
+        onClose={() => dispatch(closeModal())}
+        theme={theme}
+        agencies={AGENCIES}
+      />
 
-			<SatisfactionModal
-				isOpen={activeModal === 'satisfaction'}
-				onClose={() => dispatch(closeModal())}
-				theme={theme}
-			/>
+      <SatisfactionScreen
+        isOpen={activeModal === 'satisfaction'}
+        onClose={() => dispatch(closeModal())}
+        theme={theme}
+      />
 
-			<AgencyMapModal
-				isOpen={activeModal === 'map'}
-				onClose={() => dispatch(closeModal())}
-				theme={theme}
-				agencies={AGENCIES}
-			/>
-		</MainLayout>
-	);
+      <AgencyMapScreen
+        isOpen={activeModal === 'map'}
+        onClose={() => dispatch(closeModal())}
+        theme={theme}
+        agencies={AGENCIES}
+      />
+    </Layout>
+  );
 }

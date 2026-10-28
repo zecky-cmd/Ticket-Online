@@ -18,8 +18,8 @@ import Link from '../ui/Link';
 export default function HeaderBrand({
   logo = '/CLIENT_LOGO.png',
   logoAlt,
-  abbreviation = 'BNI',
-  definition = "Banque Nationale d'Investissement",
+  abbreviation = 'Synapse',
+  definition = "S2Q - Tickets en Ligne",
   tag,
   primaryColor = '#00843D',
   href,

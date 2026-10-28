@@ -1,7 +1,6 @@
 import { Ticket, MessageSquareHeart, MapPin } from 'lucide-react';
 import { THEMES } from '../theme/themes';
 import HeaderBrand from './header/HeaderBrand';
-import Link from './ui/Link';
 
 export default function Footer({
   theme,
@@ -20,8 +19,8 @@ export default function Footer({
           {/* Identité de Marque Footer (utilise HeaderBrand unifié) */}
           <HeaderBrand
             logo="/CLIENT_LOGO.png"
-            abbreviation="BNI"
-            definition="Banque Nationale d'Investissement"
+            abbreviation="Synapse"
+            definition="S2Q - Tickets en Ligne"
             primaryColor={primaryColor}
             size="sm"
             className="text-white"
@@ -50,12 +49,10 @@ export default function Footer({
             >
               <MapPin className="w-3.5 h-3.5" style={{ color: theme?.colors?.accent || primaryColor }} /> Carte Réseau
             </button>
-            <span className="hidden md:inline text-slate-700">|</span>
-            <span className="text-slate-400">Lun - Sam : 08h00 - 18h00</span>
           </div>
 
           {/* Pastilles de changement rapide de thème */}
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <span className="text-xs text-slate-500 mr-1 hidden sm:inline">Thème :</span>
             {Object.entries(themes).map(([key, item]) => (
               <button
@@ -69,20 +66,11 @@ export default function Footer({
                 style={{ backgroundColor: item.colors.primary }}
               />
             ))}
-          </div>
-
-        </div>
-
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
-          <div>
-            © {new Date().getFullYear()} BNI - Banque Nationale d'Investissement. Tous droits réservés.
-          </div>
-          {/* <div className="flex gap-4">
-            <Link to="/mentions-legales" className="hover:text-slate-300 transition-colors">Mentions légales</Link>
-            <Link to="/confidentialite" className="hover:text-slate-300 transition-colors">Confidentialité</Link>
-            <Link to="/portail-agences" className="hover:text-slate-300 transition-colors">Portail Agences</Link>
           </div> */}
+
         </div>
+
+
       </div>
     </footer>
   );

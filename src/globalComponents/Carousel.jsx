@@ -11,7 +11,13 @@ const getValidImageUrl = (src) => {
   return src;
 };
 
-export default function OnlineHero({
+/**
+ * Composant Carousel Promotionnel & Bannières
+ * 
+ * Gère le défilement automatique d'images, indicateurs de pagination,
+ * navigation fléchée, pause au survol et boutons d'actions interactifs.
+ */
+export default function Carousel({
   theme,
   slides = SLIDES,
   currentSlide = 0,
