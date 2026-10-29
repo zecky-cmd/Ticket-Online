@@ -23,12 +23,12 @@ export default function ServiceCards({
   return (
     <div className={`w-full select-none ${className}`}>
       {/* En-tête de section */}
-      <div className="flex items-center justify-between mb-3 px-1">
-        <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+      <div className="flex items-center justify-between mb-1.5 sm:mb-2 px-1">
+        <h3 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
           {title}
         </h3>
         {hint && (
-          <span className="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+          <span className="hidden sm:flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
             <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span>{hint}</span>
           </span>
@@ -36,7 +36,7 @@ export default function ServiceCards({
       </div>
 
       {/* Grille des cartes */}
-      <div className="grid grid-cols-3 gap-2.5 sm:gap-4 lg:gap-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
         {services.map((service) => {
           const Icon = service.icon;
           const isPrimaryIcon = service.iconBgType === 'primary';
@@ -46,13 +46,13 @@ export default function ServiceCards({
               key={service.id}
               type="button"
               onClick={() => onSelectService && onSelectService(service.id)}
-              className="group bg-white hover:bg-slate-50/80 active:scale-[0.98] border border-slate-200/80 rounded-2xl p-2.5 sm:p-4 md:p-5 text-left shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3.5 cursor-pointer"
+              className="group bg-white hover:bg-slate-50/80 active:scale-[0.98] border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 text-left shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3 cursor-pointer"
             >
               {/* Côté gauche : Icône + Textes */}
-              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3.5 text-center sm:text-left w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 text-center sm:text-left w-full sm:w-auto">
                 {/* Boîte d'icône carrée */}
                 <div
-                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105 shadow-2xs ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105 shadow-2xs ${
                     isPrimaryIcon ? 'text-white' : ''
                   }`}
                   style={{
@@ -60,15 +60,15 @@ export default function ServiceCards({
                     color: isPrimaryIcon ? '#FFFFFF' : primaryColor
                   }}
                 >
-                  {Icon && <Icon className="w-5 h-5 sm:w-6 sm:h-6" />}
+                  {Icon && <Icon className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </div>
 
                 {/* Textes (Titre + Description) */}
                 <div className="flex flex-col justify-center min-w-0">
-                  <span className="text-xs sm:text-sm md:text-base font-bold text-slate-900 tracking-tight leading-snug group-hover:text-primary-600 transition-colors line-clamp-1">
+                  <span className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight leading-tight group-hover:text-primary-600 transition-colors line-clamp-1">
                     {service.title}
                   </span>
-                  <span className="hidden sm:block text-xs text-slate-400 mt-0.5 line-clamp-1">
+                  <span className="hidden sm:block text-[11px] text-slate-400 mt-0.5 line-clamp-1">
                     {service.description}
                   </span>
                 </div>
@@ -79,7 +79,7 @@ export default function ServiceCards({
                 className="hidden sm:flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1"
                 style={{ color: primaryColor }}
               >
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </div>
             </button>
           );

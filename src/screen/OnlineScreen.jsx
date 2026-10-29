@@ -79,12 +79,12 @@ export default function OnlineScreen({
 
   return (
     <Layout theme={theme} currentThemeKey={currentThemeKey} themes={THEMES}>
-      {/* ─── CORPS CENTRAL (Plein écran sans scroll avec espacements fidèles) ─── */}
-      <div className="flex-1 flex flex-col justify-between pt-1 sm:pt-3 md:pt-4 min-h-0 w-full overflow-hidden">
+      {/* ─── CORPS CENTRAL (Strictement 100vh sans scroll, footer toujours visible à l'écran) ─── */}
+      <div className="flex-1 min-h-0 flex flex-col justify-between pt-1 sm:pt-1.5 md:pt-2 w-full overflow-hidden">
         <Container 
           maxWidth="max-w-5xl" 
           padding={true} 
-          className="flex-1 flex flex-col justify-between min-h-0 w-full gap-2 sm:gap-3.5 md:gap-4 pb-2.5 sm:pb-4 md:pb-5"
+          className="flex-1 min-h-0 flex flex-col justify-between w-full gap-1.5 sm:gap-2 md:gap-2.5 pb-1 sm:pb-2"
         >
           {/* 1. Bloc d'Accroche Centré ("L'agence, sans l'attente.") */}
           <WelcomeBanner />

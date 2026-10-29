@@ -49,12 +49,12 @@ export default function Header({
         <div className="flex items-center gap-2 sm:gap-3">
           <HeaderContact {...contactConfig} />
 
-          <HeaderThemePicker
+          {/* <HeaderThemePicker
             currentThemeKey={currentThemeKey}
             onThemeChange={onThemeChange}
             themes={themes}
             primaryColor={primaryColor}
-          />
+          /> */}
         </div>
       </div>
     </header>

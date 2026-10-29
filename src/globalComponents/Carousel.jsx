@@ -33,7 +33,7 @@ export default function Carousel({
 
   return (
     <div
-      className={`relative w-full rounded-2xl sm:rounded-[28px] overflow-hidden shadow-md select-none h-[180px] xs:h-[200px] sm:h-[240px] md:h-[260px] lg:h-[280px] bg-slate-900 group ${className}`}
+      className={`relative w-full rounded-2xl sm:rounded-[24px] overflow-hidden shadow-md select-none h-[140px] xs:h-[155px] sm:h-[180px] md:h-[195px] lg:h-[210px] bg-slate-900 group ${className}`}
       onMouseEnter={() => setIsPaused && setIsPaused(true)}
       onMouseLeave={() => setIsPaused && setIsPaused(false)}
     >
@@ -56,33 +56,33 @@ export default function Carousel({
 
       {/* 2. Masque sombre dégradé sur le côté gauche */}
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/60 sm:via-black/45 to-transparent flex items-center">
-        <div className="p-4 sm:p-7 md:p-8 max-w-lg sm:max-w-xl text-left">
+        <div className="p-3.5 sm:p-5 md:p-6 max-w-sm sm:max-w-md md:max-w-lg text-left">
           {/* Badge de contexte */}
           {currentSlideData?.tag && (
-            <div className="inline-block px-2.5 py-0.5 sm:py-1 rounded-full bg-white/20 backdrop-blur-xs border border-white/25 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs mb-1.5 sm:mb-2">
+            <div className="inline-block px-2 sm:px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-xs border border-white/25 text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider text-white shadow-2xs mb-1 sm:mb-1.5">
               {currentSlideData.tag}
             </div>
           )}
 
           {/* Titre percutant */}
-          <h2 className="text-base sm:text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-sm">
+          <h2 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-black text-white leading-snug drop-shadow-sm">
             {currentSlideData?.title}
           </h2>
 
           {/* Sous-titre */}
           {currentSlideData?.subtitle && (
-            <p className="text-[11px] sm:text-xs md:text-sm text-white/80 mt-1 sm:mt-1.5 line-clamp-2 leading-relaxed">
+            <p className="text-[10px] sm:text-[11px] md:text-xs text-white/80 mt-0.5 sm:mt-1 line-clamp-2 leading-tight">
               {currentSlideData.subtitle}
             </p>
           )}
 
           {/* Bouton CTA d'action blanc */}
           {currentSlideData?.buttonText && (
-            <div className="mt-2.5 sm:mt-4">
+            <div className="mt-2 sm:mt-2.5">
               <button
                 type="button"
                 onClick={handleAction}
-                className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-white hover:bg-slate-100 text-slate-900 font-bold text-[11px] sm:text-xs shadow-md transition-all active:scale-95 cursor-pointer"
               >
                 <span>{currentSlideData.buttonText}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-slate-700" />
