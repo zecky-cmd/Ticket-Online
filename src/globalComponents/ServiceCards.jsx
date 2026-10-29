@@ -1,58 +1,90 @@
-import Card from './ui/Card';
-import Section from './ui/Section';
+import React from 'react';
+import { Clock, ArrowRight } from 'lucide-react';
 import { SERVICES_MOCK } from '../mocks/servicesMock';
 
 /**
- * Section des Cartes de Services (orchestrée via Card et Section génériques)
+ * Composant ServiceCards (Grille des 3 actions principales)
  * 
- * @param {Object} theme - Thème actif (couleurs, badges, hover)
- * @param {Array} services - Liste des cartes de services à afficher
- * @param {function} onSelectService - Callback au clic sur une carte (reçoit service.id)
- * @param {'sm'|'md'|'lg'} cardSize - Échelle de taille des cartes
- * @param {'white'|'dark'|'outline'} cardVariant - Variante de style de fond
- * @param {string} sectionTitle - Titre de la section
- * @param {string} sectionTag - Badge de la section
- * @param {string} sectionSubtitle - Sous-titre de la section
+ * Conforme aux maquettes Desktop et Mobile :
+ * - Desktop : 3 cartes horizontales blanches avec icône stylisée, titre, description et flèche '→'
+ * - Mobile : 3 colonnes compactes (grid-cols-3)
+ * - Couleurs conformes : Vert #008056 pour Ticket en ligne, Vert pâle #E6F5F0 pour les 2 autres
  */
 export default function ServiceCards({
   theme,
   services = SERVICES_MOCK,
   onSelectService,
-  cardSize = 'md',
-  cardVariant = 'white',
-  sectionTitle = 'Accédez à vos démarches en ligne',
-  // sectionTag = 'Services Disponibles',
-  sectionSubtitle = 'Sélectionnez une option pour réserver votre passage, noter la qualité de notre service ou localiser une agence.'
+  title = "Que souhaitez-vous faire ?",
+  hint = "Quelques clics suffisent",
+  className = ''
 }) {
+  const primaryColor = theme?.colors?.primary || '#008056';
+
   return (
-    <Section
-      // tag={sectionTag}
-      title={sectionTitle}
-      subtitle={sectionSubtitle}
-      badgeBg={theme?.colors?.badgeBg}
-      badgeColor={theme?.colors?.badgeText}
-      background="dark"
-    >
-      {/* Grille de cartes générées avec le composant unique Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {services.map((service) => (
-          <Card
-            key={service.id}
-            icon={service.icon}
-            title={service.title}
-            description={service.description}
-            badge={service.badge}
-            badgeBg={theme?.colors?.badgeBg}
-            badgeColor={theme?.colors?.badgeText}
-            actionText={service.actionText}
-            primaryColor={theme?.colors?.primary}
-            hoverBorder={theme?.colors?.cardHoverBorder}
-            size={cardSize}
-            variant={cardVariant}
-            onClick={() => onSelectService && onSelectService(service.id)}
-          />
-        ))}
+    <div className={`w-full select-none ${className}`}>
+      {/* En-tête de section */}
+      <div className="flex items-center justify-between mb-3 px-1">
+        <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+          {title}
+        </h3>
+        {hint && (
+          <span className="hidden sm:flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+            <Clock className="w-3.5 h-3.5 text-slate-400" />
+            <span>{hint}</span>
+          </span>
+        )}
       </div>
-    </Section>
+
+      {/* Grille des cartes */}
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-4 lg:gap-6">
+        {services.map((service) => {
+          const Icon = service.icon;
+          const isPrimaryIcon = service.iconBgType === 'primary';
+
+          return (
+            <button
+              key={service.id}
+              type="button"
+              onClick={() => onSelectService && onSelectService(service.id)}
+              className="group bg-white hover:bg-slate-50/80 active:scale-[0.98] border border-slate-200/80 rounded-2xl p-2.5 sm:p-4 md:p-5 text-left shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3.5 cursor-pointer"
+            >
+              {/* Côté gauche : Icône + Textes */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3.5 text-center sm:text-left w-full sm:w-auto">
+                {/* Boîte d'icône carrée */}
+                <div
+                  className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-105 shadow-2xs ${
+                    isPrimaryIcon ? 'text-white' : ''
+                  }`}
+                  style={{
+                    backgroundColor: isPrimaryIcon ? primaryColor : '#E6F5F0',
+                    color: isPrimaryIcon ? '#FFFFFF' : primaryColor
+                  }}
+                >
+                  {Icon && <Icon className="w-5 h-5 sm:w-6 sm:h-6" />}
+                </div>
+
+                {/* Textes (Titre + Description) */}
+                <div className="flex flex-col justify-center min-w-0">
+                  <span className="text-xs sm:text-sm md:text-base font-bold text-slate-900 tracking-tight leading-snug group-hover:text-primary-600 transition-colors line-clamp-1">
+                    {service.title}
+                  </span>
+                  <span className="hidden sm:block text-xs text-slate-400 mt-0.5 line-clamp-1">
+                    {service.description}
+                  </span>
+                </div>
+              </div>
+
+              {/* Flèche droite verte (visible desktop) */}
+              <div
+                className="hidden sm:flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1"
+                style={{ color: primaryColor }}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }

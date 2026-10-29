@@ -31,7 +31,7 @@ export default function Card({
   badgeColor,
   actionText,
   actionIcon: ActionIcon = ArrowRight,
-  primaryColor = '#00843D',
+  primaryColor = '#008056',
   hoverBorder = 'hover:border-primary-400',
   size = 'md',
   variant = 'white',

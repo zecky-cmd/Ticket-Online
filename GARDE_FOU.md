@@ -49,10 +49,12 @@ TEMPLATE TICKET EN LIGNE/
 │   ├── globalComponents/      <-- Composants TRANSVERSES et RÉUTILISABLES
 │   │   ├── ui/                 <-- Primitives universelles (Button, Card, Link, Section)
 │   │   ├── header/             <-- Éléments d'en-tête (Brand, Contact, ThemePicker)
-│   │   ├── Header.jsx          <-- Header complet
-│   │   ├── Footer.jsx          <-- Footer complet
-│   │   ├── Carousel.jsx        <-- Carousel / Slider de promotion
-│   │   └── ServiceCards.jsx    <-- Grille de raccourcis vers les services
+│   │   ├── Header.jsx          <-- Header vert signature Synapse
+│   │   ├── WelcomeBanner.jsx   <-- Accroche ("L'agence, sans l'attente.")
+│   │   ├── Carousel.jsx        <-- Carousel flottant arrondi avec overlay CTA
+│   │   ├── ServiceCards.jsx    <-- Grille des 3 services (horizontal / 3 cols mobile)
+│   │   ├── CtaWave.jsx         <-- Bandeau vert avec vague SVG + bouton contact
+│   │   └── Footer.jsx          <-- Footer blanc épuré 1 ligne
 │   ├── layout/                 <-- Squelettes de disposition (Layout, Container)
 │   ├── services/               <-- Couche API & Logique métier (Axios + S2Q endpoints)
 │   ├── mocks/                  <-- Jeux de données mockées (JAMAIS dans assets/)

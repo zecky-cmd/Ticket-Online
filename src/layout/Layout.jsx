@@ -1,10 +1,19 @@
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { THEMES } from '../theme/themes';
 import { setTheme } from '../features/themeSlice';
-import { openModal } from '../features/modalSlice';
 import Header from '../globalComponents/Header';
 import Footer from '../globalComponents/Footer';
 
+/**
+ * Composant Layout Global
+ * 
+ * Rôle :
+ * - Cadre général 100vh sans scroll (h-screen overflow-hidden)
+ * - Header vert officiel en haut
+ * - Contenu principal fluide au centre
+ * - Footer blanc minimaliste en bas
+ */
 export default function Layout({
   children,
   theme: themeProp,
@@ -12,8 +21,7 @@ export default function Layout({
   onThemeChange,
   themes = THEMES,
   headerProps = {},
-  footerProps = {},
-  onSelectService
+  footerProps = {}
 }) {
   const dispatch = useDispatch();
   
@@ -31,18 +39,9 @@ export default function Layout({
     dispatch(setTheme(key));
   };
   
-  const handleSelectService = (service) => {
-    if (onSelectService) {
-      onSelectService(service);
-      return;
-    }
-    if (service && typeof service === 'string') {
-      dispatch(openModal(service));
-    }
-  };
-  
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-900 font-sans flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+    <div className="h-screen max-h-screen w-full bg-white text-slate-900 font-sans flex flex-col justify-between overflow-hidden selection:bg-primary-500 selection:text-white">
+      {/* 1. Header vert signature */}
       <Header
         theme={theme}
         currentThemeKey={currentThemeKey}
@@ -51,18 +50,13 @@ export default function Layout({
         {...headerProps}
       />
       
-      <main className="flex-1 flex flex-col w-full">
+      {/* 2. Corps de page plein écran sans scroll */}
+      <main className="flex-1 flex flex-col justify-between min-h-0 w-full overflow-hidden">
         {children}
       </main>
       
-      <Footer
-        theme={theme}
-        currentThemeKey={currentThemeKey}
-        setCurrentThemeKey={handleThemeChange}
-        themes={themes}
-        onSelectService={handleSelectService}
-        {...footerProps}
-      />
+      {/* 3. Footer épuré 1 ligne */}
+      <Footer {...footerProps} />
     </div>
   );
 }

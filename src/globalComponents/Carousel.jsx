@@ -1,20 +1,16 @@
-import { ChevronLeft, ChevronRight, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
+import React from 'react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { SLIDES } from '../mocks/slidesMock';
 
-// Normalisation des chemins d'images (gère "public/...", "/...", URLs externes)
-const getValidImageUrl = (src) => {
-  if (!src) return '';
-  if (src.startsWith('public/')) {
-    return '/' + src.replace(/^public\//, '');
-  }
-  return src;
-};
-
 /**
- * Composant Carousel Promotionnel & Bannières
+ * Composant Carousel Flottant & Bannières
  * 
- * Gère le défilement automatique d'images, indicateurs de pagination,
- * navigation fléchée, pause au survol et boutons d'actions interactifs.
+ * Fidèle à la maquette :
+ * - Carte flottante aux coins très arrondis (rounded-[28px])
+ * - Masque dégradé sombre à gauche pour lisibilité optimale
+ * - Badge contexte + Titre + Description + Bouton blanc avec flèche '→'
+ * - Contrôles intégrés en bas à droite (précédent, points, suivant, compteur 1/3)
+ * - Hauteur calibrée pour l'équilibre zéro-scroll
  */
 export default function Carousel({
   theme,
@@ -24,76 +20,121 @@ export default function Carousel({
   handlePrevSlide,
   handleNextSlide,
   setIsPaused,
-
-  aspectRatio = "aspect-[21/9] sm:aspect-[16/5] md:aspect-[4/1] min-h-[220px] max-h-[480px]",
-  imageFit = "cover" // "cover" ou "contain" pour préserver le ratio natif sans déformation
+  onSlideAction,
+  className = ''
 }) {
-  // const currentSlideData = slides[currentSlide] || slides[0];
+  const currentSlideData = slides[currentSlide] || slides[0];
 
-  // Résolution du lien rattaché à la slide active (soit dans slide.link, soit via la prop slideLinks)
+  const handleAction = (e) => {
+    if (onSlideAction) {
+      onSlideAction(currentSlideData, currentSlide, e);
+    }
+  };
 
   return (
     <div
-      className={`relative w-full overflow-hidden ${aspectRatio} bg-slate-950 select-none`}
+      className={`relative w-full rounded-2xl sm:rounded-[28px] overflow-hidden shadow-md select-none h-[180px] xs:h-[200px] sm:h-[240px] md:h-[260px] lg:h-[280px] bg-slate-900 group ${className}`}
       onMouseEnter={() => setIsPaused && setIsPaused(true)}
       onMouseLeave={() => setIsPaused && setIsPaused(false)}
     >
-      {/* Slides d'images SANS AUCUN GRADIENT assombrissant */}
-      {slides.map((slide, index) => {
-        const isActive = index === currentSlide;
-        const imageUrl = getValidImageUrl(slide.image);
-
-        return (
-          <div
-            key={slide.id || index}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-            }`}
-          >
-            <img
-              src={imageUrl}
-              alt={slide.title || `Slide ${slide.id || index + 1}`}
-              className={`w-full h-full ${
-                imageFit === 'contain' ? 'object-contain' : 'object-cover'
-              } object-center`}
-            />
-          </div>
-        );
-      })}
-
-      {/* Flèches de navigation du carrousel (centrées verticalement) */}
-      <button
-        type="button"
-        onClick={handlePrevSlide}
-        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 p-2.5 sm:p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all focus:outline-none cursor-pointer shadow-lg hover:scale-105 active:scale-95"
-        aria-label="Publicité précédente"
-      >
-        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-      </button>
-
-      <button
-        type="button"
-        onClick={handleNextSlide}
-        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20 p-2.5 sm:p-3 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all focus:outline-none cursor-pointer shadow-lg hover:scale-105 active:scale-95"
-        aria-label="Publicité suivante"
-      >
-        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-      </button>
-
-
-      {/* Indicateurs (Dots) du carrousel au centre */}
-      <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-        {slides.map((_, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => setCurrentSlide(idx)}
-            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-              idx === currentSlide ? 'w-7 bg-white' : 'w-2 bg-white/40 hover:bg-white/80'
-            }`}
-            aria-label={`Aller au slide ${idx + 1}`}
+      {/* 1. Images de fond des slides */}
+      {slides.map((slide, index) => (
+        <div
+          key={slide.id || index}
+          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+          }`}
+        >
+          <img
+            src={slide.image}
+            alt={slide.title || 'Slide'}
+            className="w-full h-full object-cover"
+            loading="lazy"
           />
-        ))}
+        </div>
+      ))}
+
+      {/* 2. Masque sombre dégradé sur le côté gauche */}
+      <div className="absolute inset-0 z-20 bg-gradient-to-r from-black/90 via-black/60 sm:via-black/45 to-transparent flex items-center">
+        <div className="p-4 sm:p-7 md:p-8 max-w-lg sm:max-w-xl text-left">
+          {/* Badge de contexte */}
+          {currentSlideData?.tag && (
+            <div className="inline-block px-2.5 py-0.5 sm:py-1 rounded-full bg-white/20 backdrop-blur-xs border border-white/25 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs mb-1.5 sm:mb-2">
+              {currentSlideData.tag}
+            </div>
+          )}
+
+          {/* Titre percutant */}
+          <h2 className="text-base sm:text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-sm">
+            {currentSlideData?.title}
+          </h2>
+
+          {/* Sous-titre */}
+          {currentSlideData?.subtitle && (
+            <p className="text-[11px] sm:text-xs md:text-sm text-white/80 mt-1 sm:mt-1.5 line-clamp-2 leading-relaxed">
+              {currentSlideData.subtitle}
+            </p>
+          )}
+
+          {/* Bouton CTA d'action blanc */}
+          {currentSlideData?.buttonText && (
+            <div className="mt-2.5 sm:mt-4">
+              <button
+                type="button"
+                onClick={handleAction}
+                className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+              >
+                <span>{currentSlideData.buttonText}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-700" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Contrôles de navigation bas-droite (← ● ● ● → 3/3) */}
+      <div className="absolute right-3 sm:right-6 bottom-3 sm:bottom-4 z-30 flex items-center gap-2 sm:gap-2.5 bg-black/40 backdrop-blur-sm border border-white/20 px-2.5 sm:px-3 py-1.5 rounded-full shadow-md">
+        {/* Précédent */}
+        <button
+          type="button"
+          onClick={handlePrevSlide}
+          className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-white/25 active:scale-90 flex items-center justify-center text-white transition-all cursor-pointer"
+          aria-label="Slide précédente"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+
+        {/* Indicateurs points (dots) */}
+        <div className="flex items-center gap-1.5 px-1">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setCurrentSlide(idx)}
+              className={`transition-all rounded-full cursor-pointer ${
+                idx === currentSlide
+                  ? 'w-4 sm:w-5 h-1.5 bg-white'
+                  : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/70'
+              }`}
+              aria-label={`Aller à la slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Suivant */}
+        <button
+          type="button"
+          onClick={handleNextSlide}
+          className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-white/25 active:scale-90 flex items-center justify-center text-white transition-all cursor-pointer"
+          aria-label="Slide suivante"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+
+        {/* Compteur 1/3 (visible desktop) */}
+        <span className="hidden sm:inline-block text-[11px] font-bold text-white/85 pl-1 font-mono">
+          {currentSlide + 1}/{slides.length}
+        </span>
       </div>
     </div>
   );

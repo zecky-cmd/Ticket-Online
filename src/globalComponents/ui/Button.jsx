@@ -23,7 +23,7 @@ export default function Button({
   disabled = false,
   iconStart: IconStart,
   iconEnd: IconEnd,
-  primaryColor = '#00843D',
+  primaryColor = '#008056',
   type = 'button',
   onClick,
   className = '',

@@ -1,31 +1,33 @@
 // ============================================================================
 // DONNÉES DU CARROUSEL PUBLICITAIRE (MOCK)
+// Alignées fidèlement sur les maquettes de l'application
 // ============================================================================
 export const SLIDES_MOCK = [
   {
     id: 1,
-    tag: "Promotion & Modernité",
-    title: "Votre temps est précieux, nous le respectons",
-    subtitle: "Découvrez notre écosystème digital conçu pour faciliter vos démarches en agence et à distance sans attente inutile.",
-    image: "/img6.jpg",
-    link: "https://www.bni.ci",
-    linkText: "En savoir plus",
-    linkTarget: "_blank"
+    tag: "TICKET EN LIGNE",
+    title: "Votre ticket, sans faire la queue.",
+    subtitle: "Préparez votre passage depuis votre téléphone.",
+    buttonText: "Prendre un ticket",
+    link: "#ticket",
+    image: "/img6.jpg"
   },
   {
     id: 2,
-    tag: "Qualité & Écoute",
-    title: "Bâtissons ensemble une expérience d'exception",
-    subtitle: "Votre avis oriente nos innovations quotidiennes. Partagez votre satisfaction ou vos recommandations en quelques secondes.",
-    image: "/img2.jpg",
+    tag: "VOTRE AVIS COMPTE",
+    title: "Ensemble, améliorons votre expérience.",
+    subtitle: "Quelques mots suffisent pour nous faire progresser...",
+    buttonText: "Donner mon avis",
     link: "#satisfaction",
-    linkText: "Donner mon avis"
+    image: "/img2.jpg"
   },
   {
     id: 3,
-    tag: "Réseau de Proximité",
-    title: "Toujours à vos côtés, partout dans le pays",
-    subtitle: "Consultez nos 25 agences en direct avec visibilité sur l'affluence, les horaires et les conseillers disponibles.",
+    tag: "RÉSEAU D'AGENCES",
+    title: "Trouvez l'agence la plus proche.",
+    subtitle: "Localisation en temps réel et visibilité sur l'affluence.",
+    buttonText: "Consulter la carte",
+    link: "#map",
     image: "/img3.jpg"
   }
 ];

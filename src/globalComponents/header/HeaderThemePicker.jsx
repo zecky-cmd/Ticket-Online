@@ -26,14 +26,14 @@ export default function HeaderThemePicker({
     };
   }, [isOpen]);
 
-  const activeColor = primaryColor || themes[currentThemeKey]?.colors?.primary || '#00843D';
+  const activeColor = primaryColor || themes[currentThemeKey]?.colors?.primary || '#008056';
 
   return (
     <div className="relative" ref={containerRef}>
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         type="button"
-        className="flex items-center gap-2 text-xs font-bold px-3.5 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+        className="flex items-center gap-1.5 sm:gap-2 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-full border border-white/20 bg-black/15 hover:bg-black/25 text-white transition-colors shadow-2xs cursor-pointer select-none"
         title="Changer le jeu de couleur"
       >
         <Palette className="w-4 h-4" style={{ color: activeColor }} />

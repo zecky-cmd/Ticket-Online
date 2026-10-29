@@ -14,34 +14,33 @@
 export const THEMES = {
 
   // ─────────────────────────────────────────────────────────────────────────
-  // THÈME 1 : Vert & Blanc — Client BNI (Banque Nationale d'Investissement)
-  // Pour un autre client vert, dupliquer ce bloc et ajuster les hex.
+  // THÈME 1 : Vert & Blanc — Synapse S2Q (#008056)
   // ─────────────────────────────────────────────────────────────────────────
   vertBlanc: {
     id: 'vertBlanc',
     name: 'Vert Corporate',
 
     colors: {
-      // Couleur principale — header, boutons, wave divider, icônes de carte
-      primary:       '#00843D',
-      primaryHover:  '#006B31',   // état hover
-      primaryActive: '#00521F',   // état pressed
+      // Couleur principale officielle Synapse S2Q
+      primary:       '#008056',
+      primaryHover:  '#006645',   // état hover
+      primaryActive: '#004D34',   // état pressed
 
       // Déclinaisons — fonds, badges, bordures
-      primaryLight:  '#E6F4EC',   // fond de badge, highlight section
-      primaryBorder: '#85CAA0',   // bordure de card au survol
-      primaryMuted:  '#C2E5CF',   // séparateurs, dividers légers
+      primaryLight:  '#E6F5F0',   // fond de badge, highlight section
+      primaryBorder: '#99D5C1',   // bordure de card au survol
+      primaryMuted:  '#CCEAE0',   // séparateurs, dividers légers
 
       // Accent vif — tags, indicateurs live
-      secondary:     '#006B31',
-      accent:        '#00A84F',
+      secondary:     '#006645',
+      accent:        '#00A36E',
 
       // Badges
-      badgeBg:       '#E6F4EC',
-      badgeText:     '#00521F',
+      badgeBg:       '#E6F5F0',
+      badgeText:     '#004D34',
 
       // Hero section — dégradé sombre pour lisibilité sur image de fond
-      heroGradient:  'from-green-950/90 via-slate-950/75 to-green-900/85',
+      heroGradient:  'from-emerald-950/90 via-slate-950/75 to-emerald-900/85',
 
       // Hover bordure carte — utilise le token CSS générique
       cardHoverBorder: 'hover:border-primary-400',

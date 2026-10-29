@@ -7,8 +7,11 @@ import { openModal, closeModal } from '../features/modalSlice';
 import Layout from '../layout/Layout';
 import Container from '../layout/Container';
 
+import WelcomeBanner from '../globalComponents/WelcomeBanner';
 import Carousel from '../globalComponents/Carousel';
 import ServiceCards from '../globalComponents/ServiceCards';
+import CtaWave from '../globalComponents/CtaWave';
+
 import TicketScreen from './ticket/TicketScreen';
 import SatisfactionScreen from './satisfaction/SatisfactionScreen';
 import AgencyMapScreen from './map/AgencyMapScreen';
@@ -18,10 +21,11 @@ export { THEMES, SLIDES, AGENCIES };
 /**
  * Screen Principal : Portail Client En Ligne (S2Q)
  * 
- * Encapsule l'ensemble de la page d'accueil en ligne :
- * - Carrousel promotionnel (Carousel)
- * - Raccourcis des services (Ticket, Satisfaction, Agences)
- * - Modales / Bottom Sheets tactiles
+ * Conforme aux maquettes au pixel près :
+ * - Vert officiel Synapse S2Q (#008056)
+ * - Trait / arc vert inférieur fidèle à la maquette
+ * - Espacements équilibrés et aérés
+ * - Zéro Scroll (tout visible sur un seul écran)
  */
 export default function OnlineScreen({
   slides = SLIDES,
@@ -37,7 +41,7 @@ export default function OnlineScreen({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Défilement automatique du carrousel
+  // Défilement automatique du carrousel toutes les 6 secondes
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -75,30 +79,46 @@ export default function OnlineScreen({
 
   return (
     <Layout theme={theme} currentThemeKey={currentThemeKey} themes={THEMES}>
-      {/* 1. Section Carrousel Promotionnel */}
-      <Container fullWidth={true} padding={false}>
-        <Carousel
-          theme={theme}
-          slides={slides}
-          currentSlide={currentSlide}
-          setCurrentSlide={setCurrentSlide}
-          handlePrevSlide={handlePrevSlide}
-          handleNextSlide={handleNextSlide}
-          setIsPaused={setIsPaused}
-          slideLinks={slideLinks}
-          onSlideAction={handleSlideClick}
-        />
-      </Container>
+      {/* ─── CORPS CENTRAL (Plein écran sans scroll avec espacements fidèles) ─── */}
+      <div className="flex-1 flex flex-col justify-between pt-1 sm:pt-3 md:pt-4 min-h-0 w-full overflow-hidden">
+        <Container 
+          maxWidth="max-w-5xl" 
+          padding={true} 
+          className="flex-1 flex flex-col justify-between min-h-0 w-full gap-2 sm:gap-3.5 md:gap-4 pb-2.5 sm:pb-4 md:pb-5"
+        >
+          {/* 1. Bloc d'Accroche Centré ("L'agence, sans l'attente.") */}
+          <WelcomeBanner />
 
-      {/* 2. Section Raccourcis Services */}
-      <Container fullWidth={true} padding={false}>
-        <ServiceCards
-          theme={theme}
-          onSelectService={(service) => dispatch(openModal(service))}
-        />
-      </Container>
+          {/* 2. Carrousel Flottant & Bannières */}
+          <Carousel
+            theme={theme}
+            slides={slides}
+            currentSlide={currentSlide}
+            setCurrentSlide={setCurrentSlide}
+            handlePrevSlide={handlePrevSlide}
+            handleNextSlide={handleNextSlide}
+            setIsPaused={setIsPaused}
+            onSlideAction={handleSlideClick}
+          />
 
-      {/* 3. Écrans Modaux / Bottom Sheets Mobile-First */}
+          {/* 3. Section des 3 Actions (Ticket, Avis, Agences) */}
+          <ServiceCards
+            theme={theme}
+            onSelectService={(service) => dispatch(openModal(service))}
+          />
+        </Container>
+
+        {/* ─── 4. BANDEAU VERT INFÉRIEUR AVEC ARC DOUX FIDÈLE ─── */}
+        <CtaWave
+          theme={theme}
+          title="Votre temps compte."
+          subtitle="Nous facilitons chaque étape de votre accueil en agence."
+          buttonText="Nous contacter"
+          contactHref="tel:+22527200000"
+        />
+      </div>
+
+      {/* ─── 5. ÉCRANS MODAUX & BOTTOM SHEETS TACTILES ─── */}
       <TicketScreen
         isOpen={activeModal === 'ticket'}
         onClose={() => dispatch(closeModal())}

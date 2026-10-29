@@ -1,76 +1,53 @@
-import { Ticket, MessageSquareHeart, MapPin } from 'lucide-react';
-import { THEMES } from '../theme/themes';
-import HeaderBrand from './header/HeaderBrand';
+import React from 'react';
+import Link from './ui/Link';
 
+/**
+ * Composant Footer (Pied de page minimaliste blanc)
+ * 
+ * Conforme à la maquette :
+ * - Fond blanc / très clair épuré
+ * - Gauche : Signature "Synapse · S2Q" + "Un accueil plus fluide, à votre rythme."
+ * - Droite : Liens "Confidentialité | Assistance | © 2026 Synapse"
+ * - Hauteur compacte pour garantir le Zéro-Scroll
+ */
 export default function Footer({
-  theme,
-  currentThemeKey,
-  setCurrentThemeKey,
-  themes = THEMES,
-  onSelectService
+  brandName = 'Synapse · S2Q',
+  tagline = 'Un accueil plus fluide, à votre rythme.',
+  year = new Date().getFullYear(),
+  className = ''
 }) {
-  const primaryColor = theme?.colors?.primary || '#00843D';
-
   return (
-    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800/60">
-          
-          {/* Identité de Marque Footer (utilise HeaderBrand unifié) */}
-          <HeaderBrand
-            logo="/CLIENT_LOGO.png"
-            abbreviation="Synapse"
-            definition="S2Q - Tickets en Ligne"
-            primaryColor={primaryColor}
-            size="sm"
-            className="text-white"
-          />
-
-          {/* Raccourcis Directs vers les 3 Services */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-slate-400">
-            <button 
-              type="button"
-              onClick={() => onSelectService && onSelectService('ticket')} 
-              className="hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <Ticket className="w-3.5 h-3.5" style={{ color: theme?.colors?.accent || primaryColor }} /> E-Ticket
-            </button>
-            <button 
-              type="button"
-              onClick={() => onSelectService && onSelectService('satisfaction')} 
-              className="hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <MessageSquareHeart className="w-3.5 h-3.5" style={{ color: theme?.colors?.accent || primaryColor }} /> Avis Client
-            </button>
-            <button 
-              type="button"
-              onClick={() => onSelectService && onSelectService('map')} 
-              className="hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
-            >
-              <MapPin className="w-3.5 h-3.5" style={{ color: theme?.colors?.accent || primaryColor }} /> Carte Réseau
-            </button>
-          </div>
-
-          {/* Pastilles de changement rapide de thème */}
-          {/* <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500 mr-1 hidden sm:inline">Thème :</span>
-            {Object.entries(themes).map(([key, item]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setCurrentThemeKey && setCurrentThemeKey(key)}
-                title={item.name}
-                className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 cursor-pointer ${
-                  currentThemeKey === key ? 'border-white scale-110 ring-2 ring-white/30' : 'border-transparent opacity-70'
-                }`}
-                style={{ backgroundColor: item.colors.primary }}
-              />
-            ))}
-          </div> */}
-
+    <footer className={`w-full bg-white border-t border-slate-100 text-slate-500 py-2 sm:py-3 px-4 sm:px-6 lg:px-8 select-none ${className}`}>
+      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-[11px] sm:text-xs">
+        {/* Côté gauche : Marque & Slogan */}
+        <div className="flex items-center gap-2 text-center sm:text-left">
+          <span className="font-extrabold text-slate-900 tracking-tight">
+            {brandName}
+          </span>
+          {tagline && (
+            <>
+              <span className="text-slate-300 hidden sm:inline">•</span>
+              <span className="text-slate-400 hidden sm:inline font-medium">
+                {tagline}
+              </span>
+            </>
+          )}
         </div>
 
-
+        {/* Côté droit : Liens légaux & Copyright */}
+        <div className="flex items-center gap-3 sm:gap-4 text-slate-500">
+          <Link to="/confidentialite" className="hover:text-slate-800 transition-colors">
+            Confidentialité
+          </Link>
+          <span className="text-slate-200">|</span>
+          <Link to="/assistance" className="hover:text-slate-800 transition-colors">
+            Assistance
+          </Link>
+          <span className="text-slate-200">|</span>
+          <span className="text-slate-400">
+            © {year} Synapse
+          </span>
+        </div>
       </div>
     </footer>
   );

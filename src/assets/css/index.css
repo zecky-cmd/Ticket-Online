@@ -20,15 +20,15 @@
      Pour un autre client, il suffit de changer ces 8 variables ici.
      -------------------------------------------------------------------------- */
 
-  /* — Couleur principale du client (signature) — */
-  --color-primary-500: #00843D;   /* Couleur principale — header, boutons, wave */
-  --color-primary-400: #00A84F;   /* Clair — hover, accents */
-  --color-primary-600: #006B31;   /* Foncé — pressed, ombres */
-  --color-primary-700: #00521F;   /* Très foncé — secondary, depth */
-  --color-primary-50:  #E6F4EC;   /* Très pâle — fond de badge, highlight */
-  --color-primary-100: #C2E5CF;   /* Pâle — bordures légères */
-  --color-primary-200: #85CAA0;   /* Moyen-pâle */
-  --color-primary-300: #47B072;   /* Médium */
+  /* — Couleur principale du client (signature officielle) — */
+  --color-primary-500: #008056;   /* Couleur officielle Synapse S2Q */
+  --color-primary-400: #00A36E;   /* Clair — hover, accents */
+  --color-primary-600: #006645;   /* Foncé — pressed, ombres */
+  --color-primary-700: #004D34;   /* Très foncé — secondary, depth */
+  --color-primary-50:  #E6F5F0;   /* Très pâle — fond de badge, icônes secondaires */
+  --color-primary-100: #CCEAE0;   /* Pâle — bordures légères */
+  --color-primary-200: #99D5C1;   /* Moyen-pâle */
+  --color-primary-300: #66C0A3;   /* Médium */
 
   /* — Neutrals / Gris du site — */
   --color-surface-white:   #FFFFFF;   /* Corps blanc principal */
@@ -43,8 +43,8 @@
   --color-text-inverse:   #FFFFFF;   /* Texte sur fond vert / sombre */
 
   /* — Feedback / États — */
-  --color-success:        #00843D;   /* Succès = couleur primaire client */
-  --color-success-light:  #E6F4EC;
+  --color-success:        #008056;   /* Succès = couleur primaire client */
+  --color-success-light:  #E6F5F0;
   --color-warning:        #F59E0B;   /* Avertissement ambre */
   --color-warning-light:  #FEF3C7;
   --color-error:          #DC2626;   /* Erreur rouge */
@@ -55,7 +55,7 @@
   /* — Bordures — */
   --color-border-light:   #E5E7EB;   /* Bordure standard */
   --color-border-medium:  #D1D5DB;   /* Bordure plus visible */
-  --color-border-focus:   #00843D;   /* Outline focus = couleur primaire client */
+  --color-border-focus:   #008056;   /* Outline focus = couleur primaire client */
 
   /* --------------------------------------------------------------------------
      3. TAILLES DE TEXTE — Échelle typographique harmonieuse

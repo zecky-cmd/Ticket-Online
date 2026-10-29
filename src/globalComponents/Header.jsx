@@ -1,28 +1,40 @@
+import React from 'react';
 import HeaderBrand from './header/HeaderBrand';
 import HeaderContact from './header/HeaderContact';
 import HeaderThemePicker from './header/HeaderThemePicker';
 import { THEMES } from '../theme/themes';
 
+/**
+ * Composant Header (En-tête de page)
+ * 
+ * Fidèle à 100% à la maquette :
+ * - Fond vert officiel primary (#008056)
+ * - Identité Synapse S2Q à gauche
+ * - Pilule d'assistance téléphonique à droite
+ * - Sélecteur de thème discret pour les démos multi-clients
+ */
 export default function Header({
   theme,
   currentThemeKey = 'vertBlanc',
   onThemeChange,
   themes = THEMES,
-  // Propriétés de marque directes ou groupées
   logo,
-  abbreviation,
-  definition,
+  abbreviation = 'Synapse',
+  definition = 'S2Q · TICKETS EN LIGNE',
   tag,
   brandConfig,
   contactConfig,
   onLogoClick
 }) {
-  const primaryColor = theme?.colors?.primary;
+  const primaryColor = theme?.colors?.primary || '#008056';
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Identité / Logo */}
+    <header 
+      className="sticky top-0 z-40 text-white shadow-2xs transition-colors duration-300"
+      style={{ backgroundColor: primaryColor }}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between gap-3">
+        {/* Identité de Marque Gauche (Synapse) */}
         <HeaderBrand
           logo={logo}
           abbreviation={abbreviation}
@@ -33,8 +45,8 @@ export default function Header({
           {...brandConfig}
         />
 
-        {/* Actions & Infos à droite */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* Zone droite : Pilule d'assistance téléphonique + Switcher thème */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <HeaderContact {...contactConfig} />
 
           <HeaderThemePicker
