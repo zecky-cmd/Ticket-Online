@@ -19,7 +19,7 @@ export { THEMES, SLIDES, AGENCIES };
  * Screen Principal : Portail Client En Ligne (S2Q)
  * 
  * Encapsule l'ensemble de la page d'accueil en ligne :
- * - Carrousel promotionnel (Hero)
+ * - Carrousel promotionnel (Carousel)
  * - Raccourcis des services (Ticket, Satisfaction, Agences)
  * - Modales / Bottom Sheets tactiles
  */
