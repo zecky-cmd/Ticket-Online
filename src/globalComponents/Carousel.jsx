@@ -1,6 +1,5 @@
 import { ChevronLeft, ChevronRight, Sparkles, ArrowRight, ExternalLink } from 'lucide-react';
 import { SLIDES } from '../mocks/slidesMock';
-import Link from './ui/Link';
 
 // Normalisation des chemins d'images (gère "public/...", "/...", URLs externes)
 const getValidImageUrl = (src) => {
@@ -25,38 +24,13 @@ export default function Carousel({
   handlePrevSlide,
   handleNextSlide,
   setIsPaused,
-  // Props pour la gestion des liens & boutons
-  slideLinks, // Objet ou fonction fournissant des liens optionnels par slide : { [slideId]: 'https://...' }
-  onSlideAction, // Callback au clic sur le bouton d'action du slide
-  defaultButtonText = "En savoir plus",
-  // Options d'affichage
-  showSlideText = true, // Affichage discret du texte si renseigné
+
   aspectRatio = "aspect-[21/9] sm:aspect-[16/5] md:aspect-[4/1] min-h-[220px] max-h-[480px]",
   imageFit = "cover" // "cover" ou "contain" pour préserver le ratio natif sans déformation
 }) {
-  const currentSlideData = slides[currentSlide] || slides[0];
+  // const currentSlideData = slides[currentSlide] || slides[0];
 
   // Résolution du lien rattaché à la slide active (soit dans slide.link, soit via la prop slideLinks)
-  const resolvedLink =
-    currentSlideData?.link ||
-    currentSlideData?.url ||
-    (typeof slideLinks === 'function'
-      ? slideLinks(currentSlideData, currentSlide)
-      : slideLinks?.[currentSlideData?.id] || slideLinks?.[currentSlide]);
-
-  const buttonLabel =
-    currentSlideData?.linkText ||
-    currentSlideData?.buttonText ||
-    defaultButtonText;
-
-  const isExternal =
-    resolvedLink && (resolvedLink.startsWith('http://') || resolvedLink.startsWith('https://'));
-
-  const handleButtonClick = (e) => {
-    if (onSlideAction) {
-      onSlideAction(currentSlideData, currentSlide, e);
-    }
-  };
 
   return (
     <div
@@ -106,44 +80,6 @@ export default function Carousel({
         <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
       </button>
 
-      {/* Bouton d'action si l'image est rattachée à un lien */}
-      {resolvedLink && (
-        <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20">
-          <Link
-            to={resolvedLink}
-            onClick={handleButtonClick}
-            className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl active:scale-95 focus:outline-hidden cursor-pointer group backdrop-blur-xs"
-            style={{ backgroundColor: theme.colors.primary }}
-          >
-            <span>{buttonLabel}</span>
-            {isExternal ? (
-              <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            ) : (
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            )}
-          </Link>
-        </div>
-      )}
-
-      {/* Légende textuelle discrète en bas à gauche (uniquement si demandée et renseignée) */}
-      {showSlideText && (currentSlideData?.title || currentSlideData?.tag) && (
-        <div className="hidden sm:flex absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 max-w-sm md:max-w-md bg-slate-950/75 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-white/10 text-white shadow-xl flex-col items-start pointer-events-none">
-          {currentSlideData.tag && (
-            <span
-              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider mb-1.5"
-              style={{ backgroundColor: theme.colors.primary }}
-            >
-              <Sparkles className="w-3 h-3 text-white" />
-              {currentSlideData.tag}
-            </span>
-          )}
-          {currentSlideData.title && (
-            <h3 className="text-xs sm:text-sm md:text-base font-bold text-white leading-snug line-clamp-2">
-              {currentSlideData.title}
-            </h3>
-          )}
-        </div>
-      )}
 
       {/* Indicateurs (Dots) du carrousel au centre */}
       <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
