@@ -132,15 +132,17 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
           </button>
         </div>
 
-        {/* ── Vue Carte — prend tout l'espace, Leaflet gère son affichage ── */}
+        {/* ── Vue Carte — prend tout l'espace, avec marge intérieure ────── */}
         {activeTab === 'map' && (
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden p-3">
+            <div className="w-full h-full rounded-2xl overflow-hidden shadow-sm border border-slate-200">
             <AgencyMapView
               agencies={filteredAgencies}
               selectedAgency={selectedAgency}
               onSelectAgency={handleSelectOnMap}
               locateTrigger={locateTrigger}
             />
+            </div>
           </div>
         )}
 
