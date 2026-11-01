@@ -37,7 +37,7 @@ export default function Button({
   }[size] || 'py-3 px-5 text-sm rounded-2xl gap-2';
 
   // Styles de variantes
-  let variantStyles = '';
+  let variantStyles;
   let inlineStyle = {};
 
   switch (variant) {

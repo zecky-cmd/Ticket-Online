@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Composant Section Universel & Paramétrable
  * 

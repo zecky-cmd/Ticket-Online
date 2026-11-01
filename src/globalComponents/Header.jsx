@@ -1,8 +1,6 @@
-import React from 'react';
 import HeaderBrand from './header/HeaderBrand';
 import HeaderContact from './header/HeaderContact';
-import HeaderThemePicker from './header/HeaderThemePicker';
-import { THEMES } from '../theme/themes';
+// import HeaderThemePicker from './header/HeaderThemePicker';
 
 /**
  * Composant Header (En-tête de page)
@@ -15,9 +13,6 @@ import { THEMES } from '../theme/themes';
  */
 export default function Header({
   theme,
-  currentThemeKey = 'vertBlanc',
-  onThemeChange,
-  themes = THEMES,
   logo,
   abbreviation = 'Synapse',
   definition = 'S2Q · TICKETS EN LIGNE',

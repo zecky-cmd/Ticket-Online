@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, MapPin, Clock } from 'lucide-react';
 
 /**

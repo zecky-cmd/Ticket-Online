@@ -1,4 +1,3 @@
-import React from 'react';
 import { Phone, ArrowRight } from 'lucide-react';
 import Link from '../ui/Link';
 

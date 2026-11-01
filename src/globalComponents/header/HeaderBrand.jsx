@@ -22,7 +22,6 @@ export default function HeaderBrand({
   abbreviation = 'Synapse',
   definition = 'S2Q · TICKETS EN LIGNE',
   tag,
-  primaryColor = '#008056',
   href,
   onClick,
   className = ''

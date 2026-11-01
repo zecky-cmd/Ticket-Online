@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { SLIDES } from '../mocks/slidesMock';
 
@@ -13,7 +12,6 @@ import { SLIDES } from '../mocks/slidesMock';
  * - Hauteur calibrée pour l'équilibre zéro-scroll
  */
 export default function Carousel({
-  theme,
   slides = SLIDES,
   currentSlide = 0,
   setCurrentSlide,

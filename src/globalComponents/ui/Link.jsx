@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Composant Link Universel & Sécurisé (Single Page Application Friendly)
  * 

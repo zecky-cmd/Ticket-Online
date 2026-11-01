@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Composant WelcomeBanner (Zone d'accroche principale)
  * 
@@ -10,7 +8,6 @@ import React from 'react';
  * - Espacements calibrés pour aérer l'interface
  */
 export default function WelcomeBanner({
-  tag = 'VOTRE ACCUEIL, EN PLUS SIMPLE',
   title = "L'agence, sans l'attente.",
   subtitle = 'Préparez votre visite, trouvez une agence ou partagez votre expérience en quelques instants.',
   className = ''

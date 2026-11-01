@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ticket, X, AlertCircle } from 'lucide-react';
 import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
@@ -17,19 +17,13 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const reduxSelectedAgency = useSelector((state) => state.agency.selectedAgency);
 
   const [step, setStep] = useState(1);
-  const [agency, setAgency] = useState(agencies[0]?.name || 'Agence Centrale - Plateau');
+  const [agency, setAgency] = useState(reduxSelectedAgency?.name ?? (agencies[0]?.name || 'Agence Centrale - Plateau'));
   const [serviceCategory, setServiceCategory] = useState('reclamation');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [createdTicket, setCreatedTicket] = useState(null);
-
-  useEffect(() => {
-    if (reduxSelectedAgency?.name) {
-      setAgency(reduxSelectedAgency.name);
-    }
-  }, [reduxSelectedAgency]);
 
   if (!isOpen) return null;
 

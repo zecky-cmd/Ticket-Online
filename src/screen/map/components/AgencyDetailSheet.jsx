@@ -1,4 +1,3 @@
-import React from 'react';
 import { MapPin, Phone, Compass, Ticket } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
 import Link from '../../../globalComponents/ui/Link';

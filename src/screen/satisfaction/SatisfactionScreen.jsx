@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MessageSquareHeart, X } from 'lucide-react';
 import { satisfactionService } from '../../services/satisfactionService';
 import SatisfactionForm from './components/SatisfactionForm';

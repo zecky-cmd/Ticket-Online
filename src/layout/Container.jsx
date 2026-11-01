@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Composant Container de mise en page
  * 
