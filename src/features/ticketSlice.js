@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  currentTicket: null,
-  ticketHistory: [],
+  currentTicket: /** @type {any} */ (null),
+  ticketHistory: /** @type {any[]} */ ([]),
   isLoading: false,
 };
 

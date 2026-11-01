@@ -23,7 +23,5 @@ s2qApiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Re-export des services métiers
-export { agencyService } from './agencyService';
-export { ticketService } from './ticketService';
-export { satisfactionService } from './satisfactionService';
+// Instance configurée exportée
+export default s2qApiClient;

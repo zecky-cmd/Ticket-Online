@@ -1,20 +1,21 @@
-import React from 'react';
+import { isValidElement } from 'react';
 import { Loader2 } from 'lucide-react';
 
 /**
  * Composant Button Universel & Paramétrable
  * 
- * @param {'primary'|'secondary'|'outline'|'ghost'|'danger'} variant - Style visuel
- * @param {'sm'|'md'|'lg'} size - Taille du bouton ('sm', 'md', 'lg')
- * @param {boolean} isLoading - État de chargement avec animation spinner
- * @param {boolean} disabled - Désactivation du bouton
- * @param {React.ReactNode} iconStart - Icône affichée avant le texte
- * @param {React.ReactNode} iconEnd - Icône affichée après le texte
- * @param {string} primaryColor - Couleur dynamique du thème pour la variante 'primary'
- * @param {string} type - 'button' | 'submit' | 'reset'
- * @param {function} onClick - Événement au clic
- * @param {string} className - Classes CSS additionnelles
- * @param {React.ReactNode} children - Texte ou contenu du bouton
+ * @param {Object} props
+ * @param {'primary'|'secondary'|'outline'|'ghost'|'danger'} [props.variant] - Style visuel
+ * @param {'sm'|'md'|'lg'} [props.size] - Taille du bouton ('sm', 'md', 'lg')
+ * @param {boolean} [props.isLoading] - État de chargement avec animation spinner
+ * @param {boolean} [props.disabled] - Désactivation du bouton
+ * @param {any} [props.iconStart] - Icône affichée avant le texte
+ * @param {any} [props.iconEnd] - Icône affichée après le texte
+ * @param {string} [props.primaryColor] - Couleur dynamique du thème pour la variante 'primary'
+ * @param {'button'|'submit'|'reset'} [props.type] - Type de bouton
+ * @param {any} [props.onClick] - Événement au clic
+ * @param {string} [props.className] - Classes CSS additionnelles
+ * @param {any} [props.children] - Texte ou contenu du bouton
  */
 export default function Button({
   variant = 'primary',
@@ -62,9 +63,9 @@ export default function Button({
       inlineStyle = { backgroundColor: primaryColor };
   }
 
-  const renderIcon = (IconComponent) => {
+  const renderIcon = (/** @type {any} */ IconComponent) => {
     if (!IconComponent) return null;
-    if (React.isValidElement(IconComponent)) return IconComponent;
+    if (isValidElement(IconComponent)) return IconComponent;
     if (typeof IconComponent === 'function') {
       return <IconComponent className="w-4 h-4 flex-shrink-0" />;
     }
