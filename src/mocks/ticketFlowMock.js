@@ -1,5 +1,5 @@
 // ============================================================================
-// DONNÉES DU FLUX DE PRISE DE TICKET S2Q (SERVICES, PRESTATIONS, CRÉNEAUX)
+// DONNÉES DU FLUX DE PRISE DE TICKET S2Q (SERVICES, PRESTATIONS, GESTIONNAIRES, CRÉNEAUX)
 // ============================================================================
 
 export const SERVICES_LIST = [
@@ -7,6 +7,7 @@ export const SERVICES_LIST = [
     id: 'caisse',
     name: 'Opérations de Caisse & Règlements',
     shortName: 'Caisse',
+    serviceType: 'caisse', // 'caisse' | 'gestionnaire'
     codePrefix: 'CAI',
     description: 'Versements, retraits, change, remises et encaissements de chèques.',
     avgDuration: '10 min',
@@ -22,6 +23,7 @@ export const SERVICES_LIST = [
     id: 'conseil',
     name: 'Conseil Particuliers & Comptes',
     shortName: 'Conseil',
+    serviceType: 'gestionnaire',
     codePrefix: 'CPT',
     description: 'Ouverture de compte, crédits personnels, épargne et gestion quotidienne.',
     avgDuration: '25 min',
@@ -37,6 +39,7 @@ export const SERVICES_LIST = [
     id: 'entreprises',
     name: 'Espace Professionnels & Entreprises',
     shortName: 'Entreprises',
+    serviceType: 'gestionnaire',
     codePrefix: 'PRO',
     description: 'Comptes pro, financement d’exploitation, TPE et services corporatifs.',
     avgDuration: '30 min',
@@ -51,6 +54,7 @@ export const SERVICES_LIST = [
     id: 'reclamation',
     name: 'Réclamations & Cartes Bancaires (SAV)',
     shortName: 'SAV / Réclamations',
+    serviceType: 'gestionnaire',
     codePrefix: 'REC',
     description: 'Litiges opérations, carte avalée/bloquée, contestation de débit.',
     avgDuration: '15 min',
@@ -62,6 +66,52 @@ export const SERVICES_LIST = [
     ],
   },
 ];
+
+// Gestionnaires par agence
+/** @type {Record<number, Array<{ id: string, name: string, role: string, waitTime: string }>>} */
+export const GESTIONNAIRES_BY_AGENCY = {
+  1: [
+    { id: 'g-101', name: 'Awa Coulibaly', role: 'Conseillère Particuliers', waitTime: 'Rapide' },
+    { id: 'g-102', name: 'Jean-Marc Koffi', role: 'Chargé d’Affaires PME & Pros', waitTime: 'Modéré' },
+    { id: 'g-103', name: 'Kouamé Béranger', role: 'Gestionnaire de Patrimoine', waitTime: 'Disponible' },
+  ],
+  2: [
+    { id: 'g-201', name: 'Sandrine Touré', role: 'Conseillère Particuliers', waitTime: 'Rapide' },
+    { id: 'g-202', name: 'Yves-Alain Konan', role: 'Chargé d’Affaires Entreprises', waitTime: 'Disponible' },
+  ],
+  3: [
+    { id: 'g-301', name: 'Marcelle N’Guessan', role: 'Conseillère Clientèle Premium', waitTime: 'Disponible' },
+    { id: 'g-302', name: 'David Bakayoko', role: 'Conseiller Professionnels', waitTime: 'Modéré' },
+  ],
+  4: [
+    { id: 'g-401', name: 'Estelle Dago', role: 'Conseillère Particuliers', waitTime: 'Disponible' },
+    { id: 'g-402', name: 'Stéphane Bamba', role: 'Conseiller Clientèle', waitTime: 'Rapide' },
+  ],
+  5: [
+    { id: 'g-501', name: 'Fatou Diomandé', role: 'Conseillère Particuliers & TPE', waitTime: 'Disponible' },
+    { id: 'g-502', name: 'Moussa Fofana', role: 'Conseiller Commercial', waitTime: 'Rapide' },
+  ],
+};
+
+/**
+ * Récupère les gestionnaires disponibles pour une agence avec l'option aléatoire / auto
+ * @param {number|string} agencyId 
+ * @returns {Array<{ id: string, name: string, role: string, isAuto?: boolean }>}
+ */
+export function getGestionnairesForAgency(agencyId) {
+  const numericId = Number(agencyId) || 1;
+  const list = GESTIONNAIRES_BY_AGENCY[numericId] || GESTIONNAIRES_BY_AGENCY[1];
+  
+  return [
+    {
+      id: 'auto',
+      name: 'Sans préférence (Premier gestionnaire disponible)',
+      role: 'Attribution automatique pour un passage plus rapide',
+      isAuto: true,
+    },
+    ...list,
+  ];
+}
 
 // Créneaux horaires types par période
 export const AVAILABLE_DAYS = [
@@ -92,4 +142,3 @@ export const TIME_SLOTS = [
   { time: '15:30', status: 'available' },
   { time: '16:00', status: 'available' },
 ];
-

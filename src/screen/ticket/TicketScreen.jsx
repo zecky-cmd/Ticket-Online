@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AlertCircle, X } from 'lucide-react';
 import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
-import { SERVICES_LIST, AVAILABLE_DAYS, TIME_SLOTS } from '../../mocks/ticketFlowMock';
+import { SERVICES_LIST, AVAILABLE_DAYS, TIME_SLOTS, getGestionnairesForAgency } from '../../mocks/ticketFlowMock';
 import { ticketService } from '../../services/ticketService';
 import { setCreatedTicket as setReduxTicket } from '../../features/ticketSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
@@ -16,8 +16,8 @@ import StepCustomerInfo from './components/StepCustomerInfo';
 import TicketReceipt from './components/TicketReceipt';
 
 /**
- * Screen / Modal Prise de Ticket Multi-Étapes S2Q
- * Flux complet : Agence -> Service -> Prestation -> Créneau -> Vos infos -> Reçu
+ * Screen / Modal Prise de Ticket Multi-Étapes S2Q (5 Étapes)
+ * Flux : Agence -> Service -> Prestation & Gestionnaire -> Créneau -> Vos infos & Statut Client -> Reçu
  * 
  * @param {Object} props
  * @param {boolean} props.isOpen
@@ -29,32 +29,38 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const dispatch = useDispatch();
   const reduxSelectedAgency = useSelector((state) => /** @type {any} */ (state)?.agency?.selectedAgency);
 
-  // État de navigation (1: Agence, 2: Service, 3: Prestation, 4: Créneau, 5: Vos infos, 6: Reçu)
+  // Navigation (1: Agence, 2: Service, 3: Prestation, 4: Créneau, 5: Vos infos, 6: Reçu)
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Données de formulaire (Typage explicite sans cascading effect)
+  // 1. Agence
   const [selectedAgencyIdOverride, setSelectedAgencyIdOverride] = useState(/** @type {number | null} */ (null));
   const selectedAgencyId = selectedAgencyIdOverride ?? reduxSelectedAgency?.id ?? agencies[0]?.id ?? 1;
 
+  // 2. Service & 3. Prestation + Gestionnaire
   const [selectedServiceId, setSelectedServiceId] = useState(SERVICES_LIST[0].id);
   const [selectedPrestationId, setSelectedPrestationId] = useState(SERVICES_LIST[0].prestations[0].id);
+  const [selectedGestionnaireId, setSelectedGestionnaireId] = useState('auto');
 
-  // Changement de service avec réinitialisation immédiate de la prestation
+  // Changement de service avec réinitialisation immédiate de la prestation et du gestionnaire
   const handleSelectService = (/** @type {string} */ serviceId) => {
     setSelectedServiceId(serviceId);
+    setSelectedGestionnaireId('auto');
     const serviceObj = SERVICES_LIST.find((s) => s.id === serviceId);
     if (serviceObj && serviceObj.prestations && serviceObj.prestations.length > 0) {
       setSelectedPrestationId(serviceObj.prestations[0].id);
     }
   };
 
-  // Créneau
+  // 4. Créneau
   const [timeslotMode, setTimeslotMode] = useState(/** @type {'immediate' | 'scheduled'} */ ('immediate'));
   const [selectedDay, setSelectedDay] = useState('today');
   const [selectedTime, setSelectedTime] = useState('09:00');
 
-  // Coordonnées client
-  const [fullName, setFullName] = useState('');
+  // 5. Coordonnées & Statut Client (nplan.md)
+  const [isClient, setIsClient] = useState(false);
+  const [accountNumber, setAccountNumber] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
 
@@ -67,6 +73,9 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const currentAgency = agencies.find((a) => a.id === Number(selectedAgencyId)) || agencies[0];
   const currentService = SERVICES_LIST.find((s) => s.id === selectedServiceId) || SERVICES_LIST[0];
   const currentPrestation = (currentService && currentService.prestations.find((p) => p.id === selectedPrestationId)) || currentService?.prestations?.[0];
+  
+  const agencyGestionnaires = getGestionnairesForAgency(selectedAgencyId);
+  const currentGestionnaire = agencyGestionnaires.find((g) => g.id === selectedGestionnaireId) || agencyGestionnaires[0];
 
   const currentTimeslotText = timeslotMode === 'immediate'
     ? 'Passage immédiat'
@@ -76,6 +85,7 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const handleReset = () => {
     setCurrentStep(1);
     setSelectedAgencyIdOverride(null);
+    setSelectedGestionnaireId('auto');
     setCreatedTicket(null);
     setErrorMessage('');
     onClose();
@@ -87,8 +97,18 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
       e.preventDefault();
     }
 
-    if (!fullName.trim() || !phoneNumber.trim()) {
-      setErrorMessage('Veuillez renseigner votre nom complet et votre numéro de téléphone.');
+    if (!lastName.trim() || !firstName.trim()) {
+      setErrorMessage('Veuillez renseigner votre nom et vos prénoms.');
+      return;
+    }
+
+    if (!phoneNumber.trim()) {
+      setErrorMessage('Veuillez renseigner votre numéro de téléphone pour la réception du SMS.');
+      return;
+    }
+
+    if (isClient && !accountNumber.trim()) {
+      setErrorMessage('En tant que client de la banque, veuillez renseigner votre numéro de compte.');
       return;
     }
 
@@ -96,17 +116,24 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
       setIsSubmitting(true);
       setErrorMessage('');
 
+      const fullName = `${lastName.trim()} ${firstName.trim()}`;
+
       const ticketPayload = {
         agency: currentAgency,
         service: currentService,
         prestation: currentPrestation,
+        gestionnaire: currentService?.serviceType === 'gestionnaire' ? currentGestionnaire : null,
         timeslot: {
           type: timeslotMode,
           day: selectedDay,
           dayFormatted: AVAILABLE_DAYS.find((d) => d.id === selectedDay)?.label,
           time: selectedTime,
         },
-        fullName: fullName.trim(),
+        isClient,
+        accountNumber: isClient ? accountNumber.trim() : '',
+        fullName,
+        lastName: lastName.trim(),
+        firstName: firstName.trim(),
         phoneNumber: phoneNumber.trim(),
         email: email.trim(),
       };
@@ -199,13 +226,17 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
             />
           )}
 
-          {/* Étape 3 : Choix Prestation */}
+          {/* Étape 3 : Choix Prestation & Gestionnaire */}
           {currentStep === 3 && (
             <StepPrestation
               prestations={currentService?.prestations || []}
               selectedPrestationId={selectedPrestationId}
               onSelectPrestationId={(id) => setSelectedPrestationId(id)}
+              service={currentService}
               serviceName={currentService?.shortName || currentService?.name}
+              gestionnaires={agencyGestionnaires}
+              selectedGestionnaireId={selectedGestionnaireId}
+              onSelectGestionnaireId={(id) => setSelectedGestionnaireId(id)}
               onBack={() => setCurrentStep(2)}
               onNext={() => setCurrentStep(4)}
               theme={theme}
@@ -232,15 +263,22 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
           {/* Étape 5 : Coordonnées Client & Validation */}
           {currentStep === 5 && (
             <StepCustomerInfo
-              fullName={fullName}
-              setFullName={setFullName}
+              lastName={lastName}
+              setLastName={setLastName}
+              firstName={firstName}
+              setFirstName={setFirstName}
               phoneNumber={phoneNumber}
               setPhoneNumber={setPhoneNumber}
               email={email}
               setEmail={setEmail}
+              isClient={isClient}
+              setIsClient={setIsClient}
+              accountNumber={accountNumber}
+              setAccountNumber={setAccountNumber}
               agency={currentAgency}
               service={currentService}
               prestation={currentPrestation}
+              gestionnaire={currentService?.serviceType === 'gestionnaire' ? currentGestionnaire : null}
               timeslotText={currentTimeslotText}
               isSubmitting={isSubmitting}
               onSubmit={handleGenerateTicket}

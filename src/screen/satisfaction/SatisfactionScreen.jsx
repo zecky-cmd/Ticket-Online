@@ -46,12 +46,12 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
     <div className="fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all">
       {/* Conteneur Hybride : Bottom Sheet mobile / Modale centrée desktop */}
       <div className="bg-white w-full rounded-t-[32px] sm:rounded-3xl shadow-2xl sm:max-w-lg max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden border-t sm:border border-slate-100 animate-in slide-in-from-bottom duration-300 sm:zoom-in-95">
-        
+
         {/* Poignée tactile de glissement mobile */}
         <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2.5 sm:hidden flex-shrink-0" />
 
         {/* Header Modal */}
-        <div 
+        <div
           className="px-6 py-4 sm:py-5 flex items-center justify-between text-white flex-shrink-0"
           style={{ backgroundColor: theme?.colors?.primary }}
         >
@@ -64,7 +64,7 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
               <p className="text-xs text-white/85">Donnez votre avis en 30 secondes</p>
             </div>
           </div>
-          <button 
+          <button
             type="button"
             onClick={handleClose}
             className="p-2 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
@@ -75,7 +75,7 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
         </div>
 
         {/* Corps défilable */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8">
+        {/* <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8">
           {submitted ? (
             <SatisfactionSuccess theme={theme} onClose={handleClose} />
           ) : (
@@ -93,7 +93,7 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
               theme={theme}
             />
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );

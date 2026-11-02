@@ -97,10 +97,10 @@ Le parcours de prise de ticket a été refondu pour reproduire fidèlement l'en-
   * Sous-titre : `Un parcours simple pour préparer votre visite en agence.`
   * 5 barres horizontales d'avancement au-dessus des labels d'étapes :
     1. **Agence** (Sélection déroulante + récapitulatif affluence, horaires, guichets)
-    2. **Service** (Sélection déroulante des grands pôles bancaires : Caisse, Conseil, Entreprises, Réclamations)
-    3. **Prestation** (Sélection déroulante contextuelle filtrée selon le service + rappel des pièces à apporter)
+    2. **Service** (Sélection déroulante des pôles bancaires avec `serviceType: 'caisse' | 'gestionnaire'`)
+    3. **Prestation & Gestionnaire** (Sélection déroulante de la prestation + choix du conseiller/gestionnaire de l'agence ou mode aléatoire/premier disponible)
     4. **Créneau** (Choix entre passage immédiat ou rendez-vous programmé sur créneau horaire)
-    5. **Vos infos** (Saisie nom, téléphone pour SMS/suivi, email + récapitulatif compact)
+    5. **Vos infos & Statut Client** (Question *"Êtes-vous déjà client ?"* [Oui]/[Non] avec champ conditionnel *Numéro de compte*, Nom, Prénoms, Téléphone, Email + récapitulatif)
 * **Reçu Virtuel S2Q** (`TicketReceipt.jsx`) :
   * Numéro de ticket grand format généré selon la série du service (ex: `CAI-102`, `CPT-405`)
   * QR Code de scan pour validation à la borne d'accueil en agence

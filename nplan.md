@@ -1,28 +1,8 @@
 
-Je l’ai fait en CSS pur, sans SVG ni image : le cercle extérieur porte une bordure translucide et un anneau intérieur via box-shadow: inset; le point doré et son halo sont un petit élément centré avec une ombre externe. Le code actuel est dans components/dashboard/synapse-home.tsx et app/synapse-home.css.
+dans la partie vos info dans le formulaire, nous avons besoin de : son noms ,prenoms, email.
 
+- dans la conception, il y a une question qu'on pose au client de savoir s'il sont client de la banque ou c'est leur premiere fois. (cette question est: Etre vous client de la banque ? oui ou non ) si sa réponse est oui, dans le formulaire un champs numéro compte s'ajoute. 
 
-<span className="contact-mark" aria-hidden="true">
-  <span className="contact-mark__dot" />
-</span>
+- chaque service a un type (gestionnaire, caisse) pour les services de types gestionnaire, on affiche une liste des gestionnaire pour que le client puisse choisir son gestionnaire + une option ou bouton aléatoire au cas ou le client n'a pas de gestionnaire ou ne le connait pas.
 
-.contact-mark {
-  width: 47px;
-  height: 47px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 7px rgba(255, 255, 255, 0.1);
-}
-
-.contact-mark__dot {
-  display: block;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: #edb64f;
-  box-shadow: 0 0 0 7px rgba(237, 182, 79, 0.13);
-}
-
-En compact, je réduis simplement le cercle à 36px et le point à 10px.
+le flux : agence, service , prestation, .? choix du gestionnaire, être vous client, remplissage du formulaire 

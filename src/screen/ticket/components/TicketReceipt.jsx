@@ -77,6 +77,20 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
               {ticket?.serviceName}
             </b>
           </div>
+
+          {ticket?.gestionnaire && (
+            <div className="col-span-2 p-2 bg-white rounded-xl border border-slate-100 flex items-center justify-between">
+              <span className="text-slate-400 text-[10px] uppercase font-bold">Conseiller affecté</span>
+              <b className="text-slate-800 text-xs font-bold">{ticket.gestionnaire}</b>
+            </div>
+          )}
+
+          {ticket?.isClient && ticket?.accountNumber && (
+            <div className="col-span-2 p-2 bg-emerald-50/50 rounded-xl border border-emerald-100 flex items-center justify-between text-emerald-900">
+              <span className="text-[10px] uppercase font-bold">Compte client</span>
+              <b className="text-xs font-mono">{ticket.accountNumber}</b>
+            </div>
+          )}
         </div>
       </div>
 

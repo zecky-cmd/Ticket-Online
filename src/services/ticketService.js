@@ -16,8 +16,13 @@ export const ticketService = {
    * @param {any} [payload.service] - ID ou objet Service
    * @param {string} [payload.serviceCategory] - 'reclamation' | 'commercial' | 'caisse' | 'conseil' | 'entreprises'
    * @param {any} [payload.prestation] - ID ou objet Prestation
+   * @param {any} [payload.gestionnaire] - Objet Gestionnaire sélectionné
    * @param {any} [payload.timeslot] - { type: 'immediate' | 'scheduled', day, time, dayFormatted }
+   * @param {boolean} [payload.isClient] - Client existant ou non
+   * @param {string} [payload.accountNumber] - Numéro de compte client
    * @param {string} [payload.fullName] - Nom complet du client
+   * @param {string} [payload.lastName] - Nom de famille
+   * @param {string} [payload.firstName] - Prénoms
    * @param {string} [payload.phoneNumber] - Téléphone du client
    * @param {string} [payload.email] - Email du client
    * @returns {Promise<any>} Fiche ticket créée
@@ -28,11 +33,18 @@ export const ticketService = {
       service,
       serviceCategory,
       prestation,
+      gestionnaire,
       timeslot,
+      isClient = false,
+      accountNumber = '',
       fullName,
+      lastName,
+      firstName,
       phoneNumber,
       email,
     } = payload;
+
+    const resolvedFullName = fullName || [lastName, firstName].filter(Boolean).join(' ') || 'Client';
 
     if (!USE_MOCK) {
       // Appel API réel vers le backend S2Q
@@ -40,8 +52,13 @@ export const ticketService = {
         agency,
         service: service || serviceCategory,
         prestation,
+        gestionnaire,
         timeslot,
-        fullName,
+        isClient,
+        accountNumber,
+        fullName: resolvedFullName,
+        lastName,
+        firstName,
         phoneNumber,
         email,
       });
@@ -87,6 +104,11 @@ export const ticketService = {
       ? `${timeslot.dayFormatted || 'Aujourd’hui'} à ${timeslot.time}`
       : 'Passage immédiat';
 
+    const gestionnaireObj = typeof gestionnaire === 'object' && gestionnaire !== null ? gestionnaire : null;
+    const gestionnaireName = gestionnaireObj?.isAuto
+      ? 'Premier disponible (Attribution auto)'
+      : gestionnaireObj?.name || 'Guichetier S2Q';
+
     return {
       id: `TKT-${Date.now()}`,
       code: `${prefix}-${randNum}`,
@@ -94,9 +116,12 @@ export const ticketService = {
       serviceCategory: serviceCat,
       serviceName: sName,
       prestationName: pName,
+      gestionnaire: gestionnaireName,
+      isClient: Boolean(isClient),
+      accountNumber: isClient ? accountNumber : '',
       timeslot: timeslot || { type: 'immediate', label: 'Immédiat' },
       appointmentTime,
-      fullName: fullName || '',
+      fullName: resolvedFullName,
       phoneNumber: phoneNumber || '',
       email: email || '',
       date: dateNow.toLocaleDateString('fr-FR'),

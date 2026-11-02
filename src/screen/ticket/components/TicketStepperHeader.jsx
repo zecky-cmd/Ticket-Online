@@ -22,10 +22,10 @@ export default function TicketStepperHeader({ currentStep, onStepClick, onClose 
       {/* Ligne haute : Eyebrow + Bouton Fermer */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[#008056]/90">
+          <p className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-slate-900">
             Votre rendez-vous en quelques étapes
           </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#008056] tracking-tight mt-1">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
             Prendre un ticket
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">

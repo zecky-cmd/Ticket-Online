@@ -196,9 +196,8 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
                 selectedAgency={selectedAgency}
                 theme={theme}
                 onTakeTicket={(agency) => {
-                  handleTakeTicket(agency);
                   setShowDetail(false);
-                  onClose();
+                  handleTakeTicket(agency); // dispatch setReduxAgency + openModal('ticket') — NE PAS appeler onClose() ici
                 }}
               />
             </div>
