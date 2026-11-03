@@ -1,5 +1,6 @@
-import { Building2, MapPin, Clock, Users, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Users, ArrowRight } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
+import SearchSelect from '../../../globalComponents/ui/SearchSelect';
 
 /**
  * Étape 1 : Choix de l'agence (Liste déroulante)
@@ -18,38 +19,31 @@ export default function StepAgency({
   onNext,
   theme,
 }) {
-  const currentAgency = agencies.find((a) => a.id === Number(selectedAgencyId)) || agencies[0];
+  const currentAgency = agencies.find((a) => a.id === Number(selectedAgencyId)) || null;
 
   /** @type {Record<string, { label: string; bg: string; text: string; border: string }>} */
   const badges = {
-    fluide: { label: 'Fluide (< 10 min)', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-    moderee: { label: 'Modérée (10-25 min)', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
-    saturee: { label: 'Saturée (> 25 min)', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
+    fluide:  { label: 'Fluide (< 10 min)',     bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+    moderee: { label: 'Modérée (10-25 min)',    bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
+    saturee: { label: 'Saturée (> 25 min)',     bg: 'bg-rose-50',    text: 'text-rose-700',    border: 'border-rose-200'    },
   };
-  const affluenceKey = currentAgency?.affluence || 'fluide';
+  const affluenceKey   = currentAgency?.affluence || 'fluide';
   const affluenceBadge = badges[affluenceKey] || badges.fluide;
 
   return (
     <div className="space-y-5 animate-in fade-in-50 duration-200">
       <div>
-        <label htmlFor="agency-select" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-          1. Sélectionnez votre agence bancaire
-        </label>
-        <div className="relative">
-          <Building2 className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <select
-            id="agency-select"
-            value={currentAgency?.id || ''}
-            onChange={(e) => onSelectAgencyId(Number(e.target.value))}
-            className="w-full pl-11 pr-10 min-h-[52px] bg-slate-50 hover:bg-slate-100/80 border border-slate-200 focus:border-[#008056] rounded-2xl text-base sm:text-sm text-slate-900 font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 cursor-pointer transition-colors shadow-2xs"
-          >
-            {agencies.map((agency) => (
-              <option key={agency.id} value={agency.id}>
-                {agency.name} — {agency.district || agency.commune} ({agency.currentWaitTime} d'attente)
-              </option>
-            ))}
-          </select>
-        </div>
+        <SearchSelect
+          id="agency-select"
+          label="1. Sélectionnez votre agence bancaire"
+          placeholder="Sélectionner une agence…"
+          options={agencies}
+          valueKey="id"
+          labelKey="name"
+          renderLabel={(a) => `${a.name} — ${a.district || a.commune} (${a.currentWaitTime} d'attente)`}
+          value={currentAgency?.id ?? null}
+          onChange={(id) => id !== null && onSelectAgencyId(Number(id))}
+        />
       </div>
 
       {/* Fiche récapitulative dynamique de l'agence sélectionnée */}
@@ -103,7 +97,8 @@ export default function StepAgency({
           primaryColor={theme?.colors?.primary || '#008056'}
           iconEnd={ArrowRight}
           onClick={onNext}
-          className="w-full min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
+          disabled={!currentAgency}
+          className={`w-full min-h-[50px] font-bold text-sm sm:text-base ${currentAgency ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
         >
           Valider l'agence et continuer
         </Button>

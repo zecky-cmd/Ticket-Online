@@ -9,12 +9,12 @@ import SatisfactionSuccess from './components/SatisfactionSuccess';
  * Mode Mobile Optimal : Bottom Sheet fluide sur mobile avec poignée tactile.
  */
 export default function SatisfactionScreen({ isOpen, onClose, theme }) {
-  const [rating, setRating] = useState(5);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [criterion, setCriterion] = useState('accueil');
-  const [comment, setComment] = useState('');
+  const [rating, setRating]             = useState(5);
+  const [hoverRating, setHoverRating]   = useState(0);
+  const [criterion, setCriterion]       = useState('accueil');
+  const [comment, setComment]           = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted]       = useState(false);
 
   if (!isOpen) return null;
 
@@ -22,11 +22,7 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
     e.preventDefault();
     try {
       setIsSubmitting(true);
-      await satisfactionService.submitSatisfaction({
-        rating,
-        criterion,
-        comment,
-      });
+      await satisfactionService.submitSatisfaction({ rating, criterion, comment });
       setSubmitted(true);
     } catch (err) {
       console.error('Erreur soumission satisfaction:', err);
@@ -75,7 +71,7 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
         </div>
 
         {/* Corps défilable */}
-        {/* <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8">
           {submitted ? (
             <SatisfactionSuccess theme={theme} onClose={handleClose} />
           ) : (
@@ -93,7 +89,7 @@ export default function SatisfactionScreen({ isOpen, onClose, theme }) {
               theme={theme}
             />
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   );

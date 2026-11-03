@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Link from '../ui/Link';
 
 /**
- * Composant HeaderBrand (Identité de Marque)
+ * Composant HeaderBrand 
  * 
- * Affichage haute fidélité conforme à la maquette :
+
  * - Carré arrondi vert contrasté avec lettre 'S' (ou logo personnalisé)
  * - Titre 'Synapse' en gras blanc
  * - Sous-titre 'S2Q · TICKETS EN LIGNE'
@@ -20,7 +20,7 @@ export default function HeaderBrand({
   logo,
   logoAlt,
   abbreviation = 'Synapse',
-  definition = 'S2Q · TICKETS EN LIGNE',
+  definition = '',
   tag,
   href,
   onClick,

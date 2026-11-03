@@ -1,5 +1,6 @@
-import { Briefcase, Clock, Tag, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Clock, Tag, ArrowRight, ArrowLeft } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
+import SearchSelect from '../../../globalComponents/ui/SearchSelect';
 
 /**
  * Étape 2 : Choix du service (Liste déroulante)
@@ -25,24 +26,17 @@ export default function StepService({
   return (
     <div className="space-y-5 animate-in fade-in-50 duration-200">
       <div>
-        <label htmlFor="service-select" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-          2. Sélectionnez le service souhaité
-        </label>
-        <div className="relative">
-          <Briefcase className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <select
-            id="service-select"
-            value={currentService?.id || ''}
-            onChange={(e) => onSelectServiceId(e.target.value)}
-            className="w-full pl-11 pr-10 min-h-[52px] bg-slate-50 hover:bg-slate-100/80 border border-slate-200 focus:border-[#008056] rounded-2xl text-base sm:text-sm text-slate-900 font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 cursor-pointer transition-colors shadow-2xs"
-          >
-            {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.name} (Attente moy. ~{service.avgDuration})
-              </option>
-            ))}
-          </select>
-        </div>
+        <SearchSelect
+          id="service-select"
+          label="2. Sélectionnez le service souhaité"
+          placeholder="Sélectionner un service…"
+          options={services}
+          valueKey="id"
+          labelKey="name"
+          renderLabel={(s) => `${s.name} (Attente moy. ~${s.avgDuration})`}
+          value={currentService?.id ?? null}
+          onChange={(id) => id !== null && onSelectServiceId(id)}
+        />
       </div>
 
       {/* Fiche récapitulative du service */}

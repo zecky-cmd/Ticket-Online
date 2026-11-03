@@ -32,9 +32,9 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   // Navigation (1: Agence, 2: Service, 3: Prestation, 4: Créneau, 5: Vos infos, 6: Reçu)
   const [currentStep, setCurrentStep] = useState(1);
 
-  // 1. Agence
+  // 1. Agence — null = aucune sélection par défaut (placeholder affiché)
   const [selectedAgencyIdOverride, setSelectedAgencyIdOverride] = useState(/** @type {number | null} */ (null));
-  const selectedAgencyId = selectedAgencyIdOverride ?? reduxSelectedAgency?.id ?? agencies[0]?.id ?? 1;
+  const selectedAgencyId = selectedAgencyIdOverride ?? reduxSelectedAgency?.id ?? null;
 
   // 2. Service & 3. Prestation + Gestionnaire
   const [selectedServiceId, setSelectedServiceId] = useState(SERVICES_LIST[0].id);
@@ -56,7 +56,7 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const [selectedDay, setSelectedDay] = useState('today');
   const [selectedTime, setSelectedTime] = useState('09:00');
 
-  // 5. Coordonnées & Statut Client (nplan.md)
+  // 5. Coordonnées & Statut Client (nplan.md)CL
   const [isClient, setIsClient] = useState(false);
   const [accountNumber, setAccountNumber] = useState('');
   const [lastName, setLastName] = useState('');

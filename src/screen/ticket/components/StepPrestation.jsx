@@ -1,5 +1,6 @@
-import { Layers, FileText, CheckCircle2, UserCheck, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import { FileText, CheckCircle2, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
+import SearchSelect from '../../../globalComponents/ui/SearchSelect';
 
 /**
  * Étape 3 : Choix de la prestation et du gestionnaire (si service de type gestionnaire)
@@ -47,21 +48,15 @@ export default function StepPrestation({
           </span>
         </div>
 
-        <div className="relative">
-          <Layers className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <select
-            id="prestation-select"
-            value={currentPrestation?.id || ''}
-            onChange={(e) => onSelectPrestationId(e.target.value)}
-            className="w-full pl-11 pr-10 min-h-[50px] bg-slate-50 hover:bg-slate-100/80 border border-slate-200 focus:border-[#008056] rounded-2xl text-base sm:text-sm text-slate-900 font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 cursor-pointer transition-colors shadow-2xs"
-          >
-            {prestations.map((prestation) => (
-              <option key={prestation.id} value={prestation.id}>
-                {prestation.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <SearchSelect
+          id="prestation-select"
+          placeholder="Sélectionner une opération…"
+          options={prestations}
+          valueKey="id"
+          labelKey="name"
+          value={currentPrestation?.id ?? null}
+          onChange={(id) => id !== null && onSelectPrestationId(id)}
+        />
       </div>
 
       {/* 2. Choix du gestionnaire (affiché uniquement pour les services de type gestionnaire) */}
@@ -83,21 +78,16 @@ export default function StepPrestation({
             )}
           </div>
 
-          <div className="relative">
-            <UserCheck className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <select
-              id="gestionnaire-select"
-              value={selectedGestionnaireId}
-              onChange={(e) => onSelectGestionnaireId?.(e.target.value)}
-              className="w-full pl-11 pr-10 min-h-[48px] bg-white border border-slate-200 focus:border-[#008056] rounded-xl text-xs sm:text-sm text-slate-800 font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 cursor-pointer shadow-2xs"
-            >
-              {gestionnaires.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.isAuto ? `🎲 ${g.name}` : `${g.name} (${g.role})`}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SearchSelect
+            id="gestionnaire-select"
+            placeholder="Sélectionner un conseiller…"
+            options={gestionnaires}
+            valueKey="id"
+            labelKey="name"
+            renderLabel={(g) => g.isAuto ? `🎲 ${g.name}` : `${g.name} (${g.role})`}
+            value={selectedGestionnaireId}
+            onChange={(id) => id !== null && onSelectGestionnaireId?.(id)}
+          />
 
           <p className="text-[11px] text-slate-500 pl-1 leading-snug">
             {currentGestionnaire?.isAuto

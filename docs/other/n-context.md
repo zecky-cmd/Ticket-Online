@@ -197,7 +197,6 @@ Il faut éviter de créer un deuxième ticket par erreur lorsque le client récu
 
 Le ticket suit ensuite le processus de gestion de S2Q. Il doit être visible dans les interfaces concernées et pouvoir être appelé par un agent conformément aux règles de l'agence.
 
-Le comportement exact en cas d'arrivée anticipée, de retard ou d'absence doit être défini par les règles métier du projet.
 
 ## 5. La carte des agences et l'affluence
 
@@ -303,6 +302,3 @@ Ne suppose pas qu'une fonctionnalité existe parce qu'elle est décrite dans ce 
 
 Le module Ticket en ligne doit permettre au client de préparer sa visite, de choisir une agence et un créneau réellement disponible, de recevoir une confirmation exploitable et de récupérer son ticket à son arrivée.
 
-Il doit également permettre à S2Q de conserver une vision cohérente des réservations, des tickets, des files d'attente et de la capacité d'accueil.
-
-**Principe directeur : Ticket en ligne doit s'intégrer au système S2Q existant, et non devenir un système de réservation indépendant.**

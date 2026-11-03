@@ -1,0 +1,69 @@
+J'ai besoint 
+
+{
+    "name": "Agence Centrale - Plateau",
+    "district": "Plateau",
+    "commune": "Plateau, Abidjan",
+    "address": "Boulevard de la République, Face BCEAO",
+    "hours": "Lun - Ven: 08h00 - 17h30 | Sam: 09h00 - 13h00",
+    "openUntil": "17:30",
+    "phone": "+225 27 20 22 10 01",
+    "status": "Ouvert",
+    "waitMinutes": 6,
+    "currentWaitTime": "6 min",
+    "countersActive": 8,
+    "affluence": "fluide",
+    "lat": 5.3200,
+    "lng": -4.0150
+}
+
+
+{
+  "lg_ageid": "13711151844929304482",
+  "int_ticclient": "1",
+  "lg_ageid": "13711151844929304482",
+  "lg_presid": "20261131541258674703",
+  "lg_usrid": "20268121043413202350",
+  "timeslot": {
+    "day": "",
+    "date": "",
+    "time": ""
+  },
+  "serviceName": "Assurance (Ezechiel YAO)",
+  "str_ncompteclient": "",
+  "str_ticemail": "",
+  "str_ticlangueclient": "fr",
+  "str_ticnom": "",
+  "str_ticphone": "",
+  "str_ticprenoms": ""
+}
+
+-------------------------------------------------------------------
+
+
+GET http://synapsepcdev07:9081/s2q/admin-service/public/agencesLive?lg_socid=13711124025984277964&lg_ageid=13711151844929304482
+Exemple réel retourné
+{
+  "reponse": "success",
+  "message": "1 agence(s) avec informations temps réel",
+  "updatedAt": "2026-11-02T15:19:46.765Z",
+  "data": [
+    {
+      "lg_ageid": "13711151844929304482",
+      "name": "SIEGE",
+      "district": "ABIDJAN",
+      "commune": "ABIDJAN",
+      "address": null,
+      "hours": "Lun - Dim: 08h00 - 19h00",
+      "openUntil": "19:00",
+      "phone": null,
+      "status": "Ouvert",
+      "waitMinutes": 3,
+      "currentWaitTime": "3 min",
+      "countersActive": 6,
+      "affluence": "fluide",
+      "lat": 5.4028,
+      "lng": -3.98082
+    }
+  ]
+}

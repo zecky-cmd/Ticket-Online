@@ -1,0 +1,564 @@
+
+{
+    "reponse": "success",
+    "message": "les infos agence besoin",
+    "data": [
+        {
+            "lg_ageid": "15311135020432961225",
+            "str_agecode": "05001",
+          
+            "str_agedescription": "ABENGOUROU",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "2735900093",
+            "str_agemail": "test@test.com",
+            "str_ageville": "Abengourou",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2025-03-11T13:50:20.432Z",
+            "dt_ageupdated": "2026-07-13T10:37:30.532Z",
+            "str_agelongitude": "-3.487033",
+            "str_agelatitude": "6.730081",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "1",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "1",
+                "str_lstdescription": "Abengourou",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+
+                "str_socstatut": "enable"
+            }
+           
+        },
+
+        {
+            "lg_ageid": "15311135533760356480",
+            "str_agecode": "01010",
+            "str_agecodebceao": "1234",
+            "str_agedescription": "ABOBO MAIRIE",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "272523005419",
+            "str_agemail": "abcabc@bni.net",
+            "str_ageville": "Abobo",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2025-03-11T13:55:33.760Z",
+            "dt_ageupdated": "2026-06-29T13:59:11.644Z",
+            "lg_ageuticreatedid": "13711164304523303504",
+            "lg_ageutiupdatedid": "15311162017851793569",
+            "str_agelongitude": "-4.006993",
+            "str_agelatitude": "5.415287",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "4",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "4",
+                "str_lstdescription": "Abobo",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        },
+        {
+            "lg_ageid": "13711155816704958274",
+            "str_agecode": "01016",
+            "str_agecodebceao": "ZERTY",
+            "str_agedescription": "ABOBO PK18",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "2723005419",
+            "str_agemail": "yigoabdoul2@gmail.com",
+            "str_ageville": "ABIDJAN",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2023-07-11T15:58:16.704Z",
+            "dt_ageupdated": "2026-07-07T11:02:51.696Z",
+            "lg_ageuticreatedid": "13761152525184058568",
+            "lg_ageutiupdatedid": "20266221454697498321",
+            "str_agelongitude": "-4.054301",
+            "str_agelatitude": "5.444014",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "4",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "4",
+                "str_lstdescription": "Abobo",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        },
+        {
+            "lg_ageid": "15311135932700705334",
+            "str_agecode": "12301",
+            "str_agecodebceao": "3845",
+            "str_agedescription": "ABOISSO",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "038473748775",
+            "str_agemail": "test@gmail.com",
+            "str_ageville": "ABIDJAN",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2025-03-11T13:59:32.700Z",
+            "dt_ageupdated": "2026-07-07T14:33:27.438Z",
+            "lg_ageuticreatedid": "13711164304523303504",
+            "lg_ageutiupdatedid": "20266221454697498321",
+            "str_agelongitude": "3.2057808",
+            "str_agelatitude": "5.4687423",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "5",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "5",
+                "str_lstdescription": "Aboisso",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        },
+        {
+            "lg_ageid": "15311140506031233401",
+            "str_agecode": "01004",
+            "str_agecodebceao": null,
+            "str_agedescription": "ADJAME - MARCHE",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "2720305165",
+            "str_agemail": "adjam@gmail.com",
+            "str_ageville": "ABIDJAN",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2025-03-11T14:00:50.603Z",
+            "dt_ageupdated": "2026-07-07T14:34:06.139Z",
+            "lg_ageuticreatedid": "13711164304523303504",
+            "lg_ageutiupdatedid": "20266221454697498321",
+            "str_agelongitude": "-4.023813",
+            "str_agelatitude": "5.348151",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "20",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "20",
+                "str_lstdescription": "Adjamé",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        },
+        {
+            "lg_ageid": "15311142195235906976",
+            "str_agecode": "01014",
+            "str_agecodebceao": "1234",
+            "str_agedescription": "ADJAME BANFORA (ST MICHEL)",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "2720319900",
+            "str_agemail": "abc@abc.com",
+            "str_ageville": "ABIDJAN",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2025-03-11T14:02:19.523Z",
+            "dt_ageupdated": "2026-07-07T14:40:31.800Z",
+            "lg_ageuticreatedid": "13711164304523303504",
+            "lg_ageutiupdatedid": "15311162017851793569",
+            "str_agelongitude": "-4.022977",
+            "str_agelatitude": "5.348102",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "20",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "20",
+                "str_lstdescription": "Adjamé",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        },
+        {
+            "lg_ageid": "20267131426344862134",
+            "str_agecode": "1234567",
+            "str_agecodebceao": "12456788",
+            "str_agedescription": "Agence Djiby2",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "030303030303",
+            "str_agemail": "aaaaaaaa@bbbbb.com",
+            "str_ageville": null,
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2026-07-13T14:26:34.486Z",
+            "dt_ageupdated": null,
+            "lg_ageuticreatedid": "15311162017851793569",
+            "lg_ageutiupdatedid": null,
+            "str_agelongitude": "-2404",
+            "str_agelatitude": "80000",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "205",
+            "str_agemultidif": "1",
+            "ville": {
+                "lg_lstid": "205",
+                "str_lstdescription": "Cocody",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        },
+        {
+            "lg_ageid": "15311134802806248512",
+            "str_agecode": "EN CREATION",
+            "str_agecodebceao": "1234",
+            "str_agedescription": "AGENCE NOUVEAU SIEGE",
+            "lg_socid": "13711124025984277964",
+            "str_agelocalisation": null,
+            "str_agebp": null,
+            "str_agephone": "01010101001",
+            "str_agemail": "abc@abc.com",
+            "str_ageville": "",
+            "str_agelogo": null,
+            "str_agecouleur": null,
+            "str_agestatut": "enable",
+            "dt_agecreated": "2025-03-11T13:48:00.280Z",
+            "dt_ageupdated": "2026-07-07T14:44:28.059Z",
+            "lg_ageuticreatedid": "13711164304523303504",
+            "lg_ageutiupdatedid": "15311162017851793569",
+            "str_agelongitude": "40000",
+            "str_agelatitude": "-5000",
+            "str_agechoixparamappel": "agence",
+            "lg_agelst_ville": "74",
+            "str_agemultidif": null,
+            "ville": {
+                "lg_lstid": "74",
+                "str_lstdescription": "Arokpa",
+                "str_lstvalue": ""
+            },
+            "societe": {
+                "lg_socid": "13711124025984277964",
+                "str_socname": "BNI",
+                "str_socdescription": "BANQUE NATIONALE D'INVESTISSEMENT",
+                "str_soccode": "CI092",
+                "str_socaddress": "PLATEAU RUE ANOMA",
+                "str_socmail": "bni@bni.com",
+                "str_socphone": "+22527000000",
+                "str_soclogo": "CI092.png",
+                "str_soclogosec": "logo.jpg",
+                "str_socslogan": "Slagan de l'entreprise",
+                "str_soccolor": "#23cd4d",
+                "str_socflag": "En cochant, vous acceptez de partager vos données avec la banque",
+                "str_socstatut": "enable"
+            },
+            "nbreAffectation": "18"
+        }
+    ],
+    "recordsTotal": 97,
+    "recordsFiltered": 75
+}
+
+
+-------------------------------------------
+
+GET http://10.60.110.45:9081/s2q/configuration-service/public/agences?lg_socid=13711124025984277964&length=3
+Paramètres :
+- lg_socid obligatoire
+- search_value, start, length optionnels (length max 100)
+Exemple réel retourné :
+{
+  "reponse": "success",
+  "message": "3 agence(s) trouvée(s)",
+  "data": [
+    {
+      "lg_ageid": "15311135020432961225",
+      "str_agecode": "05001",
+      "str_agedescription": "ABENGOUROU",
+      "str_ageville": "Abengourou",
+      "str_agelocalisation": null
+    },
+    {
+      "lg_ageid": "15311135331855775207",
+      "str_agecode": "01001",
+      "str_agedescription": "ABIDJAN JOSEPH ANOMA (AGENCE PRINCIPALE)",
+      "str_ageville": "Plateau",
+      "str_agelocalisation": null
+    },
+    {
+      "lg_ageid": "13612125245707263659",
+      "str_agecode": "09001",
+      "str_agedescription": "ABIDJAN PLATEAU",
+      "str_ageville": "Plateau",
+      "str_agelocalisation": null
+    }
+  ]
+}
+------------------------------
+
+2. Catalogue minimal d’une agence
+GET http://synapsepcdev07:9081/s2q/parametre-service/public/agenceprestations?lg_ageid=15311140506031233401
+Paramètres :
+- lg_ageid obligatoire
+- lang optionnel (fr, en…)
+Exemple réel retourné, raccourci à 1 service et 2 prestations sur les 18 ; les urlImage SVG en base64 sont tronquées :
+{
+  "reponse": "success",
+  "message": "Prestations de l'agence groupées par service",
+  "data": [
+    {
+      "service": {
+        "lg_serid": "20261131553457634257",
+        "str_sername": "Caisse",
+        "urlImage": "data:image/svg+xml;base64,<BASE64_SVG_TRONQUE>"
+      },
+      "prestations": [
+        {
+          "lg_presid": "20261131558141345457",
+          "str_presname": "Autres Opérations",
+          "str_presdescription": "Autres opérations de la caisse",
+          "urlImage": "data:image/svg+xml;base64,<BASE64_SVG_TRONQUE>"
+        },
+        {
+          "lg_presid": "20261131553401145441",
+          "str_presname": "Change",
+          "str_presdescription": "services de change",
+          "urlImage": "data:image/svg+xml;base64,<BASE64_SVG_TRONQUE>"
+        }
+      ]
+    }
+  ]
+}
+--------------------------------
+ 
+
+1. Liste minimale des agences
+GET http://10.60.110.45:9081/s2q/configuration-service/public/agences?lg_socid=13711124025984277964&length=3
+Paramètres :
+- lg_socid obligatoire
+- search_value, start, length optionnels (length max 100)
+Exemple réel retourné :
+{
+  "reponse": "success",
+  "message": "3 agence(s) trouvée(s)",
+  "data": [
+    {
+      "lg_ageid": "15311135020432961225",
+      "str_agecode": "05001",
+      "str_agedescription": "ABENGOUROU",
+      "str_ageville": "Abengourou",
+      "str_agelocalisation": null
+    },
+    {
+      "lg_ageid": "15311135331855775207",
+      "str_agecode": "01001",
+      "str_agedescription": "ABIDJAN JOSEPH ANOMA (AGENCE PRINCIPALE)",
+      "str_ageville": "Plateau",
+      "str_agelocalisation": null
+    },
+    {
+      "lg_ageid": "13612125245707263659",
+      "str_agecode": "09001",
+      "str_agedescription": "ABIDJAN PLATEAU",
+      "str_ageville": "Plateau",
+      "str_agelocalisation": null
+    }
+  ]
+}
+------------------------------
+
+
+2. Catalogue minimal d’une agence
+GET http://synapsepcdev07:9081/s2q/parametre-service/public/agenceprestations?lg_ageid=15311140506031233401
+Paramètres :
+- lg_ageid obligatoire
+- lang optionnel (fr, en…)
+Exemple réel retourné, raccourci à 1 service et 2 prestations sur les 18 ; les urlImage SVG en base64 sont tronquées :
+{
+  "reponse": "success",
+  "message": "Prestations de l'agence groupées par service",
+  "data": [
+    {
+      "service": {
+        "lg_serid": "20261131553457634257",
+        "str_sername": "Caisse",
+        "urlImage": "data:image/svg+xml;base64,<BASE64_SVG_TRONQUE>"
+      },
+      "prestations": [
+        {
+          "lg_presid": "20261131558141345457",
+          "str_presname": "Autres Opérations",
+          "str_presdescription": "Autres opérations de la caisse",
+          "urlImage": "data:image/svg+xml;base64,<BASE64_SVG_TRONQUE>"
+        },
+        {
+          "lg_presid": "20261131553401145441",
+          "str_presname": "Change",
+          "str_presdescription": "services de change",
+          "urlImage": "data:image/svg+xml;base64,<BASE64_SVG_TRONQUE>"
+        }
+      ]
+    }
+  ]
+}
+--------------------------------
+
+
+
+
+3. Liste minimale des gestionnaires
+GET http://synapsepcdev07:9081/s2q/admin-service/public/gestionnaires?lg_ageid=13711151844929304482&lg_presid=20261131541258674703
+Paramètres :
+- lg_ageid obligatoire
+- lg_presid obligatoire
+- str_agrtype optionnel : 1 = caissière, 2 = gestionnaire
+Exemple réel retourné :
+{
+  "reponse": "success",
+  "status": "success",
+  "message": "5 gestionnaire(s) trouvé(s)",
+  "data": [
+    {
+      "lg_utiid": "20266221454697498321",
+      "str_utifirstlastname": "Ezechiel YAO",
+      "str_utipic": null,
+      "str_rollibelle": "CONSEILLER 4",
+      "type_role_libelle": "Gestionnaire"
+    },
+    {
+      "lg_utiid": "20267301048518038790",
+      "str_utifirstlastname": "Kouadio Kouamé Fabrice",
+      "str_utipic": null,
+      "str_rollibelle": "CONSEILLER 1",
+      "type_role_libelle": "Gestionnaire"
+    },
+    {
+      "lg_utiid": "20267301051494773670",
+      "str_utifirstlastname": "User 2",
+      "str_utipic": null,
+      "str_rollibelle": "CONSEILLER 5",
+      "type_role_libelle": "Gestionnaire"
+    },
+    {
+      "lg_utiid": "20261061435141880813",
+      "str_utifirstlastname": "User 3",
+      "str_utipic": null,
+      "str_rollibelle": "CONSEILLER 6",
+      "type_role_libelle": "Gestionnaire"
+    },
+    {
+      "lg_utiid": "20267139124673386756",
+      "str_utifirstlastname": "Yigo Abdoul",
+      "str_utipic": null,
+      "str_rollibelle": "CONSEILLER 3",
+      "type_role_libelle": "Gestionnaire"
+    }
+  ]
+}
