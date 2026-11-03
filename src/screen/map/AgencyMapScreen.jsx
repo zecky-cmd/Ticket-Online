@@ -4,7 +4,6 @@ import { X, MapPin, Map, List } from 'lucide-react';
 import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
 import { openModal } from '../../features/modalSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
-import AgencyFilterBar from './components/AgencyFilterBar';
 import AgencyCard from './components/AgencyCard';
 import AgencyDetailSheet from './components/AgencyDetailSheet';
 import AgencyMapView from './components/AgencyMapView';
@@ -15,15 +14,9 @@ import AgencyMapView from './components/AgencyMapView';
  */
 export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
   const dispatch = useDispatch();
-  const [activeFilter, setActiveFilter] = useState('toutes');
   const [selectedAgency, setSelectedAgency] = useState(agencies[0] || null);
-  const [locateTrigger, setLocateTrigger] = useState(0);
   const [showDetail, setShowDetail] = useState(false);
   const [activeTab, setActiveTab] = useState('map'); // 'map' | 'list'
-
-  const filteredAgencies = activeFilter === 'toutes'
-    ? agencies
-    : agencies.filter((a) => a.affluence === activeFilter);
 
   const handleSelectAgency = useCallback((agency) => {
     setSelectedAgency(agency);
@@ -34,10 +27,6 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
     setSelectedAgency(agency);
     setActiveTab('list');
     setShowDetail(true);
-  }, []);
-
-  const handleLocate = useCallback(() => {
-    setLocateTrigger((n) => n + 1);
   }, []);
 
   const handleTakeTicket = useCallback((agency) => {
@@ -92,13 +81,6 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
           </p>
         </div>
 
-        {/* ── Filtres ─────────────────────────────────────────────────── */}
-        <AgencyFilterBar
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          onLocate={handleLocate}
-        />
-
         {/* ── Onglets Carte / Liste Compacts ──────────────────────────── */}
         <div className="flex border-b border-slate-200 bg-slate-100/90 p-1 md:p-1.5 gap-1 shrink-0">
           <button
@@ -127,7 +109,7 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
               activeTab === 'list' ? 'bg-primary-500 text-white' : 'bg-slate-200 text-slate-500'
             }`}>
-              {filteredAgencies.length}
+              {agencies.length}
             </span>
           </button>
         </div>
@@ -137,10 +119,9 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
           <div className="flex-1 flex flex-col min-h-0 p-2 sm:p-3 overflow-hidden">
             <div className="w-full flex-1 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs border border-slate-200 relative">
               <AgencyMapView
-                agencies={filteredAgencies}
+                agencies={agencies}
                 selectedAgency={selectedAgency}
                 onSelectAgency={handleSelectOnMap}
-                locateTrigger={locateTrigger}
                 primaryColor={theme?.colors?.primary}
               />
             </div>
@@ -154,18 +135,18 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
             <div className="flex items-center justify-between px-4 md:px-5 py-2 border-b border-slate-100 bg-white sticky top-0 z-[1]">
               <p className="text-xs font-bold text-slate-700">Agences à proximité</p>
               <p className="text-xs text-slate-400">
-                {filteredAgencies.length} point{filteredAgencies.length > 1 ? 's' : ''} d'accueil
+                {agencies.length} point{agencies.length > 1 ? 's' : ''} d'accueil
               </p>
             </div>
 
             {/* Cards */}
             <div className="px-3 md:px-4 py-2.5 md:py-3 grid grid-cols-1 md:grid-cols-2 gap-2 pb-6">
-              {filteredAgencies.length === 0 ? (
+              {agencies.length === 0 ? (
                 <div className="col-span-2 text-center py-10 text-slate-400 text-sm">
                   Aucune agence pour ce filtre.
                 </div>
               ) : (
-                filteredAgencies.map((agency) => (
+                agencies.map((agency) => (
                   <AgencyCard
                     key={agency.id}
                     agency={agency}

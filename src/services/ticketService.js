@@ -17,7 +17,7 @@ export const ticketService = {
    * @param {string} [payload.serviceCategory] - 'reclamation' | 'commercial' | 'caisse' | 'conseil' | 'entreprises'
    * @param {any} [payload.prestation] - ID ou objet Prestation
    * @param {any} [payload.gestionnaire] - Objet Gestionnaire sélectionné
-   * @param {any} [payload.timeslot] - { type: 'immediate' | 'scheduled', day, time, dayFormatted }
+   * @param {any} [payload.timeslot] - { day, date, time }
    * @param {boolean} [payload.isClient] - Client existant ou non
    * @param {string} [payload.accountNumber] - Numéro de compte client
    * @param {string} [payload.fullName] - Nom complet du client
@@ -84,7 +84,6 @@ export const ticketService = {
     };
     const prefix = serviceObj?.codePrefix || (serviceCat ? prefixes[serviceCat] : '') || 'TKT';
     const randNum = Math.floor(100 + Math.random() * 900);
-    const waitMinutes = agencyObj?.waitMinutes ?? Math.floor(5 + Math.random() * 15);
     const dateNow = new Date();
 
     /** @type {Record<string, string>} */
@@ -100,9 +99,9 @@ export const ticketService = {
     const prestationObj = typeof prestation === 'object' && prestation !== null ? prestation : null;
     const pName = prestationObj?.name || (typeof prestation === 'string' ? prestation : 'Accueil Général');
 
-    const appointmentTime = timeslot?.type === 'scheduled' 
-      ? `${timeslot.dayFormatted || 'Aujourd’hui'} à ${timeslot.time}`
-      : 'Passage immédiat';
+    const appointmentTime = timeslot?.date && timeslot?.time
+      ? `${timeslot.day || timeslot.date} à ${timeslot.time}`
+      : 'Créneau à confirmer';
 
     const gestionnaireObj = typeof gestionnaire === 'object' && gestionnaire !== null ? gestionnaire : null;
     const gestionnaireName = gestionnaireObj?.isAuto
@@ -119,15 +118,15 @@ export const ticketService = {
       gestionnaire: gestionnaireName,
       isClient: Boolean(isClient),
       accountNumber: isClient ? accountNumber : '',
-      timeslot: timeslot || { type: 'immediate', label: 'Immédiat' },
+      timeslot: timeslot || { day: '', date: '', time: '' },
       appointmentTime,
       fullName: resolvedFullName,
       phoneNumber: phoneNumber || '',
       email: email || '',
       date: dateNow.toLocaleDateString('fr-FR'),
       time: dateNow.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-      estimatedWait: timeslot?.type === 'scheduled' ? 'Sans attente (créneau réservé)' : `${waitMinutes} min`,
-      queuePosition: timeslot?.type === 'scheduled' ? 1 : Math.max(1, Math.floor(waitMinutes / 3)),
+      estimatedWait: 'Créneau réservé',
+      queuePosition: 1,
       status: 'WAITING',
       createdAt: dateNow.toISOString(),
     };

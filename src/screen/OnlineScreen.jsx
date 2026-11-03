@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { THEMES } from '../theme/themes';
 import { SLIDES } from '../mocks/slidesMock';
 import { AGENCIES } from '../mocks/agenciesMock';
+import { agencyService } from '../services/agencyService';
 import { openModal, closeModal } from '../features/modalSlice';
 import Layout from '../layout/Layout';
 import Container from '../layout/Container';
@@ -40,6 +41,7 @@ export default function OnlineScreen({
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [agencies, setAgencies] = useState(AGENCIES);
 
   // Défilement automatique du carrousel toutes les 6 secondes
   useEffect(() => {
@@ -49,6 +51,23 @@ export default function OnlineScreen({
     }, 6000);
     return () => clearInterval(interval);
   }, [isPaused, slides.length]);
+
+  // Chargement des agences depuis l'API (repli sur les données locales en cas d'échec)
+  useEffect(() => {
+    let active = true;
+    agencyService
+      .getAgencies()
+      .then((data) => {
+        if (active && Array.isArray(data)) setAgencies(data);
+      })
+      .catch((err) => {
+        console.error('Chargement des agences échoué, repli sur les données locales.', err);
+        if (active) setAgencies(AGENCIES);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handlePrevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
@@ -123,7 +142,7 @@ export default function OnlineScreen({
         isOpen={activeModal === 'ticket'}
         onClose={() => dispatch(closeModal())}
         theme={theme}
-        agencies={AGENCIES}
+        agencies={agencies}
       />
 
       <SatisfactionScreen
@@ -136,7 +155,7 @@ export default function OnlineScreen({
         isOpen={activeModal === 'map'}
         onClose={() => dispatch(closeModal())}
         theme={theme}
-        agencies={AGENCIES}
+        agencies={agencies}
       />
     </Layout>
   );

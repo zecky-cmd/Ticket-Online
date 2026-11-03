@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { AGENCIES_MOCK } from '../mocks/agenciesMock';
 
 const initialState = {
-  agencies: AGENCIES_MOCK,
-  selectedAgency: AGENCIES_MOCK[0] || null,
+  selectedAgency: null,
   searchQuery: '',
 };
 

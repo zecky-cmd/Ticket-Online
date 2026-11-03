@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AlertCircle, X } from 'lucide-react';
 import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
-import { SERVICES_LIST, AVAILABLE_DAYS, TIME_SLOTS, getGestionnairesForAgency } from '../../mocks/ticketFlowMock';
+import { SERVICES_LIST, getGestionnairesForAgency } from '../../mocks/ticketFlowMock';
 import { ticketService } from '../../services/ticketService';
 import { setCreatedTicket as setReduxTicket } from '../../features/ticketSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
@@ -14,6 +14,18 @@ import StepPrestation from './components/StepPrestation';
 import StepTimeslot from './components/StepTimeslot';
 import StepCustomerInfo from './components/StepCustomerInfo';
 import TicketReceipt from './components/TicketReceipt';
+
+/** Formate une date ISO (YYYY-MM-DD) en libellé lisible fr. */
+function formatDateLabel(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return new Date(Number(y), Number(m) - 1, Number(d)).toLocaleDateString('fr-FR', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
 /**
  * Screen / Modal Prise de Ticket Multi-Étapes S2Q (5 Étapes)
@@ -51,10 +63,9 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
     }
   };
 
-  // 4. Créneau
-  const [timeslotMode, setTimeslotMode] = useState(/** @type {'immediate' | 'scheduled'} */ ('immediate'));
-  const [selectedDay, setSelectedDay] = useState('today');
-  const [selectedTime, setSelectedTime] = useState('09:00');
+  // 4. Créneau (date + heure simples)
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
 
   // 5. Coordonnées & Statut Client (nplan.md)CL
   const [isClient, setIsClient] = useState(false);
@@ -70,22 +81,24 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const [createdTicket, setCreatedTicket] = useState(/** @type {any} */ (null));
 
   // Objets résolus
-  const currentAgency = agencies.find((a) => a.id === Number(selectedAgencyId)) || agencies[0];
+  const currentAgency = agencies.find((a) => String(a.id) === String(selectedAgencyId)) || agencies[0];
   const currentService = SERVICES_LIST.find((s) => s.id === selectedServiceId) || SERVICES_LIST[0];
   const currentPrestation = (currentService && currentService.prestations.find((p) => p.id === selectedPrestationId)) || currentService?.prestations?.[0];
   
   const agencyGestionnaires = getGestionnairesForAgency(selectedAgencyId);
   const currentGestionnaire = agencyGestionnaires.find((g) => g.id === selectedGestionnaireId) || agencyGestionnaires[0];
 
-  const currentTimeslotText = timeslotMode === 'immediate'
-    ? 'Passage immédiat'
-    : `${AVAILABLE_DAYS.find((d) => d.id === selectedDay)?.label || 'Aujourd’hui'} à ${selectedTime}`;
+  const currentTimeslotText = selectedDate && selectedTime
+    ? `${formatDateLabel(selectedDate)} à ${selectedTime}`
+    : 'À définir';
 
   // Réinitialisation complète
   const handleReset = () => {
     setCurrentStep(1);
     setSelectedAgencyIdOverride(null);
     setSelectedGestionnaireId('auto');
+    setSelectedDate('');
+    setSelectedTime('');
     setCreatedTicket(null);
     setErrorMessage('');
     onClose();
@@ -95,6 +108,11 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const handleGenerateTicket = async (/** @type {any} */ e) => {
     if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
+    }
+
+    if (!selectedDate || !selectedTime) {
+      setErrorMessage('Veuillez choisir la date et l\'heure de votre passage.');
+      return;
     }
 
     if (!lastName.trim() || !firstName.trim()) {
@@ -124,9 +142,8 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
         prestation: currentPrestation,
         gestionnaire: currentService?.serviceType === 'gestionnaire' ? currentGestionnaire : null,
         timeslot: {
-          type: timeslotMode,
-          day: selectedDay,
-          dayFormatted: AVAILABLE_DAYS.find((d) => d.id === selectedDay)?.label,
+          day: formatDateLabel(selectedDate),
+          date: selectedDate,
           time: selectedTime,
         },
         isClient,
@@ -246,14 +263,10 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
           {/* Étape 4 : Choix Créneau */}
           {currentStep === 4 && (
             <StepTimeslot
-              timeslotMode={timeslotMode}
-              setTimeslotMode={setTimeslotMode}
-              selectedDay={selectedDay}
-              setSelectedDay={setSelectedDay}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
               selectedTime={selectedTime}
               setSelectedTime={setSelectedTime}
-              days={AVAILABLE_DAYS}
-              timeSlots={TIME_SLOTS}
               onBack={() => setCurrentStep(3)}
               onNext={() => setCurrentStep(5)}
               theme={theme}

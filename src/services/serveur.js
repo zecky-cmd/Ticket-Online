@@ -10,6 +10,9 @@ const SERVEUR = {
   REVERSE_PROXY: 'https://gfadiffuseur-backend.apps.bni',
   PORT_GFA: '9081',
   RACINE_API: 's2q',
+  // Identifiant société (client) — requis par plusieurs endpoints
+  SOCID: import.meta.env.VITE_S2Q_SOCID || '13711124025984277964',
+  SOCCODE: import.meta.env.VITE_S2Q_SOCCODE || '',
 };
 
 const MODE_PROD = import.meta.env.MODE;
@@ -23,3 +26,14 @@ export const S2Q_BASE_URL =
     : `${SERVEUR.PROTOCOL}${SERVEUR.HOSTNAME}:${SERVEUR.PORT_GFA}/${SERVEUR.RACINE_API}/`);
 
 console.log('S2Q TICKET EN LIGNE - API BASE URL :', S2Q_BASE_URL);
+
+// Identifiants société exposés
+export const S2Q_SOCID = SERVEUR.SOCID;
+export const S2Q_SOCCODE = SERVEUR.SOCCODE;
+
+// Préfixes des micro-services backend S2Q
+export const S2Q_SERVICES = {
+  configuration: 'configuration-service',
+  parametre: 'parametre-service',
+  admin: 'admin-service',
+};

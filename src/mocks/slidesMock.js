@@ -25,7 +25,7 @@ export const SLIDES_MOCK = [
     id: 3,
     tag: "RÉSEAU D'AGENCES",
     title: "Trouvez l'agence la plus proche.",
-    subtitle: "Localisation en temps réel et visibilité sur l'affluence.",
+    subtitle: "Localisez et choisissez l'agence la plus proche.",
     // buttonText: "Consulter la carte",
     // link: "#map",
     image: "/img3.png"

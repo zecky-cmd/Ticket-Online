@@ -112,33 +112,3 @@ export function getGestionnairesForAgency(agencyId) {
     ...list,
   ];
 }
-
-// Créneaux horaires types par période
-export const AVAILABLE_DAYS = [
-  { id: 'today', label: "Aujourd'hui", dateFormatted: new Date().toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }) },
-  {
-    id: 'tomorrow',
-    label: 'Demain',
-    dateFormatted: new Date(Date.now() + 86400000).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }),
-  },
-  {
-    id: 'after_tomorrow',
-    label: 'Après-demain',
-    dateFormatted: new Date(Date.now() + 172800000).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }),
-  },
-];
-
-export const TIME_SLOTS = [
-  { time: '08:30', status: 'available' },
-  { time: '09:00', status: 'available' },
-  { time: '09:30', status: 'busy' }, // Complet
-  { time: '10:00', status: 'available' },
-  { time: '10:30', status: 'available' },
-  { time: '11:00', status: 'available' },
-  { time: '11:30', status: 'almost_full' }, // 1 place
-  { time: '14:00', status: 'available' },
-  { time: '14:30', status: 'available' },
-  { time: '15:00', status: 'busy' },
-  { time: '15:30', status: 'available' },
-  { time: '16:00', status: 'available' },
-];

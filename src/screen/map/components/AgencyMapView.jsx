@@ -12,16 +12,13 @@ import {
   Plus, 
   Minus 
 } from 'lucide-react';
-import { getAffluence } from '../../../theme/affluence';
-
 const DEFAULT_CENTER = [5.3197, -4.0167];
 const DEFAULT_ZOOM = 12;
 
 /**
  * Crée un marker circulaire coloré en CSS pur (DivIcon Leaflet)
  */
-function createColoredMarker(affluence, isSelected = false) {
-  const color = getAffluence(affluence).color;
+function createMarker(color, isSelected = false) {
   const size = isSelected ? 20 : 15;
   const border = isSelected ? '3px solid white' : '2px solid white';
   return L.divIcon({
@@ -62,8 +59,6 @@ function MapResizeHandler() {
 function MapControlsOverlay({ 
   onRefresh, 
   isRefreshing,
-  locateTrigger, 
-  onLocationFound,
   primaryColor = '#008056'
 }) {
   const map = useMap();
@@ -71,9 +66,9 @@ function MapControlsOverlay({
   const [isLocating, setIsLocating] = useState(false);
   const locationMarkerRef = useRef(null);
 
-  // Écoute de l'action "Me localiser"
-  useEffect(() => {
-    if (!locateTrigger) return;
+  // Action "Me localiser" : centre la carte et pose un marqueur sur la position
+  const handleLocate = () => {
+    setIsLocating(true);
     map.locate({ setView: true, maxZoom: 14 });
 
     const handleFound = (e) => {
@@ -90,7 +85,6 @@ function MapControlsOverlay({
       }).addTo(map);
       marker.bindPopup('<div class="font-bold text-xs text-slate-800">Votre position actuelle</div>').openPopup();
       locationMarkerRef.current = marker;
-      if (onLocationFound) onLocationFound(e.latlng);
     };
 
     const handleError = () => {
@@ -100,12 +94,7 @@ function MapControlsOverlay({
 
     map.once('locationfound', handleFound);
     map.once('locationerror', handleError);
-
-    return () => {
-      map.off('locationfound', handleFound);
-      map.off('locationerror', handleError);
-    };
-  }, [locateTrigger, map, onLocationFound, primaryColor]);
+  };
 
   // Actions de navigation directionnelle (pan)
   const panDistance = 140;
@@ -123,10 +112,7 @@ function MapControlsOverlay({
         {/* Bouton Position (Haut Gauche) */}
         <button
           type="button"
-          onClick={() => {
-            setIsLocating(true);
-            map.locate({ setView: true, maxZoom: 14 });
-          }}
+          onClick={handleLocate}
           title="Centrer sur ma position"
           className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/95 backdrop-blur-xs text-slate-700 hover:text-primary-500 hover:bg-white rounded-full shadow-md flex items-center justify-center border border-slate-200/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
@@ -254,7 +240,7 @@ function MapRecenter({ lat, lng }) {
 /**
  * Carte Leaflet principale
  */
-export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency, locateTrigger, primaryColor = '#008056' }) {
+export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency, primaryColor = '#008056' }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = (map) => {
@@ -294,7 +280,6 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
         <MapControlsOverlay 
           onRefresh={handleRefresh}
           isRefreshing={isRefreshing}
-          locateTrigger={locateTrigger}
           primaryColor={primaryColor}
         />
 
@@ -303,7 +288,7 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
           <Marker
             key={agency.id}
             position={[agency.lat, agency.lng]}
-            icon={createColoredMarker(agency.affluence, selectedAgency?.id === agency.id)}
+            icon={createMarker(primaryColor, selectedAgency?.id === agency.id)}
             eventHandlers={{
               click: () => onSelectAgency(agency),
             }}
@@ -313,10 +298,7 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
                 {agency.name}
               </div>
               <div className="text-[11px] text-slate-500 mt-0.5">
-                {agency.district} · {agency.openUntil ? `Jusqu'à ${agency.openUntil}` : agency.hours}
-              </div>
-              <div className="text-xs text-primary-500 font-semibold mt-1">
-                Attente : {agency.waitMinutes} min
+                {agency.commune}
               </div>
             </Popup>
           </Marker>

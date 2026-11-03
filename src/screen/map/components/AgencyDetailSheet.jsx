@@ -48,18 +48,7 @@ export default function AgencyDetailSheet({
             {selectedAgency.commune}
           </span>
           <h4 className="text-base font-bold text-slate-900">{selectedAgency.name}</h4>
-          <p className="text-xs text-slate-500 mt-0.5">{selectedAgency.hours}</p>
-
-          <div className="grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-slate-100 text-xs">
-            <div className="p-2 bg-slate-50 rounded-xl">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Guichets Actifs</span>
-              <b className="text-slate-800 text-sm">{selectedAgency.countersActive} ouverts</b>
-            </div>
-            <div className="p-2 bg-slate-50 rounded-xl">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Temps Moyen</span>
-              <b className="text-slate-800 text-sm">{selectedAgency.currentWaitTime}</b>
-            </div>
-          </div>
+          <p className="text-xs text-slate-500 mt-0.5">{selectedAgency.address}</p>
 
           {/* Boutons d'actions tactiles */}
           <div className="mt-4 flex flex-col gap-2">
