@@ -26,9 +26,9 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
             </span>
           </div>
           <span
-            className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-500"
+            className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${ticket?.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-primary-100 text-primary-500'}`}
           >
-            Confirmé
+            {ticket?.status === 'pending' ? 'En attente' : 'Confirmé'}
           </span>
         </div>
 

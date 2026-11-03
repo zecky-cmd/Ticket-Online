@@ -1,4 +1,5 @@
 import { MapPin, Phone, Compass, Ticket } from 'lucide-react';
+import { getAffluence } from '../../../theme/affluence';
 import Button from '../../../globalComponents/ui/Button';
 import Link from '../../../globalComponents/ui/Link';
 
@@ -17,6 +18,8 @@ export default function AgencyDetailSheet({
       </div>
     );
   }
+
+  const affluence = getAffluence(selectedAgency.affluence);
 
   return (
     <div className="flex-1 bg-slate-100 relative overflow-hidden flex flex-col items-center justify-center p-4 sm:p-6">
@@ -41,14 +44,34 @@ export default function AgencyDetailSheet({
         </div>
 
         <div className="bg-white p-4 sm:p-5 rounded-3xl shadow-xl mt-3 text-center border border-slate-100 w-full">
-          <span 
-            className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full inline-block mb-1"
-            style={{ backgroundColor: theme?.colors?.badgeBg, color: theme?.colors?.badgeText }}
-          >
-            {selectedAgency.commune}
-          </span>
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <span
+              className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full inline-block"
+              style={{ backgroundColor: theme?.colors?.badgeBg, color: theme?.colors?.badgeText }}
+            >
+              {selectedAgency.commune}
+            </span>
+            <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full inline-block border ${affluence.bg} ${affluence.text} ${affluence.border}`}>
+              {affluence.label}
+            </span>
+          </div>
           <h4 className="text-base font-bold text-slate-900">{selectedAgency.name}</h4>
           <p className="text-xs text-slate-500 mt-0.5">{selectedAgency.address}</p>
+
+          <div className="grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-slate-100 text-xs">
+            <div className="p-2 bg-slate-50 rounded-xl">
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">Attente actuelle</span>
+              <b className="text-slate-800 text-sm">{selectedAgency.currentWaitTime || '—'}</b>
+            </div>
+            <div className="p-2 bg-slate-50 rounded-xl">
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">Guichets actifs</span>
+              <b className="text-slate-800 text-sm">{selectedAgency.countersActive}</b>
+            </div>
+          </div>
+
+          {selectedAgency.hours && (
+            <p className="text-[11px] text-slate-400 mt-2">{selectedAgency.hours}</p>
+          )}
 
           {/* Boutons d'actions tactiles */}
           <div className="mt-4 flex flex-col gap-2">

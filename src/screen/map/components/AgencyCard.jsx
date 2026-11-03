@@ -1,10 +1,13 @@
 import { ChevronRight } from 'lucide-react';
+import { getAffluence } from '../../../theme/affluence';
 
 /**
  * Card horizontale d'agence — style maquette
- * Affiche : nom, quartier, flèche
+ * Affiche : pastille affluence, nom, quartier · horaire, temps d'attente, flèche
  */
 export default function AgencyCard({ agency, isSelected, onClick }) {
+  const affluence = getAffluence(agency.affluence);
+
   return (
     <button
       type="button"
@@ -15,18 +18,33 @@ export default function AgencyCard({ agency, isSelected, onClick }) {
           : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
       }`}
     >
-      {/* Infos agence */}
-      <div className="min-w-0">
-        <p className="font-bold text-slate-900 text-sm leading-snug truncate">
-          {agency.name}
-        </p>
-        <p className="text-xs text-slate-500 mt-0.5 truncate">
-          {agency.commune}
-        </p>
+      {/* Pastille + infos agence */}
+      <div className="flex items-center gap-3 min-w-0">
+        <span
+          className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-0.5"
+          style={{ backgroundColor: affluence.color }}
+        />
+        <div className="min-w-0">
+          <p className="font-bold text-slate-900 text-sm leading-snug truncate">
+            {agency.name}
+          </p>
+          <p className="text-xs text-slate-500 mt-0.5 truncate">
+            {agency.commune}
+            {agency.openUntil && (
+              <> · <span>ouverte jusqu'à {agency.openUntil}</span></>
+            )}
+          </p>
+        </div>
       </div>
 
-      {/* Flèche */}
-      <div className="flex items-center flex-shrink-0 ml-3">
+      {/* Temps d'attente + flèche */}
+      <div className="flex items-center gap-1.5 flex-shrink-0 ml-3">
+        {agency.waitMinutes != null && (
+          <span className="font-extrabold text-slate-900 text-sm">
+            {agency.waitMinutes}
+            <span className="font-normal text-slate-500 text-xs"> min</span>
+          </span>
+        )}
         <ChevronRight className="w-4 h-4 text-slate-400" />
       </div>
     </button>

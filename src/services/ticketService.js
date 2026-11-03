@@ -1,22 +1,22 @@
 import { s2qApiClient } from './api';
+import { S2Q_SERVICES } from './serveur';
 
-// Basculer sur false pour appeler l'API S2Q réelle
-let USE_MOCK = true;
+// Basculer sur true pour simuler la création de ticket sans backend
+const USE_MOCK = false;
 
 /**
- * Service Métier : Gestion des Tickets Digitaux en ligne S2Q
+ * Service Métier : Gestion des Tickets / Rendez-vous en ligne S2Q
  */
 export const ticketService = {
   /**
-   * Crée un ticket en ligne.
-   * Route réelle attendue : POST /ticket/create
-   * 
-   * @param {Object} [payload] 
-   * @param {any} [payload.agency] - Nom ou objet Agence
-   * @param {any} [payload.service] - ID ou objet Service
-   * @param {string} [payload.serviceCategory] - 'reclamation' | 'commercial' | 'caisse' | 'conseil' | 'entreprises'
-   * @param {any} [payload.prestation] - ID ou objet Prestation
-   * @param {any} [payload.gestionnaire] - Objet Gestionnaire sélectionné
+   * Crée une demande de rendez-vous (ticket) en ligne.
+   * Route réelle : POST admin-service/public/rendezvous
+   *
+   * @param {Object} [payload]
+   * @param {any} [payload.agency] - Objet Agence (id, name…)
+   * @param {any} [payload.service] - Objet Service du catalogue
+   * @param {any} [payload.prestation] - Objet Prestation sélectionnée
+   * @param {any} [payload.gestionnaire] - Objet Gestionnaire (usrid, name, isAuto)
    * @param {any} [payload.timeslot] - { day, date, time }
    * @param {boolean} [payload.isClient] - Client existant ou non
    * @param {string} [payload.accountNumber] - Numéro de compte client
@@ -31,7 +31,6 @@ export const ticketService = {
     const {
       agency,
       service,
-      serviceCategory,
       prestation,
       gestionnaire,
       timeslot,
@@ -47,72 +46,75 @@ export const ticketService = {
     const resolvedFullName = fullName || [lastName, firstName].filter(Boolean).join(' ') || 'Client';
 
     if (!USE_MOCK) {
-      // Appel API réel vers le backend S2Q
-      const response = await s2qApiClient.post('/ticket/create', {
-        agency,
-        service: service || serviceCategory,
-        prestation,
-        gestionnaire,
-        timeslot,
-        isClient,
-        accountNumber,
+      // Payload conforme au contrat backend S2Q (POST /rendezvous)
+      const body = {
+        lg_ageid: String(agency?.id ?? ''),
+        lg_presid: String(prestation?.id ?? ''),
+        lg_usrid: String(gestionnaire?.usrid ?? ''),
+        int_ticclient: isClient ? '1' : '0',
+        timeslot: {
+          day: timeslot?.day || '',
+          date: timeslot?.date || '',
+          time: timeslot?.time || '',
+        },
+        serviceName: prestation?.name || '',
+        str_ncompteclient: isClient ? accountNumber : '',
+        str_ticemail: email || '',
+        str_ticlangueclient: 'fr',
+        str_ticnom: lastName || '',
+        str_ticprenoms: firstName || '',
+        str_ticphone: phoneNumber || '',
+      };
+
+      const response = await s2qApiClient.post(`/${S2Q_SERVICES.admin}/public/rendezvous`, body);
+      const data = response.data?.data || response.data;
+
+      return {
+        id: data.lg_ticid || null,
+        rdvId: data.lg_rdvid || null,
+        code: data.str_ticnumero || '',
+        agency: data.str_agedescription || agency?.name || '',
+        serviceName: data.str_sername || service?.name || '',
+        prestationName: data.str_presname || prestation?.name || '',
+        gestionnaire: gestionnaire?.isAuto
+          ? 'Premier disponible (Attribution auto)'
+          : gestionnaire?.name || '',
+        isClient: Boolean(isClient),
+        accountNumber: isClient ? accountNumber : '',
+        appointmentTime: timeslot?.date && timeslot?.time
+          ? `${timeslot.day || timeslot.date} à ${timeslot.time}`
+          : 'Créneau à confirmer',
         fullName: resolvedFullName,
-        lastName,
-        firstName,
-        phoneNumber,
-        email,
-      });
-      return response.data?.data || response.data;
+        phoneNumber: phoneNumber || '',
+        email: email || '',
+        date: timeslot?.date || '',
+        time: timeslot?.time || '',
+        status: data.str_rdvstatut || 'pending',
+        createdAt: data.dt_created || null,
+      };
     }
 
     // --- LOGIQUE MOCK RÉALISTE ---
     await new Promise((resolve) => setTimeout(resolve, 350));
 
-    const agencyObj = typeof agency === 'object' && agency !== null ? agency : null;
-    const agencyName = agencyObj?.name || (typeof agency === 'string' ? agency : 'Agence Centrale - Plateau');
-
-    const serviceObj = typeof service === 'object' && service !== null ? service : null;
-    const serviceCat = serviceObj?.id || serviceCategory || 'caisse';
-
-    /** @type {Record<string, string>} */
-    const prefixes = {
-      caisse: 'CAI',
-      conseil: 'CPT',
-      commercial: 'CPT',
-      entreprises: 'PRO',
-      reclamation: 'REC',
-    };
-    const prefix = serviceObj?.codePrefix || (serviceCat ? prefixes[serviceCat] : '') || 'TKT';
+    const agencyName = agency?.name || 'Agence';
+    const sName = service?.name || 'Accueil';
+    const pName = prestation?.name || 'Accueil Général';
     const randNum = Math.floor(100 + Math.random() * 900);
     const dateNow = new Date();
 
-    /** @type {Record<string, string>} */
-    const serviceLabels = {
-      caisse: 'Opérations de Caisse & Règlements',
-      conseil: 'Conseil Particuliers & Comptes',
-      commercial: 'Conseil Client & Nouveaux Contrats',
-      entreprises: 'Espace Professionnels & Entreprises',
-      reclamation: 'Réclamations & Cartes Bancaires',
-    };
-
-    const sName = serviceObj?.name || (serviceCat ? serviceLabels[serviceCat] : '') || 'Accueil Général';
-    const prestationObj = typeof prestation === 'object' && prestation !== null ? prestation : null;
-    const pName = prestationObj?.name || (typeof prestation === 'string' ? prestation : 'Accueil Général');
+    const gestionnaireName = gestionnaire?.isAuto
+      ? 'Premier disponible (Attribution auto)'
+      : gestionnaire?.name || 'Guichetier S2Q';
 
     const appointmentTime = timeslot?.date && timeslot?.time
       ? `${timeslot.day || timeslot.date} à ${timeslot.time}`
       : 'Créneau à confirmer';
 
-    const gestionnaireObj = typeof gestionnaire === 'object' && gestionnaire !== null ? gestionnaire : null;
-    const gestionnaireName = gestionnaireObj?.isAuto
-      ? 'Premier disponible (Attribution auto)'
-      : gestionnaireObj?.name || 'Guichetier S2Q';
-
     return {
       id: `TKT-${Date.now()}`,
-      code: `${prefix}-${randNum}`,
+      code: `TKT-${randNum}`,
       agency: agencyName,
-      serviceCategory: serviceCat,
       serviceName: sName,
       prestationName: pName,
       gestionnaire: gestionnaireName,
@@ -125,48 +127,8 @@ export const ticketService = {
       email: email || '',
       date: dateNow.toLocaleDateString('fr-FR'),
       time: dateNow.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-      estimatedWait: 'Créneau réservé',
-      queuePosition: 1,
-      status: 'WAITING',
+      status: 'pending',
       createdAt: dateNow.toISOString(),
     };
   },
-
-  /**
-   * Vérifie le statut d'un ticket en cours.
-   * Route réelle attendue : GET /ticket/:code/status
-   * 
-   * @param {string} ticketCode 
-   * @returns {Promise<any>}
-   */
-  async checkTicketStatus(ticketCode) {
-    if (!USE_MOCK) {
-      const response = await s2qApiClient.get(`/ticket/${ticketCode}/status`);
-      return response.data?.data || response.data;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    return {
-      code: ticketCode,
-      status: 'WAITING',
-      message: 'Votre ticket est en attente dans la file prioritaire.'
-    };
-  },
-
-  /**
-   * Annule un ticket pris en ligne.
-   * Route réelle attendue : POST /ticket/:code/cancel
-   * 
-   * @param {string} ticketCode 
-   * @returns {Promise<any>}
-   */
-  async cancelTicket(ticketCode) {
-    if (!USE_MOCK) {
-      const response = await s2qApiClient.post(`/ticket/${ticketCode}/cancel`);
-      return response.data;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 150));
-    return { success: true, message: 'Ticket annulé avec succès' };
-  }
 };

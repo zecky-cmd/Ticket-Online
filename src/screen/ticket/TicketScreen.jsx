@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AlertCircle, X } from 'lucide-react';
 import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
-import { SERVICES_LIST, getGestionnairesForAgency } from '../../mocks/ticketFlowMock';
+import { catalogService } from '../../services/catalogService';
+import { gestionnaireService } from '../../services/gestionnaireService';
 import { ticketService } from '../../services/ticketService';
 import { setCreatedTicket as setReduxTicket } from '../../features/ticketSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
@@ -27,10 +28,19 @@ function formatDateLabel(iso) {
   });
 }
 
+/** Jour court pour le payload de rendez-vous (ex: "Mer"). */
+function formatShortDay(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return new Date(Number(y), Number(m) - 1, Number(d))
+    .toLocaleDateString('fr-FR', { weekday: 'short' })
+    .replace('.', '');
+}
+
 /**
  * Screen / Modal Prise de Ticket Multi-Étapes S2Q (5 Étapes)
- * Flux : Agence -> Service -> Prestation & Gestionnaire -> Créneau -> Vos infos & Statut Client -> Reçu
- * 
+ * Flux : Agence -> Service -> Prestation & Gestionnaire -> Créneau -> Vos infos -> Reçu
+ *
  * @param {Object} props
  * @param {boolean} props.isOpen
  * @param {() => void} props.onClose
@@ -44,30 +54,26 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   // Navigation (1: Agence, 2: Service, 3: Prestation, 4: Créneau, 5: Vos infos, 6: Reçu)
   const [currentStep, setCurrentStep] = useState(1);
 
-  // 1. Agence — null = aucune sélection par défaut (placeholder affiché)
-  const [selectedAgencyIdOverride, setSelectedAgencyIdOverride] = useState(/** @type {number | null} */ (null));
+  // 1. Agence
+  const [selectedAgencyIdOverride, setSelectedAgencyIdOverride] = useState(/** @type {string | null} */ (null));
   const selectedAgencyId = selectedAgencyIdOverride ?? reduxSelectedAgency?.id ?? null;
 
-  // 2. Service & 3. Prestation + Gestionnaire
-  const [selectedServiceId, setSelectedServiceId] = useState(SERVICES_LIST[0].id);
-  const [selectedPrestationId, setSelectedPrestationId] = useState(SERVICES_LIST[0].prestations[0].id);
-  const [selectedGestionnaireId, setSelectedGestionnaireId] = useState('auto');
+  // 2. Catalogue services + prestations (chargé depuis l'API pour l'agence)
+  const [services, setServices] = useState(/** @type {any[]} */ ([]));
+  const [servicesLoading, setServicesLoading] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(/** @type {string | null} */ (null));
 
-  // Changement de service avec réinitialisation immédiate de la prestation et du gestionnaire
-  const handleSelectService = (/** @type {string} */ serviceId) => {
-    setSelectedServiceId(serviceId);
-    setSelectedGestionnaireId('auto');
-    const serviceObj = SERVICES_LIST.find((s) => s.id === serviceId);
-    if (serviceObj && serviceObj.prestations && serviceObj.prestations.length > 0) {
-      setSelectedPrestationId(serviceObj.prestations[0].id);
-    }
-  };
+  // 3. Prestation + Gestionnaire
+  const [selectedPrestationId, setSelectedPrestationId] = useState(/** @type {string | null} */ (null));
+  const [gestionnaires, setGestionnaires] = useState(/** @type {any[]} */ ([]));
+  const [gestionnairesLoading, setGestionnairesLoading] = useState(false);
+  const [selectedGestionnaireId, setSelectedGestionnaireId] = useState('auto');
 
   // 4. Créneau (date + heure simples)
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
 
-  // 5. Coordonnées & Statut Client (nplan.md)CL
+  // 5. Coordonnées & Statut Client (nplan.md)
   const [isClient, setIsClient] = useState(false);
   const [accountNumber, setAccountNumber] = useState('');
   const [lastName, setLastName] = useState('');
@@ -81,21 +87,86 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
   const [createdTicket, setCreatedTicket] = useState(/** @type {any} */ (null));
 
   // Objets résolus
-  const currentAgency = agencies.find((a) => String(a.id) === String(selectedAgencyId)) || agencies[0];
-  const currentService = SERVICES_LIST.find((s) => s.id === selectedServiceId) || SERVICES_LIST[0];
-  const currentPrestation = (currentService && currentService.prestations.find((p) => p.id === selectedPrestationId)) || currentService?.prestations?.[0];
-  
-  const agencyGestionnaires = getGestionnairesForAgency(selectedAgencyId);
-  const currentGestionnaire = agencyGestionnaires.find((g) => g.id === selectedGestionnaireId) || agencyGestionnaires[0];
+  const currentAgency = agencies.find((a) => String(a.id) === String(selectedAgencyId)) || null;
+  const currentService = services.find((s) => s.id === selectedServiceId) || null;
+  const currentPrestation = currentService?.prestations?.find((p) => p.id === selectedPrestationId) || null;
+  const needsGestionnaire = currentPrestation?.serviceType === 'gestionnaire';
+  const currentGestionnaire = gestionnaires.find((g) => g.id === selectedGestionnaireId) || gestionnaires[0] || null;
 
   const currentTimeslotText = selectedDate && selectedTime
     ? `${formatDateLabel(selectedDate)} à ${selectedTime}`
     : 'À définir';
 
+  // Chargement du catalogue à la validation de l'agence (étape 1 → 2)
+  const handleAgencyValidated = async () => {
+    if (!selectedAgencyId) return;
+    setErrorMessage('');
+    setServicesLoading(true);
+    try {
+      const list = await catalogService.getAgencyPrestations(selectedAgencyId);
+      setServices(list);
+      const first = list[0] || null;
+      setSelectedServiceId(first?.id ?? null);
+      setSelectedPrestationId(first?.prestations?.[0]?.id ?? null);
+      setGestionnaires([]);
+      setSelectedGestionnaireId('auto');
+      setCurrentStep(2);
+    } catch (err) {
+      console.error('Erreur de chargement du catalogue :', err);
+      setErrorMessage('Impossible de charger les services de cette agence. Veuillez réessayer.');
+    } finally {
+      setServicesLoading(false);
+    }
+  };
+
+  // Changement de service : réinitialise prestation + gestionnaires
+  const handleSelectService = (/** @type {string} */ serviceId) => {
+    setSelectedServiceId(serviceId);
+    setSelectedGestionnaireId('auto');
+    setGestionnaires([]);
+    const serviceObj = services.find((s) => s.id === serviceId);
+    if (serviceObj?.prestations?.length) {
+      setSelectedPrestationId(serviceObj.prestations[0].id);
+    }
+  };
+
+  // Chargement des gestionnaires pour une prestation (si type gestionnaire)
+  const loadGestionnaires = async (/** @type {string} */ prestationId) => {
+    if (!selectedAgencyId || !prestationId) return;
+    const prestation = currentService?.prestations?.find((p) => p.id === prestationId);
+    if (!prestation || prestation.serviceType !== 'gestionnaire') {
+      setGestionnaires([]);
+      return;
+    }
+    setGestionnairesLoading(true);
+    setErrorMessage('');
+    try {
+      const list = await gestionnaireService.getGestionnairesWithAuto(selectedAgencyId, prestationId);
+      setGestionnaires(list);
+      setSelectedGestionnaireId('auto');
+    } catch (err) {
+      console.error('Erreur de chargement des gestionnaires :', err);
+      setErrorMessage('Impossible de charger la liste des gestionnaires.');
+    } finally {
+      setGestionnairesLoading(false);
+    }
+  };
+
+  // Changement de prestation : réinitialise le gestionnaire et recharge la liste
+  const handleSelectPrestation = (/** @type {string} */ id) => {
+    setSelectedPrestationId(id);
+    setSelectedGestionnaireId('auto');
+    loadGestionnaires(id);
+  };
+
   // Réinitialisation complète
   const handleReset = () => {
     setCurrentStep(1);
     setSelectedAgencyIdOverride(null);
+    setServices([]);
+    setSelectedServiceId(null);
+    setSelectedPrestationId(null);
+    setGestionnaires([]);
     setSelectedGestionnaireId('auto');
     setSelectedDate('');
     setSelectedTime('');
@@ -140,9 +211,9 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
         agency: currentAgency,
         service: currentService,
         prestation: currentPrestation,
-        gestionnaire: currentService?.serviceType === 'gestionnaire' ? currentGestionnaire : null,
+        gestionnaire: needsGestionnaire ? currentGestionnaire : null,
         timeslot: {
-          day: formatDateLabel(selectedDate),
+          day: formatShortDay(selectedDate),
           date: selectedDate,
           time: selectedTime,
         },
@@ -223,10 +294,10 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
               selectedAgencyId={selectedAgencyId}
               onSelectAgencyId={(id) => {
                 setSelectedAgencyIdOverride(id);
-                const a = agencies.find((ag) => ag.id === id);
+                const a = agencies.find((ag) => String(ag.id) === String(id));
                 if (a) dispatch(setReduxAgency(a));
               }}
-              onNext={() => setCurrentStep(2)}
+              onNext={handleAgencyValidated}
               theme={theme}
             />
           )}
@@ -234,11 +305,15 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
           {/* Étape 2 : Choix Service */}
           {currentStep === 2 && (
             <StepService
-              services={SERVICES_LIST}
+              services={services}
               selectedServiceId={selectedServiceId}
               onSelectServiceId={handleSelectService}
+              isLoading={servicesLoading}
               onBack={() => setCurrentStep(1)}
-              onNext={() => setCurrentStep(3)}
+              onNext={() => {
+                setCurrentStep(3);
+                loadGestionnaires(selectedPrestationId);
+              }}
               theme={theme}
             />
           )}
@@ -248,12 +323,12 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
             <StepPrestation
               prestations={currentService?.prestations || []}
               selectedPrestationId={selectedPrestationId}
-              onSelectPrestationId={(id) => setSelectedPrestationId(id)}
-              service={currentService}
-              serviceName={currentService?.shortName || currentService?.name}
-              gestionnaires={agencyGestionnaires}
+              onSelectPrestationId={handleSelectPrestation}
+              serviceName={currentService?.name}
+              gestionnaires={gestionnaires}
               selectedGestionnaireId={selectedGestionnaireId}
               onSelectGestionnaireId={(id) => setSelectedGestionnaireId(id)}
+              isLoadingGestionnaires={gestionnairesLoading}
               onBack={() => setCurrentStep(2)}
               onNext={() => setCurrentStep(4)}
               theme={theme}
@@ -291,7 +366,7 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
               agency={currentAgency}
               service={currentService}
               prestation={currentPrestation}
-              gestionnaire={currentService?.serviceType === 'gestionnaire' ? currentGestionnaire : null}
+              gestionnaire={needsGestionnaire ? currentGestionnaire : null}
               timeslotText={currentTimeslotText}
               isSubmitting={isSubmitting}
               onSubmit={handleGenerateTicket}

@@ -12,13 +12,16 @@ import {
   Plus, 
   Minus 
 } from 'lucide-react';
+import { getAffluence } from '../../../theme/affluence';
+
 const DEFAULT_CENTER = [5.3197, -4.0167];
 const DEFAULT_ZOOM = 12;
 
 /**
  * Crée un marker circulaire coloré en CSS pur (DivIcon Leaflet)
  */
-function createMarker(color, isSelected = false) {
+function createMarker(affluence, isSelected = false) {
+  const color = getAffluence(affluence).color;
   const size = isSelected ? 20 : 15;
   const border = isSelected ? '3px solid white' : '2px solid white';
   return L.divIcon({
@@ -288,7 +291,7 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
           <Marker
             key={agency.id}
             position={[agency.lat, agency.lng]}
-            icon={createMarker(primaryColor, selectedAgency?.id === agency.id)}
+            icon={createMarker(agency.affluence, selectedAgency?.id === agency.id)}
             eventHandlers={{
               click: () => onSelectAgency(agency),
             }}
@@ -299,6 +302,9 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
               </div>
               <div className="text-[11px] text-slate-500 mt-0.5">
                 {agency.commune}
+              </div>
+              <div className="text-xs text-primary-500 font-semibold mt-1">
+                {agency.currentWaitTime ? `Attente : ${agency.currentWaitTime}` : 'Affluence indisponible'}
               </div>
             </Popup>
           </Marker>

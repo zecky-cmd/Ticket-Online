@@ -6,16 +6,24 @@ import { AGENCIES_MOCK } from '../mocks/agenciesMock';
 const USE_MOCK = false;
 
 /**
- * Normalise une agence brute de l'API S2Q vers le modèle du frontend.
+ * Normalise une agence brute de l'API S2Q (agencesLive) vers le modèle du frontend.
  * @param {any} a
  */
 function normalizeAgency(a) {
   return {
     id: String(a.lg_ageid ?? a.id ?? ''),
     name: a.str_agedescription || a.name || '',
-    commune: a.str_ageville || a.commune || '',
+    district: a.str_agedistrict || a.district || '',
+    commune: a.str_agecommune || a.commune || '',
     address: a.str_agelocalisation || a.address || null,
+    hours: a.str_agehours || a.hours || '',
+    openUntil: a.str_ageopenuntil || a.openUntil || null,
     phone: a.str_agephone || a.phone || '',
+    status: a.str_agestatus || a.status || '',
+    waitMinutes: a.int_agewaitminutes ?? a.waitMinutes ?? null,
+    currentWaitTime: a.str_agecurrentwaittime || a.currentWaitTime || '',
+    countersActive: a.int_agecountersactive ?? a.countersActive ?? 0,
+    affluence: a.str_ageaffluence || a.affluence || 'indisponible',
     lat: Number(a.str_agelatitude ?? a.lat) || 0,
     lng: Number(a.str_agelongitude ?? a.lng) || 0,
   };
@@ -23,15 +31,15 @@ function normalizeAgency(a) {
 
 export const agencyService = {
   /**
-   * Récupère la liste des agences.
-   * Route réelle : GET configuration-service/public/agences
+   * Récupère la liste des agences avec leurs informations temps réel.
+   * Route réelle : GET admin-service/public/agencesLive
    *
    * @param {{ searchValue?: string, start?: number, length?: number }} [options]
    * @returns {Promise<Array>}
    */
   async getAgencies({ searchValue = '', start = 0, length = 100 } = {}) {
     if (!USE_MOCK) {
-      const response = await s2qApiClient.get(`/${S2Q_SERVICES.configuration}/public/agences`, {
+      const response = await s2qApiClient.get(`/${S2Q_SERVICES.admin}/public/agencesLive`, {
         params: {
           lg_socid: S2Q_SOCID,
           search_value: searchValue || undefined,
@@ -40,7 +48,7 @@ export const agencyService = {
         },
       });
       const list = response.data?.data || response.data || [];
-      return list.map(normalizeAgency);
+      return (Array.isArray(list) ? list : [list]).map(normalizeAgency);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -54,11 +62,11 @@ export const agencyService = {
    */
   async searchAgencies(query = '') {
     if (!USE_MOCK) {
-      const response = await s2qApiClient.get(`/${S2Q_SERVICES.configuration}/public/agences`, {
+      const response = await s2qApiClient.get(`/${S2Q_SERVICES.admin}/public/agencesLive`, {
         params: { lg_socid: S2Q_SOCID, search_value: query || undefined },
       });
       const list = response.data?.data || response.data || [];
-      return list.map(normalizeAgency);
+      return (Array.isArray(list) ? list : [list]).map(normalizeAgency);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 150));
@@ -73,17 +81,18 @@ export const agencyService = {
   },
 
   /**
-   * Récupère une agence par son identifiant.
+   * Récupère les informations temps réel d'une agence par son identifiant.
    * @param {number|string} id
    * @returns {Promise<Object|null>}
    */
   async getAgencyById(id) {
     if (!USE_MOCK) {
-      const response = await s2qApiClient.get(`/${S2Q_SERVICES.configuration}/public/agences`, {
-        params: { lg_socid: S2Q_SOCID, length: 100 },
+      const response = await s2qApiClient.get(`/${S2Q_SERVICES.admin}/public/agencesLive`, {
+        params: { lg_socid: S2Q_SOCID, lg_ageid: String(id) },
       });
       const list = response.data?.data || response.data || [];
-      return list.map(normalizeAgency).find((a) => a.id === String(id)) || null;
+      const arr = Array.isArray(list) ? list : [list];
+      return arr.map(normalizeAgency).find((a) => a.id === String(id)) || null;
     }
 
     await new Promise((resolve) => setTimeout(resolve, 100));
