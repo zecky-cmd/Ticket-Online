@@ -1,17 +1,12 @@
 import { ChevronRight } from 'lucide-react';
-
-const AFFLUENCE_COLOR = {
-  fluide:  '#008056',
-  moderee: '#f59e0b',
-  saturee: '#ef4444',
-};
+import { getAffluence } from '../../../theme/affluence';
 
 /**
  * Card horizontale d'agence — style maquette
  * Affiche : pastille statut, nom, quartier · horaire, temps en minutes, flèche
  */
 export default function AgencyCard({ agency, isSelected, onClick }) {
-  const dotColor = AFFLUENCE_COLOR[agency.affluence] ?? '#94a3b8';
+  const dotColor = getAffluence(agency.affluence).color;
 
   return (
     <button
@@ -19,7 +14,7 @@ export default function AgencyCard({ agency, isSelected, onClick }) {
       onClick={onClick}
       className={`w-full flex items-center justify-between px-4 py-3.5 border rounded-2xl transition-all cursor-pointer text-left ${
         isSelected
-          ? 'bg-[#f0faf5] border-[#008056]/40 shadow-sm ring-1 ring-[#008056]/20'
+          ? 'bg-primary-50/60 border-primary-500/40 shadow-sm ring-1 ring-primary-500/20'
           : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
       }`}
     >
@@ -53,4 +48,3 @@ export default function AgencyCard({ agency, isSelected, onClick }) {
     </button>
   );
 }
-

@@ -61,8 +61,8 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
             {/* Pastille + Titre compact */}
             <div className="flex items-center gap-2 min-w-0">
               <span className="relative flex h-2 w-2 md:h-2.5 md:w-2.5 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#008056] opacity-60" />
-                <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-[#008056]" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-500 opacity-60" />
+                <span className="relative inline-flex rounded-full h-2 w-2 md:h-2.5 md:w-2.5 bg-primary-500" />
               </span>
               <h2 className="text-sm md:text-xl font-extrabold text-slate-900 truncate">
                 Réseau des Agences
@@ -72,7 +72,7 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
             {/* Actions : Réseau Abidjan + Bouton Fermer */}
             <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
               <div className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-slate-200 bg-slate-50 text-[11px] md:text-xs font-semibold text-slate-700">
-                <MapPin className="w-3 h-3 text-[#008056]" />
+                <MapPin className="w-3 h-3 text-primary-500" />
                 <span className="hidden sm:inline">Réseau</span> Abidjan
               </div>
               <button
@@ -125,7 +125,7 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
             <List className="w-3.5 h-3.5" />
             Liste
             <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
-              activeTab === 'list' ? 'bg-[#008056] text-white' : 'bg-slate-200 text-slate-500'
+              activeTab === 'list' ? 'bg-primary-500 text-white' : 'bg-slate-200 text-slate-500'
             }`}>
               {filteredAgencies.length}
             </span>
@@ -141,6 +141,7 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGE
                 selectedAgency={selectedAgency}
                 onSelectAgency={handleSelectOnMap}
                 locateTrigger={locateTrigger}
+                primaryColor={theme?.colors?.primary}
               />
             </div>
           </div>

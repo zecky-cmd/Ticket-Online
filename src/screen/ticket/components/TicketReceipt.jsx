@@ -20,13 +20,13 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
         {/* En-tête billet */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-200">
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-[#008056]" />
+            <CheckCircle2 className="w-4 h-4 text-primary-500" />
             <span className="text-[11px] font-extrabold uppercase tracking-widest text-slate-500">
               E-TICKET OFFICIEL S2Q
             </span>
           </div>
           <span
-            className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-[#008056]"
+            className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-500"
           >
             Confirmé
           </span>
@@ -45,7 +45,7 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
           </div>
           <div className="text-sm font-bold text-slate-900">{ticket?.prestationName || ticket?.serviceName}</div>
           <div className="text-xs text-slate-500 mt-0.5 flex items-center justify-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-[#008056]" />
+            <MapPin className="w-3.5 h-3.5 text-primary-500" />
             <span>{ticket?.agency}</span>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
         <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-200 text-xs">
           <div className="p-2.5 bg-white rounded-xl border border-slate-100">
             <span className="text-slate-400 block text-[10px] uppercase font-bold flex items-center gap-1">
-              <Calendar className="w-3 h-3 text-[#008056]" /> Créneau
+              <Calendar className="w-3 h-3 text-primary-500" /> Créneau
             </span>
             <b className="text-slate-900 text-xs font-extrabold block truncate mt-0.5">
               {ticket?.appointmentTime || 'Passage immédiat'}
@@ -71,7 +71,7 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
 
           <div className="p-2.5 bg-white rounded-xl border border-slate-100">
             <span className="text-slate-400 block text-[10px] uppercase font-bold flex items-center gap-1">
-              <Layers className="w-3 h-3 text-[#008056]" /> Service
+              <Layers className="w-3 h-3 text-primary-500" /> Service
             </span>
             <b className="text-slate-900 text-xs font-extrabold block truncate mt-0.5">
               {ticket?.serviceName}
@@ -86,7 +86,7 @@ export default function TicketReceipt({ ticket, theme, onDone }) {
           )}
 
           {ticket?.isClient && ticket?.accountNumber && (
-            <div className="col-span-2 p-2 bg-emerald-50/50 rounded-xl border border-emerald-100 flex items-center justify-between text-emerald-900">
+            <div className="col-span-2 p-2 bg-primary-50/50 rounded-xl border border-primary-100 flex items-center justify-between text-primary-700">
               <span className="text-[10px] uppercase font-bold">Compte client</span>
               <b className="text-xs font-mono">{ticket.accountNumber}</b>
             </div>

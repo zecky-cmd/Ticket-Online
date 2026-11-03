@@ -18,6 +18,7 @@ export default function ServiceCards({
   className = ''
 }) {
   const primaryColor = theme?.colors?.primary || '#008056';
+  const primaryLight = theme?.colors?.primaryLight || '#E6F5F0';
 
   return (
     <div className={`w-full select-none ${className}`}>
@@ -55,7 +56,7 @@ export default function ServiceCards({
                     isPrimaryIcon ? 'text-white' : ''
                   }`}
                   style={{
-                    backgroundColor: isPrimaryIcon ? primaryColor : '#E6F5F0',
+                    backgroundColor: isPrimaryIcon ? primaryColor : primaryLight,
                     color: isPrimaryIcon ? '#FFFFFF' : primaryColor
                   }}
                 >

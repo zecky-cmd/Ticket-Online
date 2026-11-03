@@ -16,11 +16,11 @@ export default function Footer({
   className = ''
 }) {
   return (
-    <footer className={`w-full bg-white border-t border-slate-100 text-slate-500 py-1.5 sm:py-2.5 px-4 sm:px-8 lg:px-12 select-none ${className}`}>
+    <footer className={`w-full bg-surface-light border-t border-slate-200 text-slate-500 py-1.5 sm:py-2.5 px-4 sm:px-8 lg:px-12 select-none ${className}`}>
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 text-[11px] sm:text-xs">
         {/* Côté gauche : Marque en vert + Suffixe + Slogan */}
         <div className="flex items-center gap-2 text-center sm:text-left">
-          <span className="font-black text-[#008056] text-sm tracking-tight">
+          <span className="font-black text-primary-500 text-sm tracking-tight">
             {brandName}
           </span>
           {brandSuffix && (

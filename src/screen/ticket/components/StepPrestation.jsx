@@ -43,7 +43,7 @@ export default function StepPrestation({
           <label htmlFor="prestation-select" className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
             3. Sélectionnez votre opération
           </label>
-          <span className="text-[11px] text-[#008056] font-bold">
+          <span className="text-[11px] text-primary-500 font-bold">
             Pôle : {serviceName}
           </span>
         </div>
@@ -70,7 +70,7 @@ export default function StepPrestation({
               <button
                 type="button"
                 onClick={() => onSelectGestionnaireId('auto')}
-                className="text-[11px] font-bold text-[#008056] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-[11px] font-bold text-primary-500 hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <Sparkles className="w-3 h-3" />
                 Mode aléatoire
@@ -99,9 +99,9 @@ export default function StepPrestation({
 
       {/* Rappel des documents utiles */}
       {currentPrestation && (
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/70 space-y-2">
-          <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
-            <FileText className="w-4 h-4 text-[#008056] shrink-0" />
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-primary-50/60 border border-primary-200/70 space-y-2">
+          <div className="flex items-center gap-2 text-primary-700 font-bold text-xs">
+            <FileText className="w-4 h-4 text-primary-500 shrink-0" />
             <span>Documents utiles pour cette opération :</span>
           </div>
 
@@ -109,7 +109,7 @@ export default function StepPrestation({
             {currentPrestation.documents || "Pièce d'identité originale en cours de validité."}
           </p>
 
-          <div className="flex items-center gap-2 text-[11px] text-emerald-700 pt-1 border-t border-emerald-200/50">
+          <div className="flex items-center gap-2 text-[11px] text-primary-700 pt-1 border-t border-primary-200/50">
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
             <span>Présentez-vous 5 minutes avant le début de votre passage.</span>
           </div>

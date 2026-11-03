@@ -62,9 +62,9 @@ export default function TicketStepperHeader({ currentStep, onStepClick, onClose 
               <div
                 className={`h-1.5 w-full rounded-full transition-all duration-300 ${
                   isActive
-                    ? 'bg-[#008056]'
+                    ? 'bg-primary-500'
                     : isCompleted
-                    ? 'bg-[#008056]/70 group-hover:bg-[#008056]'
+                    ? 'bg-primary-500/70 group-hover:bg-primary-500'
                     : 'bg-slate-200'
                 }`}
               />
@@ -73,9 +73,9 @@ export default function TicketStepperHeader({ currentStep, onStepClick, onClose 
               <span
                 className={`text-[11px] sm:text-xs truncate font-bold transition-colors ${
                   isActive
-                    ? 'text-[#008056]'
+                    ? 'text-primary-500'
                     : isCompleted
-                    ? 'text-slate-700 group-hover:text-[#008056]'
+                    ? 'text-slate-700 group-hover:text-primary-500'
                     : 'text-slate-400'
                 }`}
               >

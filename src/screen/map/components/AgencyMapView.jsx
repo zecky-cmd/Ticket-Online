@@ -12,12 +12,7 @@ import {
   Plus, 
   Minus 
 } from 'lucide-react';
-
-const AFFLUENCE_COLOR = {
-  fluide:  '#008056',
-  moderee: '#f59e0b',
-  saturee: '#ef4444',
-};
+import { getAffluence } from '../../../theme/affluence';
 
 const DEFAULT_CENTER = [5.3197, -4.0167];
 const DEFAULT_ZOOM = 12;
@@ -26,7 +21,7 @@ const DEFAULT_ZOOM = 12;
  * Crée un marker circulaire coloré en CSS pur (DivIcon Leaflet)
  */
 function createColoredMarker(affluence, isSelected = false) {
-  const color = AFFLUENCE_COLOR[affluence] ?? '#94a3b8';
+  const color = getAffluence(affluence).color;
   const size = isSelected ? 20 : 15;
   const border = isSelected ? '3px solid white' : '2px solid white';
   return L.divIcon({
@@ -68,7 +63,8 @@ function MapControlsOverlay({
   onRefresh, 
   isRefreshing,
   locateTrigger, 
-  onLocationFound 
+  onLocationFound,
+  primaryColor = '#008056'
 }) {
   const map = useMap();
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -89,7 +85,7 @@ function MapControlsOverlay({
         radius: 8,
         color: '#ffffff',
         weight: 3,
-        fillColor: '#008056',
+        fillColor: primaryColor,
         fillOpacity: 1,
       }).addTo(map);
       marker.bindPopup('<div class="font-bold text-xs text-slate-800">Votre position actuelle</div>').openPopup();
@@ -109,7 +105,7 @@ function MapControlsOverlay({
       map.off('locationfound', handleFound);
       map.off('locationerror', handleError);
     };
-  }, [locateTrigger, map, onLocationFound]);
+  }, [locateTrigger, map, onLocationFound, primaryColor]);
 
   // Actions de navigation directionnelle (pan)
   const panDistance = 140;
@@ -132,9 +128,9 @@ function MapControlsOverlay({
             map.locate({ setView: true, maxZoom: 14 });
           }}
           title="Centrer sur ma position"
-          className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/95 backdrop-blur-xs text-slate-700 hover:text-[#008056] hover:bg-white rounded-full shadow-md flex items-center justify-center border border-slate-200/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/95 backdrop-blur-xs text-slate-700 hover:text-primary-500 hover:bg-white rounded-full shadow-md flex items-center justify-center border border-slate-200/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <LocateFixed className={`w-4 h-4 sm:w-5 sm:h-5 ${isLocating ? 'animate-spin text-[#008056]' : ''}`} />
+          <LocateFixed className={`w-4 h-4 sm:w-5 sm:h-5 ${isLocating ? 'animate-spin text-primary-500' : ''}`} />
         </button>
 
         {/* Bouton Rafraîchir / Reset vue (Haut Droite) */}
@@ -145,9 +141,9 @@ function MapControlsOverlay({
             else map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate: true });
           }}
           title="Réinitialiser la carte"
-          className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/95 backdrop-blur-xs text-slate-700 hover:text-[#008056] hover:bg-white rounded-full shadow-md flex items-center justify-center border border-slate-200/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/95 backdrop-blur-xs text-slate-700 hover:text-primary-500 hover:bg-white rounded-full shadow-md flex items-center justify-center border border-slate-200/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <RotateCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefreshing ? 'animate-spin text-[#008056]' : ''}`} />
+          <RotateCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefreshing ? 'animate-spin text-primary-500' : ''}`} />
         </button>
       </div>
 
@@ -226,7 +222,7 @@ function MapControlsOverlay({
             className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full shadow-md flex items-center justify-center border transition-all cursor-pointer ${
               isNavOpen 
                 ? 'bg-slate-900 text-white border-slate-900 shadow-slate-900/30' 
-                : 'bg-white/95 backdrop-blur-xs text-slate-700 hover:text-[#008056] hover:bg-white border-slate-200 hover:scale-105 active:scale-95'
+                : 'bg-white/95 backdrop-blur-xs text-slate-700 hover:text-primary-500 hover:bg-white border-slate-200 hover:scale-105 active:scale-95'
             }`}
           >
             <div className="relative w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
@@ -258,7 +254,7 @@ function MapRecenter({ lat, lng }) {
 /**
  * Carte Leaflet principale
  */
-export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency, locateTrigger }) {
+export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency, locateTrigger, primaryColor = '#008056' }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = (map) => {
@@ -299,6 +295,7 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
           onRefresh={handleRefresh}
           isRefreshing={isRefreshing}
           locateTrigger={locateTrigger}
+          primaryColor={primaryColor}
         />
 
         {/* Markers des agences */}
@@ -318,7 +315,7 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
               <div className="text-[11px] text-slate-500 mt-0.5">
                 {agency.district} · {agency.openUntil ? `Jusqu'à ${agency.openUntil}` : agency.hours}
               </div>
-              <div className="text-xs text-[#008056] font-semibold mt-1">
+              <div className="text-xs text-primary-500 font-semibold mt-1">
                 Attente : {agency.waitMinutes} min
               </div>
             </Popup>

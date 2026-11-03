@@ -71,7 +71,7 @@ export default function StepCustomerInfo({
             onClick={() => setIsClient(true)}
             className={`min-h-[46px] px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
               isClient
-                ? 'bg-[#008056] border-[#008056] text-white shadow-xs'
+                ? 'bg-primary-500 border-primary-500 text-white shadow-xs'
                 : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100/80'
             }`}
           >
@@ -87,7 +87,7 @@ export default function StepCustomerInfo({
             }}
             className={`min-h-[46px] px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
               !isClient
-                ? 'bg-[#008056] border-[#008056] text-white shadow-xs'
+                ? 'bg-primary-500 border-primary-500 text-white shadow-xs'
                 : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100/80'
             }`}
           >
@@ -111,7 +111,7 @@ export default function StepCustomerInfo({
                 placeholder="ex: CI092 01001 001234567890 12"
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
-                className="w-full pl-10 pr-4 min-h-[46px] bg-white border border-slate-200 focus:border-[#008056] rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 shadow-2xs font-medium"
+                className="w-full pl-10 pr-4 min-h-[46px] bg-white border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
               />
             </div>
             <p className="text-[10px] text-slate-400 mt-1 pl-1">
@@ -119,7 +119,7 @@ export default function StepCustomerInfo({
             </p>
           </div>
         ) : (
-          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-[#008056] font-medium">
+          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-primary-500 font-medium">
             <Sparkles className="w-3.5 h-3.5 shrink-0" />
             <span>Bienvenue ! Vos démarches d'ouverture et d'orientation seront facilitées.</span>
           </div>
@@ -141,7 +141,7 @@ export default function StepCustomerInfo({
               placeholder="ex: Yao"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full pl-10 pr-3 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-[#008056] rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 shadow-2xs font-medium"
+              className="w-full pl-10 pr-3 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
             />
           </div>
         </div>
@@ -159,7 +159,7 @@ export default function StepCustomerInfo({
               placeholder="ex: Koffi Jean"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full pl-10 pr-3 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-[#008056] rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 shadow-2xs font-medium"
+              className="w-full pl-10 pr-3 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
             />
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function StepCustomerInfo({
             placeholder="07 00 00 00 00"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-[#008056] rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 shadow-2xs font-medium"
+            className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
           />
         </div>
       </div>
@@ -197,7 +197,7 @@ export default function StepCustomerInfo({
             placeholder="jean.yao@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-[#008056] rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#008056]/20 shadow-2xs font-medium"
+            className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
           />
         </div>
       </div>
@@ -222,7 +222,7 @@ export default function StepCustomerInfo({
           </div>
           <div>
             <span className="text-slate-400 block text-[10px]">Créneau :</span>
-            <strong className="text-[#008056] truncate block">{timeslotText}</strong>
+            <strong className="text-primary-500 truncate block">{timeslotText}</strong>
           </div>
           {gestionnaire && (
             <div className="col-span-2 pt-1 border-t border-slate-200/50">
@@ -268,7 +268,7 @@ export default function StepCustomerInfo({
       </div>
 
       <p className="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1.5 pt-1">
-        <CheckCircle2 className="w-3.5 h-3.5 text-[#008056]" />
+        <CheckCircle2 className="w-3.5 h-3.5 text-primary-500" />
         Votre ticket officiel S2Q sera généré immédiatement et sécurisé par QR Code.
       </p>
     </form>

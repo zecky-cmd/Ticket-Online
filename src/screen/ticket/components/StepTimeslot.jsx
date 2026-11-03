@@ -44,17 +44,17 @@ export default function StepTimeslot({
             onClick={() => setTimeslotMode('immediate')}
             className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[76px] ${
               timeslotMode === 'immediate'
-                ? 'border-[#008056] bg-emerald-50/50 ring-2 ring-[#008056]/20 shadow-xs'
+                ? 'border-primary-500 bg-primary-50/50 ring-2 ring-primary-500/20 shadow-xs'
                 : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600'
             }`}
           >
             <div className="flex items-center justify-between w-full">
               <span className="flex items-center gap-1.5 text-xs font-extrabold text-slate-900">
-                <Zap className="w-4 h-4 text-[#008056]" />
+                <Zap className="w-4 h-4 text-primary-500" />
                 Passage immédiat
               </span>
               {timeslotMode === 'immediate' && (
-                <div className="w-4 h-4 rounded-full bg-[#008056] text-white flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-primary-500 text-white flex items-center justify-center">
                   <Check className="w-2.5 h-2.5 stroke-[3]" />
                 </div>
               )}
@@ -69,17 +69,17 @@ export default function StepTimeslot({
             onClick={() => setTimeslotMode('scheduled')}
             className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[76px] ${
               timeslotMode === 'scheduled'
-                ? 'border-[#008056] bg-emerald-50/50 ring-2 ring-[#008056]/20 shadow-xs'
+                ? 'border-primary-500 bg-primary-50/50 ring-2 ring-primary-500/20 shadow-xs'
                 : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600'
             }`}
           >
             <div className="flex items-center justify-between w-full">
               <span className="flex items-center gap-1.5 text-xs font-extrabold text-slate-900">
-                <Calendar className="w-4 h-4 text-[#008056]" />
+                <Calendar className="w-4 h-4 text-primary-500" />
                 Rendez-vous
               </span>
               {timeslotMode === 'scheduled' && (
-                <div className="w-4 h-4 rounded-full bg-[#008056] text-white flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-primary-500 text-white flex items-center justify-center">
                   <Check className="w-2.5 h-2.5 stroke-[3]" />
                 </div>
               )}
@@ -109,7 +109,7 @@ export default function StepTimeslot({
                     onClick={() => setSelectedDay(day.id)}
                     className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-[#008056] bg-[#008056] text-white font-bold shadow-2xs'
+                        ? 'border-primary-500 bg-primary-500 text-white font-bold shadow-2xs'
                         : 'border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700'
                     }`}
                   >
@@ -143,8 +143,8 @@ export default function StepTimeslot({
                       isBusy
                         ? 'bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed line-through'
                         : isSelected
-                        ? 'bg-[#008056] border-[#008056] text-white shadow-xs scale-[1.03]'
-                        : 'bg-white border-slate-200 text-slate-800 hover:border-[#008056]/50 hover:bg-emerald-50/30'
+                        ? 'bg-primary-500 border-primary-500 text-white shadow-xs scale-[1.03]'
+                        : 'bg-white border-slate-200 text-slate-800 hover:border-primary-500/50 hover:bg-primary-50/30'
                     }`}
                   >
                     <span>{slot.time}</span>
@@ -158,7 +158,7 @@ export default function StepTimeslot({
 
       {/* Récapitulatif du choix de créneau */}
       <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-2.5 text-xs text-slate-700">
-        <Clock className="w-4 h-4 text-[#008056] shrink-0" />
+        <Clock className="w-4 h-4 text-primary-500 shrink-0" />
         <span>
           {timeslotMode === 'immediate' ? (
             <>Prise en charge à votre arrivée dès émission du ticket.</>

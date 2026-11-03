@@ -1,9 +1,4 @@
-// Mapping statut affluence → couleur dot
-const AFFLUENCE_CONFIG = {
-  fluide:  { label: 'Fluides',   color: '#008056' },
-  moderee: { label: 'Modérées',  color: '#f59e0b' },
-  saturee: { label: 'Saturées',  color: '#ef4444' },
-};
+import { AFFLUENCE } from '../../../theme/affluence';
 
 const FILTERS = ['toutes', 'fluide', 'moderee', 'saturee'];
 
@@ -17,7 +12,7 @@ export default function AgencyFilterBar({ activeFilter, onFilterChange }) {
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
         {FILTERS.map((f) => {
           const isActive = activeFilter === f;
-          const config = AFFLUENCE_CONFIG[f];
+          const config = AFFLUENCE[f];
           return (
             <button
               key={f}
@@ -35,7 +30,7 @@ export default function AgencyFilterBar({ activeFilter, onFilterChange }) {
                   style={{ backgroundColor: config.color }}
                 />
               )}
-              {f === 'toutes' ? 'Toutes' : config?.label}
+              {f === 'toutes' ? 'Toutes' : config?.shortLabel}
             </button>
           );
         })}

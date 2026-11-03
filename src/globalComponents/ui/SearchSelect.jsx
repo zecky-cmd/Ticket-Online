@@ -152,14 +152,14 @@ export default function SearchSelect({
           flex items-center gap-2 px-4 min-h-[52px] w-full
           bg-white border rounded-xl transition-all duration-150
           ${isOpen
-            ? 'border-[#008056] ring-2 ring-[#008056]/15 shadow-sm'
+            ? 'border-primary-500 ring-2 ring-primary-500/15 shadow-sm'
             : 'border-slate-200 hover:border-slate-300 shadow-xs'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
         {/* Icône loupe visible uniquement quand ouvert */}
-        {isOpen && <Search className="w-4 h-4 text-[#008056] shrink-0" />}
+        {isOpen && <Search className="w-4 h-4 text-primary-500 shrink-0" />}
 
         {/* ── FERMÉ : bouton placeholder/valeur ── */}
         {!isOpen && (
@@ -229,7 +229,7 @@ export default function SearchSelect({
           aria-label={isOpen ? 'Fermer' : 'Ouvrir'}
         >
           <ChevronDown
-            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#008056]' : ''}`}
+            className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180 text-primary-500' : ''}`}
           />
         </button>
       </div>
@@ -263,12 +263,12 @@ export default function SearchSelect({
                     onClick={() => select(opt)}
                     className={`
                       flex items-center gap-3 px-4 py-2.5 text-sm cursor-pointer select-none transition-colors
-                      ${isHighlight ? 'bg-[#008056]/8 text-[#008056]' : 'text-slate-700 hover:bg-slate-50'}
+                      ${isHighlight ? 'bg-primary-500/8 text-primary-500' : 'text-slate-700 hover:bg-slate-50'}
                       ${isSelected  ? 'font-semibold' : 'font-normal'}
                     `}
                   >
                     <span className="flex-1 truncate">{optLabel}</span>
-                    {isSelected && <Check className="w-4 h-4 text-[#008056] shrink-0" />}
+                    {isSelected && <Check className="w-4 h-4 text-primary-500 shrink-0" />}
                   </li>
                 );
               })

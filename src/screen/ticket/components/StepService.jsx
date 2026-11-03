@@ -49,14 +49,14 @@ export default function StepService({
                 {currentService.description}
               </p>
             </div>
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#008056]/10 text-[#008056] shrink-0 flex items-center gap-1">
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-primary-500/10 text-primary-500 shrink-0 flex items-center gap-1">
               <Tag className="w-3 h-3" />
               Série {currentService.codePrefix}
             </span>
           </div>
 
           <div className="flex items-center gap-2 p-2.5 bg-white rounded-xl border border-slate-100 text-xs">
-            <Clock className="w-4 h-4 text-[#008056] shrink-0" />
+            <Clock className="w-4 h-4 text-primary-500 shrink-0" />
             <span className="text-slate-500 font-medium">
               Durée moyenne de prise en charge : <strong className="text-slate-800">{currentService.avgDuration}</strong>
             </span>

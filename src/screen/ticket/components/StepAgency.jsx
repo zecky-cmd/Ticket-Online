@@ -1,6 +1,7 @@
 import { MapPin, Clock, Users, ArrowRight } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
 import SearchSelect from '../../../globalComponents/ui/SearchSelect';
+import { getAffluence } from '../../../theme/affluence';
 
 /**
  * Étape 1 : Choix de l'agence (Liste déroulante)
@@ -21,14 +22,7 @@ export default function StepAgency({
 }) {
   const currentAgency = agencies.find((a) => a.id === Number(selectedAgencyId)) || null;
 
-  /** @type {Record<string, { label: string; bg: string; text: string; border: string }>} */
-  const badges = {
-    fluide:  { label: 'Fluide (< 10 min)',     bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-    moderee: { label: 'Modérée (10-25 min)',    bg: 'bg-amber-50',   text: 'text-amber-700',   border: 'border-amber-200'   },
-    saturee: { label: 'Saturée (> 25 min)',     bg: 'bg-rose-50',    text: 'text-rose-700',    border: 'border-rose-200'    },
-  };
-  const affluenceKey   = currentAgency?.affluence || 'fluide';
-  const affluenceBadge = badges[affluenceKey] || badges.fluide;
+  const affluenceBadge = getAffluence(currentAgency?.affluence);
 
   return (
     <div className="space-y-5 animate-in fade-in-50 duration-200">
@@ -53,7 +47,7 @@ export default function StepAgency({
             <div>
               <h4 className="font-extrabold text-sm sm:text-base text-slate-900">{currentAgency.name}</h4>
               <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                <MapPin className="w-3.5 h-3.5 text-[#008056] shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-primary-500 shrink-0" />
                 <span>{currentAgency.address || currentAgency.commune}</span>
               </p>
             </div>
@@ -66,7 +60,7 @@ export default function StepAgency({
 
           <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/60 text-xs">
             <div className="p-2.5 bg-white rounded-xl border border-slate-100 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#008056] shrink-0" />
+              <Clock className="w-4 h-4 text-primary-500 shrink-0" />
               <div>
                 <span className="text-[10px] text-slate-400 font-bold block uppercase">Horaires</span>
                 <span className="font-bold text-slate-800 text-[11px] sm:text-xs">
@@ -76,7 +70,7 @@ export default function StepAgency({
             </div>
 
             <div className="p-2.5 bg-white rounded-xl border border-slate-100 flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#008056] shrink-0" />
+              <Users className="w-4 h-4 text-primary-500 shrink-0" />
               <div>
                 <span className="text-[10px] text-slate-400 font-bold block uppercase">Guichets</span>
                 <span className="font-bold text-slate-800 text-[11px] sm:text-xs">
