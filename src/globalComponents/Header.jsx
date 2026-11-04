@@ -28,11 +28,11 @@ export default function Header({
       <div className="max-w-6xl mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between gap-3">
         {/* Identité de Marque Gauche (Synapse) */}
         <HeaderBrand
-          // logo={logo}
+          logo={logo}
           abbreviation={abbreviation}
-          // definition={definition}
-          // tag={tag}
-          // primaryColor={primaryColor}
+          definition={definition}
+          tag={tag}
+          primaryColor={primaryColor}
           onClick={onLogoClick}
           {...brandConfig}
         />

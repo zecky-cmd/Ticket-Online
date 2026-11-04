@@ -193,7 +193,8 @@ export default function SearchSelect({
             aria-label="Rechercher"
             aria-haspopup="listbox"
             aria-expanded={true}
-            className="flex-1 text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-transparent outline-none"
+            className="flex-1 text-sm font-medium text-slate-800 placeholder:text-slate-400 bg-transparent border-0 outline-none focus:outline-none focus:ring-0 focus:border-0 shadow-none appearance-none p-0"
+            style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
           />
         )}
 
