@@ -10,9 +10,9 @@ const SERVEUR = {
   REVERSE_PROXY: 'https://gfadiffuseur-backend.apps.bni',
   PORT_GFA: '9081',
   RACINE_API: 's2q',
-  // Identifiant société (client) — requis par plusieurs endpoints
-  SOCID: import.meta.env.VITE_S2Q_SOCID || '13711124025984277964',
-  SOCCODE: import.meta.env.VITE_S2Q_SOCCODE || '',
+  // Identifiants société (client) — à configurer dans le fichier .env
+  SOCID: import.meta.env.S2Q_SOCID || '',
+  SOCCODE: import.meta.env.S2Q_SOCCODE || '',
 };
 
 const MODE_PROD = import.meta.env.MODE;
