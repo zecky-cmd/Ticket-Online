@@ -161,11 +161,16 @@ textarea {
   background: var(--color-primary-500);
 }
 
-/* Focus ring — accessibilité */
-*:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
-  border-radius: var(--radius-input);
+/* Focus ring — accessibilité
+   Placé dans @layer base pour que les utilitaires Tailwind (ex: focus:outline-hidden)
+   puissent le surcharger — évite le double contour "boîte dans la boîte" sur les
+   inputs personnalisés (SearchSelect, champs de formulaire…). */
+@layer base {
+  *:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-input);
+  }
 }
 
 /* Wave divider SVG — courbe verte BNI séparant les sections */
