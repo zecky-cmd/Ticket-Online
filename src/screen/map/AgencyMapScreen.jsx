@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { X, MapPin, Map, List } from 'lucide-react';
-import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
 import { openModal } from '../../features/modalSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
 import AgencyFilterBar from './components/AgencyFilterBar';
@@ -13,7 +12,7 @@ import AgencyMapView from './components/AgencyMapView';
  * Screen / Modal Réseau des Agences
  * Optimisé Responsive Mobile-First : libère 60% d'espace supplémentaire pour la carte sur smartphone
  */
-export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
+export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = [] }) {
   const dispatch = useDispatch();
   const [activeFilter, setActiveFilter] = useState('toutes');
   const [selectedAgency, setSelectedAgency] = useState(agencies[0] || null);

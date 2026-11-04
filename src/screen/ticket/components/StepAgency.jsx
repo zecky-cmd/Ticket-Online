@@ -16,6 +16,7 @@ export default function StepAgency({
   agencies,
   selectedAgencyId,
   onSelectAgencyId,
+  isLoading = false,
   onNext,
   theme,
 }) {
@@ -27,13 +28,14 @@ export default function StepAgency({
         <SearchSelect
           id="agency-select"
           label="1. Sélectionnez votre agence bancaire"
-          placeholder="Sélectionner une agence…"
+          placeholder={isLoading ? 'Chargement des agences…' : 'Sélectionner une agence…'}
           options={agencies}
           valueKey="id"
           labelKey="name"
           renderLabel={(a) => (a.commune ? `${a.name} — ${a.commune}` : a.name)}
           value={currentAgency?.id ?? null}
           onChange={(id) => id !== null && onSelectAgencyId(id)}
+          disabled={isLoading}
         />
       </div>
 

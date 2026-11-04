@@ -1,9 +1,6 @@
 import { s2qApiClient } from './api';
 import { S2Q_SERVICES } from './serveur';
 
-// Basculer sur true pour simuler la création de ticket sans backend
-const USE_MOCK = false;
-
 /**
  * Service Métier : Gestion des Tickets / Rendez-vous en ligne S2Q
  */
@@ -45,90 +42,51 @@ export const ticketService = {
 
     const resolvedFullName = fullName || [lastName, firstName].filter(Boolean).join(' ') || 'Client';
 
-    if (!USE_MOCK) {
-      // Payload conforme au contrat backend S2Q (POST /rendezvous)
-      const body = {
-        lg_ageid: String(agency?.id ?? ''),
-        lg_presid: String(prestation?.id ?? ''),
-        lg_usrid: String(gestionnaire?.usrid ?? ''),
-        int_ticclient: isClient ? '1' : '0',
-        timeslot: {
-          day: timeslot?.day || '',
-          date: timeslot?.date || '',
-          time: timeslot?.time || '',
-        },
-        serviceName: prestation?.name || '',
-        str_ncompteclient: isClient ? accountNumber : '',
-        str_ticemail: email || '',
-        str_ticlangueclient: 'fr',
-        str_ticnom: lastName || '',
-        str_ticprenoms: firstName || '',
-        str_ticphone: phoneNumber || '',
-      };
-
-      const response = await s2qApiClient.post(`/${S2Q_SERVICES.admin}/public/rendezvous`, body);
-      const data = response.data?.data || response.data;
-
-      return {
-        id: data.lg_ticid || null,
-        rdvId: data.lg_rdvid || null,
-        code: data.str_ticnumero || '',
-        agency: data.str_agedescription || agency?.name || '',
-        serviceName: data.str_sername || service?.name || '',
-        prestationName: data.str_presname || prestation?.name || '',
-        gestionnaire: gestionnaire?.isAuto
-          ? 'Premier disponible (Attribution auto)'
-          : gestionnaire?.name || '',
-        isClient: Boolean(isClient),
-        accountNumber: isClient ? accountNumber : '',
-        appointmentTime: timeslot?.date && timeslot?.time
-          ? `${timeslot.day || timeslot.date} à ${timeslot.time}`
-          : 'Créneau à confirmer',
-        fullName: resolvedFullName,
-        phoneNumber: phoneNumber || '',
-        email: email || '',
+    // Payload conforme au contrat backend S2Q (POST /rendezvous)
+    const body = {
+      lg_ageid: String(agency?.id ?? ''),
+      lg_presid: String(prestation?.id ?? ''),
+      lg_usrid: String(gestionnaire?.usrid ?? ''),
+      int_ticclient: isClient ? '1' : '0',
+      timeslot: {
+        day: timeslot?.day || '',
         date: timeslot?.date || '',
         time: timeslot?.time || '',
-        status: data.str_rdvstatut || 'pending',
-        createdAt: data.dt_created || null,
-      };
-    }
+      },
+      serviceName: prestation?.name || '',
+      str_ncompteclient: isClient ? accountNumber : '',
+      str_ticemail: email || '',
+      str_ticlangueclient: 'fr',
+      str_ticnom: lastName || '',
+      str_ticprenoms: firstName || '',
+      str_ticphone: phoneNumber || '',
+    };
 
-    // --- LOGIQUE MOCK RÉALISTE ---
-    await new Promise((resolve) => setTimeout(resolve, 350));
-
-    const agencyName = agency?.name || 'Agence';
-    const sName = service?.name || 'Accueil';
-    const pName = prestation?.name || 'Accueil Général';
-    const randNum = Math.floor(100 + Math.random() * 900);
-    const dateNow = new Date();
-
-    const gestionnaireName = gestionnaire?.isAuto
-      ? 'Premier disponible (Attribution auto)'
-      : gestionnaire?.name || 'Guichetier S2Q';
-
-    const appointmentTime = timeslot?.date && timeslot?.time
-      ? `${timeslot.day || timeslot.date} à ${timeslot.time}`
-      : 'Créneau à confirmer';
+    const response = await s2qApiClient.post(`/${S2Q_SERVICES.admin}/public/rendezvous`, body);
+    const data = response.data?.data || response.data;
 
     return {
-      id: `TKT-${Date.now()}`,
-      code: `TKT-${randNum}`,
-      agency: agencyName,
-      serviceName: sName,
-      prestationName: pName,
-      gestionnaire: gestionnaireName,
+      id: data.lg_ticid || null,
+      rdvId: data.lg_rdvid || null,
+      code: data.str_ticnumero || '',
+      agency: data.str_agedescription || agency?.name || '',
+      serviceName: data.str_sername || service?.name || '',
+      prestationName: data.str_presname || prestation?.name || '',
+      gestionnaire: gestionnaire?.isAuto
+        ? 'Premier disponible (Attribution auto)'
+        : gestionnaire?.name || '',
       isClient: Boolean(isClient),
       accountNumber: isClient ? accountNumber : '',
-      timeslot: timeslot || { day: '', date: '', time: '' },
-      appointmentTime,
+      appointmentTime: timeslot?.date && timeslot?.time
+        ? `${timeslot.day || timeslot.date} à ${timeslot.time}`
+        : 'Créneau à confirmer',
       fullName: resolvedFullName,
       phoneNumber: phoneNumber || '',
       email: email || '',
-      date: dateNow.toLocaleDateString('fr-FR'),
-      time: dateNow.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-      status: 'pending',
-      createdAt: dateNow.toISOString(),
+      date: timeslot?.date || '',
+      time: timeslot?.time || '',
+      status: data.str_rdvstatut || 'pending',
+      createdAt: data.dt_created || null,
     };
   },
 };

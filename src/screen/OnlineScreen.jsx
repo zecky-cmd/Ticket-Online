@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { THEMES } from '../theme/themes';
 import { SLIDES } from '../mocks/slidesMock';
-import { AGENCIES } from '../mocks/agenciesMock';
 import { agencyService } from '../services/agencyService';
 import { openModal, closeModal } from '../features/modalSlice';
 import Layout from '../layout/Layout';
@@ -17,7 +16,7 @@ import TicketScreen from './ticket/TicketScreen';
 import SatisfactionScreen from './satisfaction/SatisfactionScreen';
 import AgencyMapScreen from './map/AgencyMapScreen';
 
-export { THEMES, SLIDES, AGENCIES };
+export { THEMES, SLIDES };
 
 /**
  * Screen Principal : Portail Client En Ligne (S2Q)
@@ -41,7 +40,8 @@ export default function OnlineScreen({
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [agencies, setAgencies] = useState(AGENCIES);
+  const [agencies, setAgencies] = useState([]);
+  const [agenciesLoading, setAgenciesLoading] = useState(true);
 
   // Défilement automatique du carrousel toutes les 6 secondes
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function OnlineScreen({
     return () => clearInterval(interval);
   }, [isPaused, slides.length]);
 
-  // Chargement des agences depuis l'API (repli sur les données locales en cas d'échec)
+  // Chargement des agences depuis l'API
   useEffect(() => {
     let active = true;
     agencyService
@@ -61,8 +61,10 @@ export default function OnlineScreen({
         if (active && Array.isArray(data)) setAgencies(data);
       })
       .catch((err) => {
-        console.error('Chargement des agences échoué, repli sur les données locales.', err);
-        if (active) setAgencies(AGENCIES);
+        console.error('Chargement des agences échoué.', err);
+      })
+      .finally(() => {
+        if (active) setAgenciesLoading(false);
       });
     return () => {
       active = false;
@@ -143,6 +145,7 @@ export default function OnlineScreen({
         onClose={() => dispatch(closeModal())}
         theme={theme}
         agencies={agencies}
+        agenciesLoading={agenciesLoading}
       />
 
       <SatisfactionScreen

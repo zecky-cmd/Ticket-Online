@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AlertCircle, X } from 'lucide-react';
-import { AGENCIES_MOCK } from '../../mocks/agenciesMock';
 import { catalogService } from '../../services/catalogService';
 import { gestionnaireService } from '../../services/gestionnaireService';
 import { ticketService } from '../../services/ticketService';
@@ -47,7 +46,7 @@ function formatShortDay(iso) {
  * @param {any} [props.theme]
  * @param {any[]} [props.agencies]
  */
-export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCIES_MOCK }) {
+export default function TicketScreen({ isOpen, onClose, theme, agencies = [], agenciesLoading = false }) {
   const dispatch = useDispatch();
   const reduxSelectedAgency = useSelector((state) => /** @type {any} */ (state)?.agency?.selectedAgency);
 
@@ -292,6 +291,7 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = AGENCI
             <StepAgency
               agencies={agencies}
               selectedAgencyId={selectedAgencyId}
+              isLoading={agenciesLoading}
               onSelectAgencyId={(id) => {
                 setSelectedAgencyIdOverride(id);
                 const a = agencies.find((ag) => String(ag.id) === String(id));
