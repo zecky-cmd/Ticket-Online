@@ -23,7 +23,7 @@ export default function StepService({
   onNext,
   theme,
 }) {
-  const currentService = services.find((s) => s.id === selectedServiceId) || services[0];
+  const currentService = services.find((s) => s.id === selectedServiceId) || null;
   const prestationCount = currentService?.prestations?.length || 0;
 
   return (

@@ -104,9 +104,8 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = [], ag
     try {
       const list = await catalogService.getAgencyPrestations(selectedAgencyId);
       setServices(list);
-      const first = list[0] || null;
-      setSelectedServiceId(first?.id ?? null);
-      setSelectedPrestationId(first?.prestations?.[0]?.id ?? null);
+      setSelectedServiceId(null);
+      setSelectedPrestationId(null);
       setGestionnaires([]);
       setSelectedGestionnaireId('auto');
       setCurrentStep(2);
@@ -118,15 +117,12 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = [], ag
     }
   };
 
-  // Changement de service : réinitialise prestation + gestionnaires
+  // Changement de service : réinitialise prestation + gestionnaires (aucune pré-sélection)
   const handleSelectService = (/** @type {string} */ serviceId) => {
     setSelectedServiceId(serviceId);
+    setSelectedPrestationId(null);
     setSelectedGestionnaireId('auto');
     setGestionnaires([]);
-    const serviceObj = services.find((s) => s.id === serviceId);
-    if (serviceObj?.prestations?.length) {
-      setSelectedPrestationId(serviceObj.prestations[0].id);
-    }
   };
 
   // Chargement des gestionnaires pour une prestation (si type gestionnaire)
@@ -178,6 +174,11 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = [], ag
   const handleGenerateTicket = async (/** @type {any} */ e) => {
     if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
+    }
+
+    if (!currentAgency || !currentService || !currentPrestation) {
+      setErrorMessage('Veuillez sélectionner une agence, un service et une opération.');
+      return;
     }
 
     if (!selectedDate || !selectedTime) {

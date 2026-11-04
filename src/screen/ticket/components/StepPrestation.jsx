@@ -31,7 +31,7 @@ export default function StepPrestation({
   onNext,
   theme,
 }) {
-  const currentPrestation = prestations.find((p) => p.id === selectedPrestationId) || prestations[0];
+  const currentPrestation = prestations.find((p) => p.id === selectedPrestationId) || null;
   const isGestionnaireService = currentPrestation?.serviceType === 'gestionnaire';
   const currentGestionnaire = gestionnaires.find((g) => g.id === selectedGestionnaireId) || gestionnaires[0];
 
@@ -140,7 +140,7 @@ export default function StepPrestation({
           primaryColor={theme?.colors?.primary || '#008056'}
           iconEnd={ArrowRight}
           onClick={onNext}
-          disabled={isGestionnaireService && isLoadingGestionnaires}
+          disabled={!currentPrestation || (isGestionnaireService && isLoadingGestionnaires)}
           className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
         >
           Valider et choisir le créneau
