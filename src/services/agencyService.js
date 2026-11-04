@@ -6,6 +6,20 @@ import { AGENCIES_MOCK } from '../mocks/agenciesMock';
 const USE_MOCK = false;
 
 /**
+ * Parse une coordonnée : null si absente, non numérique ou hors plage
+ * (filtre les données de test absurdes du type lat=80000, lng=-2404).
+ * @param {any} v - Valeur brute
+ * @param {boolean} isLat - true = latitude (|v| <= 90), false = longitude (|v| <= 180)
+ */
+function parseCoord(v, isLat) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = Number(v);
+  if (!Number.isFinite(n)) return null;
+  const max = isLat ? 90 : 180;
+  return Math.abs(n) <= max ? n : null;
+}
+
+/**
  * Normalise une agence brute de l'API S2Q (agencesLive) vers le modèle du frontend.
  * @param {any} a
  */
@@ -24,8 +38,8 @@ function normalizeAgency(a) {
     currentWaitTime: a.str_agecurrentwaittime || a.currentWaitTime || '',
     countersActive: a.int_agecountersactive ?? a.countersActive ?? 0,
     affluence: a.str_ageaffluence || a.affluence || 'indisponible',
-    lat: Number(a.str_agelatitude ?? a.lat) || 0,
-    lng: Number(a.str_agelongitude ?? a.lng) || 0,
+    lat: parseCoord(a.str_agelatitude ?? a.lat, true),
+    lng: parseCoord(a.str_agelongitude ?? a.lng, false),
   };
 }
 

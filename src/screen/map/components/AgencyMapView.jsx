@@ -233,7 +233,7 @@ function MapControlsOverlay({
 function MapRecenter({ lat, lng }) {
   const map = useMap();
   useEffect(() => {
-    if (lat && lng) {
+    if (lat != null && lng != null) {
       map.setView([lat, lng], 14, { animate: true });
     }
   }, [lat, lng, map]);
@@ -248,8 +248,11 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
 
   const handleRefresh = (map) => {
     setIsRefreshing(true);
-    if (agencies && agencies.length > 0) {
-      const bounds = L.latLngBounds(agencies.map(a => [a.lat, a.lng]));
+    const withCoords = (agencies || []).filter((a) => a.lat != null && a.lng != null);
+    if (withCoords.length === 1) {
+      map.setView([withCoords[0].lat, withCoords[0].lng], 14, { animate: true });
+    } else if (withCoords.length > 1) {
+      const bounds = L.latLngBounds(withCoords.map((a) => [a.lat, a.lng]));
       map.fitBounds(bounds, { padding: [40, 40], animate: true });
     } else {
       map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate: true });
@@ -286,29 +289,31 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
           primaryColor={primaryColor}
         />
 
-        {/* Markers des agences */}
-        {agencies.map((agency) => (
-          <Marker
-            key={agency.id}
-            position={[agency.lat, agency.lng]}
-            icon={createMarker(agency.affluence, selectedAgency?.id === agency.id)}
-            eventHandlers={{
-              click: () => onSelectAgency(agency),
-            }}
-          >
-            <Popup className="agency-popup">
-              <div className="text-xs font-bold text-slate-900 leading-snug">
-                {agency.name}
-              </div>
-              <div className="text-[11px] text-slate-500 mt-0.5">
-                {agency.commune}
-              </div>
-              <div className="text-xs text-primary-500 font-semibold mt-1">
-                {agency.currentWaitTime ? `Attente : ${agency.currentWaitTime}` : 'Affluence indisponible'}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {/* Markers des agences (coordonnées valides uniquement) */}
+        {agencies
+          .filter((agency) => agency.lat != null && agency.lng != null)
+          .map((agency) => (
+            <Marker
+              key={agency.id}
+              position={[agency.lat, agency.lng]}
+              icon={createMarker(agency.affluence, selectedAgency?.id === agency.id)}
+              eventHandlers={{
+                click: () => onSelectAgency(agency),
+              }}
+            >
+              <Popup className="agency-popup">
+                <div className="text-xs font-bold text-slate-900 leading-snug">
+                  {agency.name}
+                </div>
+                <div className="text-[11px] text-slate-500 mt-0.5">
+                  {agency.commune}
+                </div>
+                <div className="text-xs text-primary-500 font-semibold mt-1">
+                  {agency.currentWaitTime ? `Attente : ${agency.currentWaitTime}` : 'Affluence indisponible'}
+                </div>
+              </Popup>
+            </Marker>
+          ))}
       </MapContainer>
     </div>
   );
