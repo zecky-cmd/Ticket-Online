@@ -1,4 +1,5 @@
 import Link from './ui/Link';
+import { SITE_CONFIG } from '../config/siteConfig';
 
 /**
  * Composant Footer (Pied de page minimaliste blanc)
@@ -9,9 +10,9 @@ import Link from './ui/Link';
  * - Droite : Liens "Confidentialité", "Assistance", "© 2026 Synapse"
  */
 export default function Footer({
-  brandName = 'Synapse',
-  brandSuffix = '· S2Q',
-  tagline = 'Un accueil plus fluide, à votre rythme.',
+  brandName = SITE_CONFIG.brand.abbreviation,
+  brandSuffix = SITE_CONFIG.footer.suffix,
+  tagline = SITE_CONFIG.footer.tagline,
   year = new Date().getFullYear(),
   className = ''
 }) {
@@ -45,7 +46,7 @@ export default function Footer({
           </Link>
           <span className="text-slate-200">|</span>
           <span className="text-slate-400">
-            © {year} Synapse
+            © {year} {brandName}
           </span>
         </div>
       </div>

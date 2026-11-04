@@ -1,24 +1,19 @@
 import HeaderBrand from './header/HeaderBrand';
 import HeaderContact from './header/HeaderContact';
-// import HeaderThemePicker from './header/HeaderThemePicker';
+import { DEFAULT_THEME } from '../theme/themes';
 
 /**
  * Composant Header (En-tête de page)
- * 
- * - Pilule d'assistance téléphonique à droite
- * - Sélecteur de thème discret pour les démos multi-clients
+ *
+ * Orchestrateur fin :
+ * - Gauche : identité de marque (HeaderBrand)
+ * - Droite : pilule d'assistance téléphonique (HeaderContact)
+ *
+ * Les valeurs par défaut (logo, nom, numéro…) proviennent de
+ * src/config/siteConfig.js — à modifier UNIQUEMENT là-bas.
  */
-export default function Header({
-  theme,
-  logo,
-  abbreviation = 'Synapse',
-  definition = 'S2Q · TICKETS EN LIGNE',
-  tag,
-  brandConfig,
-  contactConfig,
-  onLogoClick
-}) {
-  const primaryColor = theme?.colors?.primary || '#008056';
+export default function Header({ theme }) {
+  const primaryColor = theme?.colors?.primary || DEFAULT_THEME.colors.primary;
 
   return (
     <header
@@ -26,27 +21,11 @@ export default function Header({
       style={{ backgroundColor: primaryColor }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between gap-3">
-        {/* Identité de Marque Gauche (Synapse) */}
-        <HeaderBrand
-          logo={logo}
-          abbreviation={abbreviation}
-          definition={definition}
-          tag={tag}
-          primaryColor={primaryColor}
-          onClick={onLogoClick}
-          {...brandConfig}
-        />
+        {/* Identité de Marque Gauche */}
+        <HeaderBrand />
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <HeaderContact {...contactConfig} />
-
-          {/* <HeaderThemePicker
-            currentThemeKey={currentThemeKey}
-            onThemeChange={onThemeChange}
-            themes={themes}
-            primaryColor={primaryColor}
-          /> */}
-        </div>
+        {/* Pilule d'assistance Droite */}
+        <HeaderContact />
       </div>
     </header>
   );

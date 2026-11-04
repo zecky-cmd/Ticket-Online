@@ -1,5 +1,6 @@
 import { Phone, ArrowRight } from 'lucide-react';
 import Link from '../ui/Link';
+import { SITE_CONFIG } from '../../config/siteConfig';
 
 /**
  * Composant HeaderContact (Pilule d'Assistance Téléphonique)
@@ -10,8 +11,8 @@ import Link from '../ui/Link';
  * - Cliquable direct via protocole tel:
  */
 export default function HeaderContact({
-  label = "Besoin d'aide ?",
-  phone = '+225 27 20 00 00',
+  label = SITE_CONFIG.contact.label,
+  phone = SITE_CONFIG.contact.phone,
   className = ''
 }) {
   if (!phone) return null;

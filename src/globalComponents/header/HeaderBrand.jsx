@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from '../ui/Link';
+import { SITE_CONFIG } from '../../config/siteConfig';
 
 /**
  * Composant HeaderBrand 
@@ -9,18 +10,23 @@ import Link from '../ui/Link';
  * - Titre 'Synapse' en gras blanc
  * - Sous-titre 'S2Q · TICKETS EN LIGNE'
  * 
+ * Les valeurs par défaut (logo, nom, sous-titre) proviennent de
+ * src/config/siteConfig.js et peuvent être surchargées par props.
+ *
  * @param {string|React.ReactNode} logo - Image de logo ou composant React
+ * @param {string} logoAlt - Texte alternatif du logo
  * @param {string} abbreviation - Nom principal (ex: 'Synapse')
  * @param {string} definition - Sous-titre (ex: 'S2Q · TICKETS EN LIGNE')
- * @param {string} primaryColor - Couleur dynamique du thème
+ * @param {string} tag - Badge optionnel à côté du nom
  * @param {string} href - Lien éventuel de redirection
  * @param {function} onClick - Événement de clic
+ * @param {string} className - Classes CSS additionnelles
  */
 export default function HeaderBrand({
-  logo,
-  logoAlt,
-  abbreviation = 'Synapse',
-  definition = '',
+  logo = SITE_CONFIG.brand.logo,
+  logoAlt = SITE_CONFIG.brand.logoAlt,
+  abbreviation = SITE_CONFIG.brand.abbreviation,
+  definition = SITE_CONFIG.brand.definition,
   tag,
   href,
   onClick,

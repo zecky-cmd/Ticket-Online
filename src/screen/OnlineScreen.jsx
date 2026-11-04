@@ -35,7 +35,6 @@ export default function OnlineScreen({
   const dispatch = useDispatch();
 
   const theme = useSelector((state) => state.theme.theme);
-  const currentThemeKey = useSelector((state) => state.theme.currentThemeKey);
   const activeModal = useSelector((state) => state.modal.activeModal);
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -99,7 +98,7 @@ export default function OnlineScreen({
   };
 
   return (
-    <Layout theme={theme} currentThemeKey={currentThemeKey} themes={THEMES} headerProps={{ logo: '/img/img1.png' }}>
+    <Layout>
       {/* ─── CORPS CENTRAL (Strictement 100vh sans scroll, footer toujours visible à l'écran) ─── */}
       <div className="flex-1 min-h-0 flex flex-col justify-between pt-1 sm:pt-1.5 md:pt-2 w-full overflow-hidden">
         <Container 
