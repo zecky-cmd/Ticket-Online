@@ -102,7 +102,7 @@ Sur le `<input>` du `SearchSelect.jsx` :
 
 ---
 
-## 5. Synthèse pour l'Agent IA d'Implémentation
+## 5. Synthèse pour l'Agent IA d'Implémentation (Mobile)
 
 | Anomalie | Fichier concerné | Action à mener |
 |---|---|---|
@@ -110,3 +110,44 @@ Sur le `<input>` du `SearchSelect.jsx` :
 | **Hauteur écrasée par le clavier** | `src/screen/ticket/TicketScreen.jsx` & `TicketStepperHeader.jsx` | Masquer ou compacter l'en-tête (eyebrow, sous-titre, barres stepper) lorsque le dropdown de recherche est actif sur mobile. |
 | **Hauteur max de la liste** | `src/globalComponents/ui/SearchSelect.jsx` | Ajuster `max-h-52` pour qu'elle s'étende dynamiquement selon la hauteur disponible. |
 
+---
+
+## 6. Analyse du Mode Desktop — Modale Étriquée & Espace Sous-exploité
+
+### Capture Desktop : Modale Ticket (Étape 2 — Choix du service)
+* **Contexte** : Écran d'ordinateur de bureau / PC portable standard (1920x1080 ou 1366x768).
+* **Constat visuel immédiat** :
+  1. **Largeur excessivement étroite (`sm:max-w-xl` = 576 px)** :
+     * Sur un écran Full HD (1920 px de large), la modale n'occupe que **~25% à 30%** de la largeur de l'écran.
+     * Plus de **70% de la surface de l'écran** est un grand vide sombre flouté inutile (`bg-slate-950/70 backdrop-blur-md`).
+     * La boîte paraît minuscule ("effet timbre-poste" ou carte postale perdue au centre).
+  2. **Hauteur comprimée et scrollbar parasite** :
+     * Dès que l'utilisateur clique sur le champ de recherche pour déplier la liste des services ou prestations, la liste déroulante s'étend vers le bas.
+     * Comme la modale est petite et que son corps a la classe `overflow-y-auto`, le dropdown force le conteneur interne à défiler : **une barre de défilement verticale verte apparaît immédiatement sur le côté droit** (visible distinctement sur la capture).
+     * Les boutons de validation ("Retour" et "Valider") et le bas de la liste d'options sont masqués sous le pli, obligeant l'utilisateur de bureau à faire un scroll vertical inutile alors que l'écran dispose d'un espace gigantesque tout autour.
+  3. **Disproportion entre l'en-tête et le contenu** :
+     * Le stepper horizontal à 5 étapes et les titres occupent près de **45%** de la hauteur totale de la modale.
+     * Le contenu actif (le formulaire) est confiné dans un carré étroit.
+
+### Cause Technique dans le Code
+Dans `src/screen/ticket/TicketScreen.jsx` (ligne 253) :
+```jsx
+<div className="bg-white w-full rounded-t-[32px] sm:rounded-3xl shadow-2xl sm:max-w-xl max-h-[94dvh] sm:max-h-[90vh] flex flex-col overflow-hidden ...">
+```
+* `sm:max-w-xl` limite arbitrairement la largeur maximale à **576 px**, quel que soit l'écran desktop (tablette, laptop, grand moniteur).
+* En comparaison, l'autre écran modal du projet ([`AgencyMapScreen.jsx`](file:///d:/DOC/Synapse%20doc/TEMPLATE%20TICKET%20EN%20LIGNE/src/screen/map/AgencyMapScreen.jsx)) utilise `md:max-w-4xl` (896 px) et offre une respiration visuelle bien supérieure.
+
+### Recommandations & Solutions pour l'Agent IA (Mode Desktop)
+
+1. **Élargir la modale sur grand écran** :
+   * Remplacer `sm:max-w-xl` par :
+     * `sm:max-w-xl md:max-w-2xl lg:max-w-3xl` (soit **768 px** sur desktop au lieu de 576 px).
+     * Cela donne immédiatement une sensation haut de gamme, moderne et équilibrée conforme aux standards bancaires.
+2. **Donner de la hauteur et aérer le corps sans scrollbar prématurée** :
+   * Sur desktop (`md:`), dimensionner la hauteur pour que le dropdown ouvert n'impose pas de scrollbar (`md:min-h-[520px]` ou ajustement de `max-h`).
+   * Augmenter les marges intérieures : `p-5 sm:p-8 md:p-10` sur grand écran.
+3. **Optimiser les formulaires larges (Étape 5 - Vos infos)** :
+   * Avec une largeur de `max-w-3xl`, les champs Nom et Prénoms, ainsi que Téléphone et Email peuvent se placer naturellement sur **2 colonnes (`grid grid-cols-1 sm:grid-cols-2 gap-4`)** au lieu d'une longue colonne étroite.
+
+
+---------------------------------------------------------------

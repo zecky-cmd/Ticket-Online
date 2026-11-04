@@ -165,40 +165,41 @@ export default function StepCustomerInfo({
         </div>
       </div>
 
-      {/* Saisie Téléphone */}
-      <div>
-        <label htmlFor="phone-number-input" className="block text-xs font-bold text-slate-700 mb-1">
-          Numéro de Téléphone (réception du SMS & lien de file) <span className="text-rose-500">*</span>
-        </label>
-        <div className="relative">
-          <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <input
-            id="phone-number-input"
-            type="tel"
-            required
-            placeholder="07 00 00 00 00"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-          />
+      {/* Saisie Téléphone + Email (2 colonnes sur desktop) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="phone-number-input" className="block text-xs font-bold text-slate-700 mb-1">
+            Téléphone (réception SMS) <span className="text-rose-500">*</span>
+          </label>
+          <div className="relative">
+            <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <input
+              id="phone-number-input"
+              type="tel"
+              required
+              placeholder="07 00 00 00 00"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Saisie Email */}
-      <div>
-        <label htmlFor="email-input" className="block text-xs font-bold text-slate-700 mb-1">
-          Adresse E-mail <span className="text-slate-400 font-normal">(optionnel — pour reçu PDF)</span>
-        </label>
-        <div className="relative">
-          <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <input
-            id="email-input"
-            type="email"
-            placeholder="jean.yao@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-          />
+        <div>
+          <label htmlFor="email-input" className="block text-xs font-bold text-slate-700 mb-1">
+            Adresse E-mail <span className="text-slate-400 font-normal">(optionnel)</span>
+          </label>
+          <div className="relative">
+            <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <input
+              id="email-input"
+              type="email"
+              placeholder="jean.yao@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
+            />
+          </div>
         </div>
       </div>
 
