@@ -46,7 +46,7 @@ export default function HeaderBrand({
           src={logo}
           alt={logoAlt || entreprise || 'Logo'}
           onError={() => setImgError(true)}
-          className="w-7 h-7 sm:w-8 sm:h-8 object-contain transition-transform group-hover:scale-105"
+          className="h-9 sm:h-10 md:h-11 w-auto max-w-[140px] sm:max-w-[170px] object-contain transition-transform duration-200 group-hover:scale-102 shrink-0 drop-shadow-xs"
         />
       );
     }
@@ -60,25 +60,23 @@ export default function HeaderBrand({
   };
 
   const brandContent = (
-    <div className={`group flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none focus:outline-hidden ${className}`}>
-      {/* Logo */}
-      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:scale-105 flex-shrink-0">
-        {renderLogoVisual()}
-      </div>
+    <div className={`group flex items-center gap-3 sm:gap-3.5 cursor-pointer select-none focus:outline-hidden ${className}`}>
+      {/* Logo affiché naturellement sans encadrement */}
+      {renderLogoVisual()}
 
       {/* Nom de l'entreprise */}
-      <div className="flex flex-col justify-center leading-tight text-left">
-        <div className="flex items-center gap-2">
-          <span className="text-base sm:text-lg font-black tracking-tight text-white block leading-none">
+      {entreprise && (
+        <div className="flex items-center gap-2 leading-none">
+          <span className="text-xl sm:text-2xl md:text-[26px] font-black tracking-tight text-white block">
             {entreprise}
           </span>
           {tag && (
-            <span className="text-[9px] font-black uppercase tracking-wider rounded-md bg-white/20 text-white px-1.5 py-0.5 border border-white/30">
+            <span className="text-[10px] font-black uppercase tracking-wider rounded-md bg-white/20 text-white px-1.5 py-0.5 border border-white/30">
               {tag}
             </span>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 
