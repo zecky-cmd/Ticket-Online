@@ -10,7 +10,7 @@ import { SITE_CONFIG } from '../config/siteConfig';
  * - Droite : Liens "Confidentialité", "Assistance", "© 2026 Synapse"
  */
 export default function Footer({
-  brandName = SITE_CONFIG.brand.abbreviation,
+  brandName = SITE_CONFIG.brand.entreprise,
   brandSuffix = SITE_CONFIG.footer.suffix,
   tagline = SITE_CONFIG.footer.tagline,
   year = new Date().getFullYear(),

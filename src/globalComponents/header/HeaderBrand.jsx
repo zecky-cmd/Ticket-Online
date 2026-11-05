@@ -3,20 +3,15 @@ import Link from '../ui/Link';
 import { SITE_CONFIG } from '../../config/siteConfig';
 
 /**
- * Composant HeaderBrand 
- * 
-
- * - Carré arrondi vert contrasté avec lettre 'S' (ou logo personnalisé)
- * - Titre 'Synapse' en gras blanc
- * - Sous-titre 'S2Q · TICKETS EN LIGNE'
- * 
- * Les valeurs par défaut (logo, nom, sous-titre) proviennent de
- * src/config/siteConfig.js et peuvent être surchargées par props.
+ * Composant HeaderBrand (Identité de marque dans l'en-tête)
+ *
+ * Affiche le logo de l'entreprise + son nom.
+ * Les valeurs par défaut proviennent de src/config/siteConfig.js
+ * et peuvent être surchargées par props.
  *
  * @param {string|React.ReactNode} logo - Image de logo ou composant React
  * @param {string} logoAlt - Texte alternatif du logo
- * @param {string} abbreviation - Nom principal (ex: 'Synapse')
- * @param {string} definition - Sous-titre (ex: 'S2Q · TICKETS EN LIGNE')
+ * @param {string} entreprise - Nom de l'entreprise (ex: 'Synapse')
  * @param {string} tag - Badge optionnel à côté du nom
  * @param {string} href - Lien éventuel de redirection
  * @param {function} onClick - Événement de clic
@@ -25,8 +20,7 @@ import { SITE_CONFIG } from '../../config/siteConfig';
 export default function HeaderBrand({
   logo = SITE_CONFIG.brand.logo,
   logoAlt = SITE_CONFIG.brand.logoAlt,
-  abbreviation = SITE_CONFIG.brand.abbreviation,
-  definition = SITE_CONFIG.brand.definition,
+  entreprise = SITE_CONFIG.brand.entreprise,
   tag,
   href,
   onClick,
@@ -50,7 +44,7 @@ export default function HeaderBrand({
       return (
         <img
           src={logo}
-          alt={logoAlt || abbreviation || 'Logo'}
+          alt={logoAlt || entreprise || 'Logo'}
           onError={() => setImgError(true)}
           className="w-7 h-7 sm:w-8 sm:h-8 object-contain transition-transform group-hover:scale-105"
         />
@@ -61,26 +55,22 @@ export default function HeaderBrand({
       return logo;
     }
 
-    // Logo par défaut de la maquette : Carré arrondi avec 'S' blanc
-    return (
-      <span className="font-black text-white text-lg sm:text-xl tracking-tight select-none">
-        {abbreviation ? abbreviation.charAt(0).toUpperCase() : 'S'}
-      </span>
-    );
+    // Pas de logo disponible
+    return null;
   };
 
   const brandContent = (
     <div className={`group flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none focus:outline-hidden ${className}`}>
-      {/* Carré Logo translucide avec 'S' blanc */}
+      {/* Logo */}
       <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/20 border border-white/25 flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:scale-105 flex-shrink-0">
         {renderLogoVisual()}
       </div>
 
-      {/* Titre & Sous-titre */}
+      {/* Nom de l'entreprise */}
       <div className="flex flex-col justify-center leading-tight text-left">
         <div className="flex items-center gap-2">
           <span className="text-base sm:text-lg font-black tracking-tight text-white block leading-none">
-            {abbreviation}
+            {entreprise}
           </span>
           {tag && (
             <span className="text-[9px] font-black uppercase tracking-wider rounded-md bg-white/20 text-white px-1.5 py-0.5 border border-white/30">
@@ -88,12 +78,6 @@ export default function HeaderBrand({
             </span>
           )}
         </div>
-
-        {definition && (
-          <span className="text-[8px] sm:text-[9.5px] font-semibold uppercase tracking-widest text-white/85 mt-1">
-            {definition}
-          </span>
-        )}
       </div>
     </div>
   );

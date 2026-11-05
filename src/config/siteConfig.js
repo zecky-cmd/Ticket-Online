@@ -8,13 +8,12 @@
 
 export const SITE_CONFIG = {
   brand: {
-    abbreviation: 'Synapse',
-    definition: 'S2Q · TICKETS EN LIGNE',
-    logo: '/img/img1.png',
+    entreprise: 'Synapse',
+    logo: '/img/img1.jpg',
     logoAlt: 'Synapse',
   },
   contact: {
-    label: "Besoin d'aide ?",
+    // label: "Besoin d'aide ?",
     phone: import.meta.env.S2Q_PHONE || '+225 27 20 00 08',
   },
   footer: {
