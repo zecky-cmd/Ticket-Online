@@ -14,6 +14,7 @@ import StepPrestation from './components/StepPrestation';
 import StepTimeslot from './components/StepTimeslot';
 import StepCustomerInfo from './components/StepCustomerInfo';
 import TicketReceipt from './components/TicketReceipt';
+import Modal from '../../globalComponents/ui/Modal';
 
 /** Formate une date ISO (YYYY-MM-DD) en libellé lisible fr. */
 function formatDateLabel(iso) {
@@ -244,17 +245,8 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = [], ag
     }
   };
 
-  // Règle React : Condition d'affichage placée APRÈS l'ensemble des hooks
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all">
-      {/* Conteneur Hybride : Bottom Sheet tactile sur mobile / Modale centrée sur desktop */}
-      <div className="bg-white w-full rounded-t-[32px] sm:rounded-3xl shadow-2xl sm:max-w-xl md:max-w-2xl lg:max-w-3xl max-h-[94dvh] sm:max-h-[90vh] md:min-h-[520px] flex flex-col overflow-hidden border-t sm:border border-slate-100 animate-in slide-in-from-bottom duration-300 sm:zoom-in-95">
-        
-        {/* Poignée tactile mobile */}
-        <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2 sm:hidden shrink-0" />
-
+    <Modal isOpen={isOpen} onClose={onClose} size="lg">
         {/* En-tête Stepper conforme à la maquette (Étapes 1 à 5) */}
         {currentStep <= 5 && (
           <TicketStepperHeader
@@ -385,7 +377,6 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = [], ag
             />
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

@@ -5,6 +5,7 @@ import SatisfactionStepRating from './components/SatisfactionStepRating';
 import SatisfactionStepNps from './components/SatisfactionStepNps';
 import SatisfactionStepClientInfo from './components/SatisfactionStepClientInfo';
 import SatisfactionSuccess from './components/SatisfactionSuccess';
+import Modal from '../../globalComponents/ui/Modal';
 
 const STEPS = [
   { id: 1, label: 'Contexte' },
@@ -30,18 +31,10 @@ export default function SatisfactionScreen({
     onClose,
   });
 
-  // Règle React : condition d'affichage APRÈS les hooks
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all">
-      {/* Conteneur Hybride : Bottom Sheet mobile / Modale centrée desktop */}
-      <div className="bg-white w-full rounded-t-[32px] sm:rounded-3xl shadow-2xl sm:max-w-xl max-h-[94dvh] sm:max-h-[90vh] flex flex-col overflow-hidden border-t sm:border border-slate-100 animate-in slide-in-from-bottom duration-300 sm:zoom-in-95">
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
 
-        {/* Poignée tactile de glissement mobile */}
-        <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto my-2.5 sm:hidden flex-shrink-0" />
-
-        {/* Header Modal */}
+      {/* Header Modal */}
         <div
           className="px-6 py-4 sm:py-5 flex items-center justify-between text-white flex-shrink-0"
           style={{ backgroundColor: theme?.colors?.primary }}
@@ -119,6 +112,7 @@ export default function SatisfactionScreen({
                   onSelectPrestationId={actions.selectPrestation}
                   onNext={() => actions.goTo(2)}
                   theme={theme}
+                  
                 />
               )}
 
@@ -163,7 +157,6 @@ export default function SatisfactionScreen({
             </>
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

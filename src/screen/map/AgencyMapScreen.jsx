@@ -7,6 +7,7 @@ import AgencyFilterBar from './components/AgencyFilterBar';
 import AgencyCard from './components/AgencyCard';
 import AgencyDetailSheet from './components/AgencyDetailSheet';
 import AgencyMapView from './components/AgencyMapView';
+import Modal from '../../globalComponents/ui/Modal';
 
 /**
  * Screen / Modal Réseau des Agences
@@ -39,17 +40,10 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = [] 
     dispatch(openModal('ticket'));
   }, [dispatch]);
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end md:items-center md:justify-center md:p-4 bg-slate-950/70 backdrop-blur-md transition-all">
-      {/* Conteneur modale avec hauteur dynamique 100dvh pour Safari iOS */}
-      <div className="bg-white w-full rounded-t-[28px] md:rounded-3xl shadow-2xl md:max-w-4xl h-[94dvh] md:h-[88vh] flex flex-col overflow-hidden border-t md:border border-slate-100 animate-in slide-in-from-bottom duration-300 md:zoom-in-95">
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
 
-        {/* Poignée tactile mobile compacte */}
-        <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto my-1.5 md:hidden shrink-0" />
-
-        {/* ── Header Ultra-Compact sur Mobile ───────────────────────── */}
+      {/* ── Header Ultra-Compact sur Mobile ───────────────────────── */}
         <div className="px-4 md:px-5 pt-1.5 md:pt-3 pb-1 md:pb-2.5 shrink-0">
           <div className="flex items-center justify-between gap-2">
             {/* Pastille + Titre compact */}
@@ -197,7 +191,6 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = [] 
           </div>
         )}
 
-      </div>
-    </div>
+    </Modal>
   );
 }
