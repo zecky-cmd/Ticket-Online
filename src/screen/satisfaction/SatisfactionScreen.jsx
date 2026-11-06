@@ -1,7 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
 import { MessageSquareHeart, X } from 'lucide-react';
-import { catalogService } from '../../services/catalogService';
-import { satisfactionService } from '../../services/satisfactionService';
+import useSatisfactionFlow from './hooks/useSatisfactionFlow';
 import SatisfactionStepContext from './components/SatisfactionStepContext';
 import SatisfactionStepRating from './components/SatisfactionStepRating';
 import SatisfactionStepNps from './components/SatisfactionStepNps';
@@ -17,9 +15,8 @@ const STEPS = [
 
 /**
  * Screen / Modal Évaluation de la Satisfaction Client
- * Flux web (adapté de la borne) : Contexte → Avis → Recommandation (NPS) → Coordonnées → Merci.
- * - Sauvegarde silencieuse du vote dès la sélection de l'émoticône (anti-abandon).
- * - Mise à jour finale du vote (lg_satvid) à la validation.
+ * Flux web  : Contexte → Avis → Recommandation (NPS) → Coordonnées → Merci.
+ * Toute la logique métier vit dans hooks/useSatisfactionFlow.js — ici, que du rendu.
  */
 export default function SatisfactionScreen({
   isOpen,
@@ -28,199 +25,9 @@ export default function SatisfactionScreen({
   agencies = [],
   agenciesLoading = false,
 }) {
-  const [step, setStep] = useState(1);
-  const [submitted, setSubmitted] = useState(false);
-  const [secondsLeft, setSecondsLeft] = useState(0);
-  const handleCloseRef = useRef(/** @type {(() => void) | null} */ (null));
-
-  // 1. Contexte (Agence → Service → Prestation)
-  const [selectedAgencyId, setSelectedAgencyId] = useState(null);
-  const [services, setServices] = useState(/** @type {any[]} */ ([]));
-  const [servicesLoading, setServicesLoading] = useState(false);
-  const [selectedServiceId, setSelectedServiceId] = useState(null);
-  const [selectedPrestationId, setSelectedPrestationId] = useState(null);
-
-  // 2. Avis (émoticône + justificatif + commentaire)
-  const [satisfactions, setSatisfactions] = useState(/** @type {any[]} */ ([]));
-  const [satisfactionsLoading, setSatisfactionsLoading] = useState(true);
-  const [selectedSatis, setSelectedSatis] = useState(/** @type {any} */ (null));
-  const [justificatifs, setJustificatifs] = useState(/** @type {any[]} */ ([]));
-  const [justificatifsLoading, setJustificatifsLoading] = useState(false);
-  const [selectedJustificatif, setSelectedJustificatif] = useState(/** @type {any} */ (null));
-  const [comment, setComment] = useState('');
-
-  // 3. Recommandation (NPS 0-10)
-  const [npsNote, setNpsNote] = useState(/** @type {number | null} */ (null));
-
-  // 4. Coordonnées (optionnel)
-  const [clientInfo, setClientInfo] = useState({ nom: '', prenoms: '', tel: '', email: '' });
-
-  // Vote & réseau
-  const [voteId, setVoteId] = useState(/** @type {string | null} */ (null));
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  // Objets résolus
-  const currentService = services.find((s) => s.id === selectedServiceId) || null;
-  const currentPrestation =
-    currentService?.prestations?.find((p) => p.id === selectedPrestationId) || null;
-
-  // Chargement des émoticônes à l'ouverture de la modale
-  useEffect(() => {
-    if (!isOpen) return;
-    let active = true;
-    satisfactionService
-      .getSatisfactions()
-      .then((list) => {
-        if (active) setSatisfactions(list);
-      })
-      .catch((err) => {
-        console.error('Chargement des émoticônes échoué.', err);
-      })
-      .finally(() => {
-        if (active) setSatisfactionsLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [isOpen]);
-
-  // Fermeture automatique après soumission : compte à rebours + fermeture différée
-  useEffect(() => {
-    if (!submitted) return;
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => Math.max(0, prev - 1));
-    }, 1000);
-    const timeout = setTimeout(() => {
-      handleCloseRef.current?.();
-    }, 6500);
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [submitted]);
-
-  // ── Contexte ────────────────────────────────────────────────────────────
-  const handleSelectAgency = async (/** @type {string} */ id) => {
-    setSelectedAgencyId(id);
-    setSelectedServiceId(null);
-    setSelectedPrestationId(null);
-    setServices([]);
-    setServicesLoading(true);
-    setErrorMessage('');
-    try {
-      const list = await catalogService.getAgencyPrestations(id);
-      setServices(list);
-    } catch (err) {
-      console.error('Chargement des services échoué.', err);
-      setErrorMessage('Impossible de charger les services de cette agence.');
-    } finally {
-      setServicesLoading(false);
-    }
-  };
-
-  const handleSelectService = (/** @type {string} */ id) => {
-    setSelectedServiceId(id);
-    setSelectedPrestationId(null);
-  };
-
-  // ── Avis ────────────────────────────────────────────────────────────────
-  const handleSelectSatis = async (/** @type {any} */ satis) => {
-    setSelectedSatis(satis);
-    setSelectedJustificatif(null);
-    setComment('');
-    setJustificatifs([]);
-    setErrorMessage('');
-
-    // Sauvegarde silencieuse : le vote est créé dès le choix de l'émoticône (anti-abandon)
-    try {
-      const res = await satisfactionService.saveVote({
-        lg_ageid: selectedAgencyId,
-        lg_serid: currentService?.id,
-        lg_presid: currentPrestation?.id,
-        lg_satisid: satis.id,
-        int_satisnote: satis.note,
-      });
-      if (res?.success) setVoteId(res.voteId || null);
-    } catch (err) {
-      console.warn('Sauvegarde silencieuse échouée.', err);
-    }
-
-    // Chargement des justificatifs associés à cette émoticône
-    setJustificatifsLoading(true);
-    try {
-      const list = await satisfactionService.getJustificatifs(satis.id, satis.order);
-      setJustificatifs(list);
-    } catch (err) {
-      console.warn('Chargement des justificatifs échoué.', err);
-    } finally {
-      setJustificatifsLoading(false);
-    }
-  };
-
-  const handleSelectJustificatif = (/** @type {any} */ justif) => {
-    setSelectedJustificatif(justif);
-    // Le texte libre n'a de sens que pour le motif « Autre » : on le vide sinon
-    if (!justif?.isAutre) {
-      setComment('');
-    }
-  };
-
-  // ── Finalisation ────────────────────────────────────────────────────────
-  const handleFinish = async (/** @type {boolean} */ withClientInfo) => {
-    setIsSubmitting(true);
-    setErrorMessage('');
-    try {
-      const res = await satisfactionService.saveVote({
-        lg_ageid: selectedAgencyId,
-        lg_serid: currentService?.id,
-        lg_presid: currentPrestation?.id,
-        lg_satisid: selectedSatis?.id,
-        int_satisnote: selectedSatis?.note,
-        int_npsnote: npsNote,
-        lg_jusid: selectedJustificatif?.id || undefined,
-        str_satvautre: comment,
-        lg_satvid: voteId || undefined,
-        clientInfo: withClientInfo ? clientInfo : undefined,
-      });
-      if (res?.success) {
-        setVoteId(res.voteId || voteId);
-        setSecondsLeft(6);
-        setSubmitted(true);
-      } else {
-        setErrorMessage("Impossible d'enregistrer votre avis. Veuillez réessayer.");
-      }
-    } catch (err) {
-      console.error('Erreur lors de l\'enregistrement de l\'avis :', err);
-      setErrorMessage('Impossible de joindre le serveur. Veuillez réessayer.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // ── Fermeture / reset ───────────────────────────────────────────────────
-  const handleClose = () => {
-    setStep(1);
-    setSubmitted(false);
-    setSelectedAgencyId(null);
-    setServices([]);
-    setSelectedServiceId(null);
-    setSelectedPrestationId(null);
-    setSelectedSatis(null);
-    setJustificatifs([]);
-    setSelectedJustificatif(null);
-    setComment('');
-    setNpsNote(null);
-    setClientInfo({ nom: '', prenoms: '', tel: '', email: '' });
-    setVoteId(null);
-    setSecondsLeft(0);
-    setErrorMessage('');
-    onClose();
-  };
-
-  // Garde une référence à jour de handleClose pour le timer (évite les fermetures obsolètes)
-  useEffect(() => {
-    handleCloseRef.current = handleClose;
+  const { step, submitted, secondsLeft, context, rating, survey, actions } = useSatisfactionFlow({
+    isOpen,
+    onClose,
   });
 
   // Règle React : condition d'affichage APRÈS les hooks
@@ -250,7 +57,7 @@ export default function SatisfactionScreen({
           </div>
           <button
             type="button"
-            onClick={handleClose}
+            onClick={actions.close}
             className="p-2 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
             aria-label="Fermer"
           >
@@ -288,68 +95,68 @@ export default function SatisfactionScreen({
 
         {/* Corps défilable */}
         <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8">
-          {errorMessage && (
+          {survey.errorMessage && (
             <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-xs text-rose-700">
-              <span>{errorMessage}</span>
+              <span>{survey.errorMessage}</span>
             </div>
           )}
 
           {submitted ? (
-            <SatisfactionSuccess theme={theme} secondsLeft={secondsLeft} onClose={handleClose} />
+            <SatisfactionSuccess theme={theme} secondsLeft={secondsLeft} onClose={actions.close} />
           ) : (
             <>
               {step === 1 && (
                 <SatisfactionStepContext
                   agencies={agencies}
                   agenciesLoading={agenciesLoading}
-                  selectedAgencyId={selectedAgencyId}
-                  onSelectAgencyId={handleSelectAgency}
-                  services={services}
-                  servicesLoading={servicesLoading}
-                  selectedServiceId={selectedServiceId}
-                  onSelectServiceId={handleSelectService}
-                  selectedPrestationId={selectedPrestationId}
-                  onSelectPrestationId={setSelectedPrestationId}
-                  onNext={() => setStep(2)}
+                  selectedAgencyId={context.selectedAgencyId}
+                  onSelectAgencyId={actions.selectAgency}
+                  services={context.services}
+                  servicesLoading={context.servicesLoading}
+                  selectedServiceId={context.selectedServiceId}
+                  onSelectServiceId={actions.selectService}
+                  selectedPrestationId={context.selectedPrestationId}
+                  onSelectPrestationId={actions.selectPrestation}
+                  onNext={() => actions.goTo(2)}
                   theme={theme}
                 />
               )}
 
               {step === 2 && (
                 <SatisfactionStepRating
-                  satisfactions={satisfactions}
-                  satisfactionsLoading={satisfactionsLoading}
-                  selectedSatis={selectedSatis}
-                  onSelectSatis={handleSelectSatis}
-                  justificatifs={justificatifs}
-                  justificatifsLoading={justificatifsLoading}
-                  selectedJustificatif={selectedJustificatif}
-                  onSelectJustificatif={handleSelectJustificatif}
-                  comment={comment}
-                  setComment={setComment}
-                  onBack={() => setStep(1)}
-                  onNext={() => setStep(3)}
+                  satisfactions={rating.satisfactions}
+                  satisfactionsLoading={rating.satisfactionsLoading}
+                  selectedSatis={rating.selectedSatis}
+                  onSelectSatis={actions.selectSatis}
+                  justificatifs={rating.justificatifs}
+                  justificatifsLoading={rating.justificatifsLoading}
+                  selectedJustificatif={rating.selectedJustificatif}
+                  onSelectJustificatif={actions.selectJustificatif}
+                  comment={rating.comment}
+                  setComment={actions.setComment}
+                  onBack={() => actions.goTo(1)}
+                  onNext={() => actions.goTo(3)}
                   theme={theme}
                 />
               )}
 
               {step === 3 && (
                 <SatisfactionStepNps
-                  npsNote={npsNote}
-                  setNpsNote={setNpsNote}
-                  onBack={() => setStep(2)}
-                  onNext={() => setStep(4)}
+                  npsNote={survey.npsNote}
+                  setNpsNote={actions.setNpsNote}
+                  onBack={() => actions.goTo(2)}
+                  onNext={() => actions.goTo(4)}
                   theme={theme}
                 />
               )}
 
               {step === 4 && (
                 <SatisfactionStepClientInfo
-                  clientInfo={clientInfo}
-                  setClientInfo={setClientInfo}
-                  isSubmitting={isSubmitting}
-                  onFinish={handleFinish}
-                  onBack={() => setStep(3)}
+                  clientInfo={survey.clientInfo}
+                  setClientInfo={actions.setClientInfo}
+                  isSubmitting={survey.isSubmitting}
+                  onFinish={actions.finish}
+                  onBack={() => actions.goTo(3)}
                   theme={theme}
                 />
               )}
