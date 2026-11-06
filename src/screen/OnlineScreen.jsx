@@ -151,6 +151,8 @@ export default function OnlineScreen({
         isOpen={activeModal === 'satisfaction'}
         onClose={() => dispatch(closeModal())}
         theme={theme}
+        agencies={agencies}
+        agenciesLoading={agenciesLoading}
       />
 
       <AgencyMapScreen

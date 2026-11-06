@@ -3,8 +3,9 @@ import Button from '../../../globalComponents/ui/Button';
 
 /**
  * Écran de confirmation de l'évaluation transmise
+ * La modale se ferme automatiquement après quelques secondes (compte à rebours).
  */
-export default function SatisfactionSuccess({ theme, onClose }) {
+export default function SatisfactionSuccess({ theme, secondsLeft = 0, onClose }) {
   return (
     <div className="py-8 text-center space-y-4">
       <div 
@@ -21,7 +22,7 @@ export default function SatisfactionSuccess({ theme, onClose }) {
         </p>
       </div>
 
-      <div className="pt-4 max-w-xs mx-auto">
+      <div className="pt-4 max-w-xs mx-auto space-y-3">
         <Button
           variant="secondary"
           size="md"
@@ -30,6 +31,12 @@ export default function SatisfactionSuccess({ theme, onClose }) {
         >
           Fermer
         </Button>
+
+        {secondsLeft > 0 && (
+          <p className="text-[11px] text-slate-400">
+            Fermeture automatique dans <b className="text-slate-600">{secondsLeft}s</b>
+          </p>
+        )}
       </div>
     </div>
   );
