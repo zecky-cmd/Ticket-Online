@@ -1,5 +1,6 @@
 import { User, Phone, Mail, ArrowLeft, Send, SkipForward } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
+import FormField from '../../../globalComponents/ui/FormField';
 
 /**
  * Étape Coordonnées — champs optionnels (nom, prénoms, téléphone, email)
@@ -17,8 +18,7 @@ export default function SatisfactionStepClientInfo({
     setClientInfo((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
-  const inputClass =
-    'w-full pl-10 pr-3 min-h-[48px] bg-white border border-slate-200 focus:border-primary-500 rounded-xl text-base sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium';
+  const fieldClass = 'pr-3 min-h-[48px] bg-white';
 
   return (
     <div className="space-y-5">
@@ -29,73 +29,47 @@ export default function SatisfactionStepClientInfo({
         </label>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label htmlFor="sat-nom" className="block text-xs font-bold text-slate-700 mb-1">
-              Nom
-            </label>
-            <div className="relative">
-              <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                id="sat-nom"
-                type="text"
-                placeholder="Ex: Bamba"
-                value={clientInfo.nom}
-                onChange={update('nom')}
-                className={inputClass}
-              />
-            </div>
-          </div>
+          <FormField
+            id="sat-nom"
+            label="Nom"
+            icon={User}
+            placeholder="Ex: Bamba"
+            value={clientInfo.nom}
+            onChange={update('nom')}
+            className={fieldClass}
+          />
 
-          <div>
-            <label htmlFor="sat-prenoms" className="block text-xs font-bold text-slate-700 mb-1">
-              Prénoms
-            </label>
-            <div className="relative">
-              <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                id="sat-prenoms"
-                type="text"
-                placeholder="Ex: Ali"
-                value={clientInfo.prenoms}
-                onChange={update('prenoms')}
-                className={inputClass}
-              />
-            </div>
-          </div>
+          <FormField
+            id="sat-prenoms"
+            label="Prénoms"
+            icon={User}
+            placeholder="Ex: Ali"
+            value={clientInfo.prenoms}
+            onChange={update('prenoms')}
+            className={fieldClass}
+          />
 
-          <div>
-            <label htmlFor="sat-tel" className="block text-xs font-bold text-slate-700 mb-1">
-              Téléphone
-            </label>
-            <div className="relative">
-              <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                id="sat-tel"
-                type="tel"
-                placeholder="Ex: 0101010101"
-                value={clientInfo.tel}
-                onChange={update('tel')}
-                className={inputClass}
-              />
-            </div>
-          </div>
+          <FormField
+            id="sat-tel"
+            label="Téléphone"
+            icon={Phone}
+            type="tel"
+            placeholder="Ex: 0101010101"
+            value={clientInfo.tel}
+            onChange={update('tel')}
+            className={fieldClass}
+          />
 
-          <div>
-            <label htmlFor="sat-email" className="block text-xs font-bold text-slate-700 mb-1">
-              Email
-            </label>
-            <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                id="sat-email"
-                type="email"
-                placeholder="Ex: alibamba@exemple.com"
-                value={clientInfo.email}
-                onChange={update('email')}
-                className={inputClass}
-              />
-            </div>
-          </div>
+          <FormField
+            id="sat-email"
+            label="Email"
+            icon={Mail}
+            type="email"
+            placeholder="Ex: alibamba@exemple.com"
+            value={clientInfo.email}
+            onChange={update('email')}
+            className={fieldClass}
+          />
         </div>
       </div>
 

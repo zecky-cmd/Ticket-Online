@@ -11,7 +11,7 @@ export default function App() {
   const canvasRef = useRef(null);
 
   // Theme configurations
-  const themes = {
+ const themes = {
     emerald: {
       name: 'Émeraude Moderne',
       bgHeader: 'bg-emerald-600',

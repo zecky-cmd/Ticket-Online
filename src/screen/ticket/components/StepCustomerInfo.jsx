@@ -1,5 +1,6 @@
 import { User, Phone, Mail, CreditCard, Ticket, ArrowLeft, CheckCircle2, Check, Sparkles } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
+import FormField from '../../../globalComponents/ui/FormField';
 
 /**
  * Étape 5 : Vos infos personnelles et récapitulatif avant génération du ticket
@@ -99,21 +100,16 @@ export default function StepCustomerInfo({
         {/* Champ conditionnel : Numéro de compte bancaire si Oui */}
         {isClient ? (
           <div className="pt-2 animate-in fade-in-50 duration-150">
-            <label htmlFor="account-number-input" className="block text-xs font-bold text-slate-700 mb-1">
-              Numéro de compte bancaire <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <CreditCard className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                id="account-number-input"
-                type="text"
-                required={isClient}
-                placeholder="ex: CI092 01001 001234567890 12"
-                value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
-                className="w-full pl-10 pr-4 min-h-[46px] bg-white border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-              />
-            </div>
+            <FormField
+              id="account-number-input"
+              label="Numéro de compte bancaire"
+              required={isClient}
+              icon={CreditCard}
+              placeholder="ex: CI092 01001 001234567890 12"
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              className="pr-4 min-h-[46px] bg-white"
+            />
             <p className="text-[10px] text-slate-400 mt-1 pl-1">
               Permet au conseiller de préparer votre dossier avant votre arrivée.
             </p>
@@ -128,79 +124,52 @@ export default function StepCustomerInfo({
 
       {/* Saisie Nom et Prénoms (deux champs) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label htmlFor="last-name-input" className="block text-xs font-bold text-slate-700 mb-1">
-            Nom de famille <span className="text-rose-500">*</span>
-          </label>
-          <div className="relative">
-            <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <input
-              id="last-name-input"
-              type="text"
-              required
-              placeholder="ex: Yao"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full pl-10 pr-3 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-            />
-          </div>
-        </div>
+        <FormField
+          id="last-name-input"
+          label="Nom de famille"
+          required
+          icon={User}
+          placeholder="ex: Yao"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
 
-        <div>
-          <label htmlFor="first-name-input" className="block text-xs font-bold text-slate-700 mb-1">
-            Prénoms <span className="text-rose-500">*</span>
-          </label>
-          <div className="relative">
-            <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <input
-              id="first-name-input"
-              type="text"
-              required
-              placeholder="ex: Koffi Jean"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full pl-10 pr-3 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-            />
-          </div>
-        </div>
+        <FormField
+          id="first-name-input"
+          label="Prénoms"
+          required
+          icon={User}
+          placeholder="ex: Koffi Jean"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
       </div>
 
       {/* Saisie Téléphone + Email (2 colonnes sur desktop) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label htmlFor="phone-number-input" className="block text-xs font-bold text-slate-700 mb-1">
-            Téléphone (réception SMS) <span className="text-rose-500">*</span>
-          </label>
-          <div className="relative">
-            <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <input
-              id="phone-number-input"
-              type="tel"
-              required
-              placeholder="07 00 00 00 00"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-            />
-          </div>
-        </div>
+        <FormField
+          id="phone-number-input"
+          label="Téléphone (réception SMS)"
+          required
+          icon={Phone}
+          type="tel"
+          placeholder="07 00 00 00 00"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          className="pr-4 min-h-[48px] bg-slate-50"
+        />
 
-        <div>
-          <label htmlFor="email-input" className="block text-xs font-bold text-slate-700 mb-1">
-            Adresse E-mail <span className="text-slate-400 font-normal">(optionnel)</span>
-          </label>
-          <div className="relative">
-            <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <input
-              id="email-input"
-              type="email"
-              placeholder="jean.yao@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-4 min-h-[48px] bg-slate-50 border border-slate-200 focus:border-primary-500 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-primary-500/20 shadow-2xs font-medium"
-            />
-          </div>
-        </div>
+        <FormField
+          id="email-input"
+          label="Adresse E-mail"
+          hint="(optionnel)"
+          icon={Mail}
+          type="email"
+          placeholder="jean.yao@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="pr-4 min-h-[48px] bg-slate-50"
+        />
       </div>
 
       {/* Carte Récapitulative du Rendez-Vous */}
