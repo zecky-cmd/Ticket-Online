@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { THEMES } from '../theme/themes';
 import { SLIDES } from '../mocks/slidesMock';
@@ -41,6 +41,29 @@ export default function OnlineScreen({
   const [isPaused, setIsPaused] = useState(false);
   const [agencies, setAgencies] = useState([]);
   const [agenciesLoading, setAgenciesLoading] = useState(true);
+
+  // Fermeture différée des modales (animation de sortie ~200ms)
+  const [closingModal, setClosingModal] = useState(/** @type {string | null} */ (null));
+  const closeTimerRef = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
+
+  const handleOpenModal = (/** @type {string} */ modal) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setClosingModal(null);
+    dispatch(openModal(modal));
+  };
+
+  const handleCloseModal = () => {
+    if (!activeModal || closingModal) return;
+    setClosingModal(activeModal);
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      setClosingModal(null);
+      dispatch(closeModal());
+    }, 200);
+  };
 
   // Défilement automatique du carrousel toutes les 6 secondes
   useEffect(() => {
@@ -87,13 +110,13 @@ export default function OnlineScreen({
     const targetLink = slide?.link || slide?.url || (slideLinks && slideLinks[slide?.id]);
     if (targetLink === '#ticket') {
       e?.preventDefault();
-      dispatch(openModal('ticket'));
+      handleOpenModal('ticket');
     } else if (targetLink === '#satisfaction') {
       e?.preventDefault();
-      dispatch(openModal('satisfaction'));
+      handleOpenModal('satisfaction');
     } else if (targetLink === '#map') {
       e?.preventDefault();
-      dispatch(openModal('map'));
+      handleOpenModal('map');
     }
   };
 
@@ -124,7 +147,7 @@ export default function OnlineScreen({
           {/* 3. Section des 3 Actions (Ticket, Avis, Agences) */}
           <ServiceCards
             theme={theme}
-            onSelectService={(service) => dispatch(openModal(service))}
+            onSelectService={(service) => handleOpenModal(service)}
           />
         </Container>
 
@@ -138,29 +161,38 @@ export default function OnlineScreen({
         />
       </div>
 
-      {/* ─── 5. ÉCRANS MODAUX & BOTTOM SHEETS TACTILES ─── */}
-      <TicketScreen
-        isOpen={activeModal === 'ticket'}
-        onClose={() => dispatch(closeModal())}
-        theme={theme}
-        agencies={agencies}
-        agenciesLoading={agenciesLoading}
-      />
+      {/* ─── 5. ÉCRANS MODAUX & BOTTOM SHEETS TACTILES (montés à l'ouverture) ─── */}
+      {activeModal === 'ticket' && (
+        <TicketScreen
+          isOpen
+          isClosing={closingModal === 'ticket'}
+          onClose={handleCloseModal}
+          theme={theme}
+          agencies={agencies}
+          agenciesLoading={agenciesLoading}
+        />
+      )}
 
-      <SatisfactionScreen
-        isOpen={activeModal === 'satisfaction'}
-        onClose={() => dispatch(closeModal())}
-        theme={theme}
-        agencies={agencies}
-        agenciesLoading={agenciesLoading}
-      />
+      {activeModal === 'satisfaction' && (
+        <SatisfactionScreen
+          isOpen
+          isClosing={closingModal === 'satisfaction'}
+          onClose={handleCloseModal}
+          theme={theme}
+          agencies={agencies}
+          agenciesLoading={agenciesLoading}
+        />
+      )}
 
-      <AgencyMapScreen
-        isOpen={activeModal === 'map'}
-        onClose={() => dispatch(closeModal())}
-        theme={theme}
-        agencies={agencies}
-      />
+      {activeModal === 'map' && (
+        <AgencyMapScreen
+          isOpen
+          isClosing={closingModal === 'map'}
+          onClose={handleCloseModal}
+          theme={theme}
+          agencies={agencies}
+        />
+      )}
     </Layout>
   );
 }

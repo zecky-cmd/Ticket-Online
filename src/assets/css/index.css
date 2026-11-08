@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
 /* ============================================================================
    🎨 THÈME PERSONNALISÉ BNI — TAILWIND v4 CSS-FIRST CONFIG
@@ -256,4 +257,25 @@ textarea {
 }
 .cluster-pulse {
   animation: cluster-pulse 2s ease-out infinite;
+}
+
+/* Accessibilité : respecte la préférence "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Masque la barre de défilement des rangées de filtres/pills */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -5,6 +5,7 @@
  * L'ouverture/fermeture reste gérée par l'appelant (ex: activeModal Redux).
  *
  * @param {boolean} [isOpen=false]
+ * @param {boolean} [isClosing=false] - Fermeture en cours (animation de sortie)
  * @param {() => void} [onClose]
  * @param {'md'|'lg'|'xl'} [size='md'] - Gabarit de largeur/hauteur
  * @param {string} [maxWidth] - Surcharge des classes de largeur max
@@ -24,6 +25,7 @@ const SIZES = {
 
 export default function Modal({
   isOpen = false,
+  isClosing = false,
   onClose,
   children,
   size = 'md',
@@ -41,11 +43,17 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all"
+      className={`fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all ${
+        isClosing ? 'animate-out fade-out-0 duration-200 fill-mode-forwards' : ''
+      }`}
       onClick={closeOnBackdrop && onClose ? onClose : undefined}
     >
       <div
-        className={`relative bg-white w-full rounded-t-[32px] sm:rounded-3xl shadow-2xl ${maxW} ${h} flex flex-col overflow-hidden border-t sm:border border-slate-100 animate-in slide-in-from-bottom duration-300 sm:zoom-in-95 ${className}`}
+        className={`relative bg-white w-full rounded-t-[32px] sm:rounded-3xl shadow-2xl ${maxW} ${h} flex flex-col overflow-hidden border-t sm:border border-slate-100 ${
+          isClosing
+            ? 'animate-out fade-out-0 slide-out-to-bottom-4 sm:zoom-out-95 duration-200 fill-mode-forwards'
+            : 'animate-in fade-in-0 slide-in-from-bottom duration-300 sm:zoom-in-95'
+        } ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {showDragHandle && (

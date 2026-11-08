@@ -21,6 +21,7 @@ const STEPS = [
  */
 export default function SatisfactionScreen({
   isOpen,
+  isClosing = false,
   onClose,
   theme,
   agencies = [],
@@ -32,7 +33,7 @@ export default function SatisfactionScreen({
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
+    <Modal isOpen={isOpen} isClosing={isClosing} onClose={onClose} size="md">
 
       {/* Header Modal */}
         <div

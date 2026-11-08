@@ -21,6 +21,7 @@
     "react-leaflet": "^5.0.0",
     "react-redux": "^9.3.0",
     "tailwindcss": "^4.3.3",
+    "tailwindcss-animate": "^1.0.7",
     "use-sync-external-store": "^1.4.0"
   },
   "devDependencies": {

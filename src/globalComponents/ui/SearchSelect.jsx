@@ -46,6 +46,10 @@ export default function SearchSelect({
   const [query, setQuery] = useState('');
   const [highlighted, setHighlighted] = useState(0);
 
+  // Fermeture animée de l'overlay mobile (démontage différé)
+  const [overlayClosing, setOverlayClosing] = useState(false);
+  const overlayCloseTimerRef = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
+
   // Détection mobile : overlay plein écran au lieu du dropdown inline
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches
@@ -67,6 +71,7 @@ export default function SearchSelect({
   // ── Ouvrir ──────────────────────────────────────────────────────────────
   const open = useCallback(() => {
     if (disabled) return;
+    setOverlayClosing(false);
     setIsOpen(true);
     setQuery('');
     setHighlighted(0);
@@ -74,9 +79,21 @@ export default function SearchSelect({
 
   // ── Fermer ──────────────────────────────────────────────────────────────
   const close = useCallback(() => {
+    // Sur mobile, l'overlay plein écran sort en glissement avant le démontage
+    if (isMobile) {
+      setOverlayClosing(true);
+      if (overlayCloseTimerRef.current) clearTimeout(overlayCloseTimerRef.current);
+      overlayCloseTimerRef.current = setTimeout(() => {
+        overlayCloseTimerRef.current = null;
+        setOverlayClosing(false);
+        setIsOpen(false);
+        setQuery('');
+      }, 180);
+      return;
+    }
     setIsOpen(false);
     setQuery('');
-  }, []);
+  }, [isMobile]);
 
   // ── Sélectionner ────────────────────────────────────────────────────────
   const select = useCallback((/** @type {any} */ opt) => {
@@ -92,13 +109,20 @@ export default function SearchSelect({
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Focus auto sur l'input quand on ouvre
+  // Focus auto sur l'input quand on ouvre (léger délai pour laisser l'animation respirer)
   useEffect(() => {
     if (isOpen) {
-      const t = setTimeout(() => inputRef.current?.focus(), 20);
+      const t = setTimeout(() => inputRef.current?.focus(), 80);
       return () => clearTimeout(t);
     }
   }, [isOpen]);
+
+  // Nettoyage du timer de fermeture animée au démontage
+  useEffect(() => {
+    return () => {
+      if (overlayCloseTimerRef.current) clearTimeout(overlayCloseTimerRef.current);
+    };
+  }, []);
 
   // Scroll auto de l'item surligné
   useEffect(() => {
@@ -203,7 +227,13 @@ export default function SearchSelect({
   // ── Overlay mobile plein écran (via portail React) ──────────────────────
   const mobileOverlay = isOpen && isMobile
     ? createPortal(
-        <div className="fixed inset-x-0 top-0 h-[100dvh] z-[90] bg-slate-50 flex flex-col">
+        <div
+          className={`fixed inset-x-0 top-0 h-[100dvh] z-[90] bg-slate-50 flex flex-col ${
+            overlayClosing
+              ? 'animate-out fade-out-0 slide-out-to-bottom-8 duration-200 fill-mode-forwards'
+              : 'animate-in fade-in-0 slide-in-from-bottom-8 duration-250'
+          }`}
+        >
           {/* Barre de recherche */}
           <div className="flex items-center gap-2 px-3 py-2.5 border-b border-slate-200 bg-white shrink-0">
             <button
@@ -384,7 +414,7 @@ export default function SearchSelect({
 
       {/* ── Liste des options (dropdown desktop) ──────────────────────────── */}
       {isOpen && !isMobile && (
-        <div className="absolute z-50 top-[calc(100%+6px)] left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden">
+        <div className="absolute z-50 top-[calc(100%+6px)] left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in-0 slide-in-from-top-1 duration-150">
           {renderOptions(false)}
         </div>
       )}

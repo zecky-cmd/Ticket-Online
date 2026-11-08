@@ -27,7 +27,7 @@ function applyFilters(agencies, activeFilter, term) {
  * - Mobile : onglets Carte / Liste.
  * - Recherche textuelle en direct (debounce) qui recentre la carte.
  */
-export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = [] }) {
+export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, theme, agencies = [] }) {
   const dispatch = useDispatch();
   const [activeFilter, setActiveFilter] = useState('toutes');
   const [searchTerm, setSearchTerm] = useState('');
@@ -128,7 +128,7 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = [] 
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} isClosing={isClosing} onClose={onClose} size="xl">
 
       {/* ── Header Ultra-Compact sur Mobile ───────────────────────── */}
         <div className="px-4 md:px-5 pt-1.5 md:pt-3 pb-1 md:pb-2.5 shrink-0">
@@ -165,8 +165,8 @@ export default function AgencyMapScreen({ isOpen, onClose, theme, agencies = [] 
         </div>
 
         {/* ── Recherche + filtres affluence ───────────────────────────── */}
-        <div className="px-3 sm:px-4 py-2 flex items-center gap-2 shrink-0 border-b border-slate-100">
-          <div className="relative flex-1 min-w-0">
+        <div className="px-3 sm:px-4 py-2 flex flex-col sm:flex-row sm:items-center gap-2 shrink-0 border-b border-slate-100">
+          <div className="relative w-full sm:flex-1 sm:min-w-0">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <input
               type="text"

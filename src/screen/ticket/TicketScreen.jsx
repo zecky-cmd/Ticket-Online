@@ -47,7 +47,7 @@ function formatShortDay(iso) {
  * @param {any} [props.theme]
  * @param {any[]} [props.agencies]
  */
-export default function TicketScreen({ isOpen, onClose, theme, agencies = [], agenciesLoading = false }) {
+export default function TicketScreen({ isOpen, isClosing = false, onClose, theme, agencies = [], agenciesLoading = false }) {
   const dispatch = useDispatch();
   const reduxSelectedAgency = useSelector((state) => /** @type {any} */ (state)?.agency?.selectedAgency);
 
@@ -246,7 +246,7 @@ export default function TicketScreen({ isOpen, onClose, theme, agencies = [], ag
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal isOpen={isOpen} isClosing={isClosing} onClose={onClose} size="lg">
         {/* En-tête Stepper conforme à la maquette (Étapes 1 à 5) */}
         {currentStep <= 5 && (
           <TicketStepperHeader
