@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { 
   LocateFixed, 
   RotateCw, 
@@ -10,35 +13,171 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Plus, 
-  Minus 
+  Minus
 } from 'lucide-react';
-import { getAffluence } from '../../../theme/affluence';
+import { SITE_CONFIG } from '../../../config/siteConfig';
+import { CI_BOUNDS, MACRO_CLUSTER_THRESHOLD } from '../mapConfig';
 
-const DEFAULT_CENTER = [5.3197, -4.0167];
-const DEFAULT_ZOOM = 12;
+const BRAND_LETTER = (SITE_CONFIG.brand.entreprise || 'S').charAt(0).toUpperCase();
 
 /**
- * Crée un marker circulaire coloré en CSS pur (DivIcon Leaflet)
+ * Crée un pin d'agence en forme de goutte (SVG) avec monogramme de l'enseigne.
  */
-function createMarker(affluence, isSelected = false) {
-  const color = getAffluence(affluence).color;
-  const size = isSelected ? 20 : 15;
-  const border = isSelected ? '3px solid white' : '2px solid white';
+function createAgencyPin(color = '#008056', isSelected = false) {
+  const size = isSelected ? 46 : 34;
   return L.divIcon({
     className: '',
-    html: `<div style="
-      width: ${size}px;
-      height: ${size}px;
-      background: ${color};
-      border: ${border};
-      border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    "></div>`,
+    html: `
+      <div style="
+        width: ${size}px;
+        height: ${size}px;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+        cursor: pointer;
+      ">
+        <svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C7.03 0 3 4.03 3 9c0 6.9 9 15 9 15s9-8.1 9-15c0-4.97-4.03-9-9-9z"
+                fill="#ffffff" stroke="${color}" stroke-width="1.4" />
+        </svg>
+        <span style="
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-bottom: ${Math.round(size * 0.5)}px;
+          font-weight: 900;
+          font-size: ${Math.round(size * 0.32)}px;
+          line-height: 1;
+          color: ${color};
+        ">${BRAND_LETTER}</span>
+      </div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size],
+    popupAnchor: [0, -size + 4],
+    tooltipAnchor: [0, -size + 4],
+  });
+}
+
+/** Échappe le HTML pour les contenus injectés dans les tooltips/clusters */
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/** HTML du tooltip de survol d'une agence */
+function buildTooltipHtml(agency, primaryColor) {
+  const phone = agency.phone
+    ? `<p style="margin:2px 0 0;font-size:11px;color:#64748b;">${escapeHtml(agency.phone)}</p>`
+    : '';
+  return `
+    <div style="display:flex;align-items:center;gap:8px;min-width:130px;">
+      <span style="width:28px;height:28px;border-radius:50%;background:${primaryColor};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;flex-shrink:0;">${escapeHtml(BRAND_LETTER)}</span>
+      <div style="min-width:0;">
+        <p style="margin:0;font-size:12px;font-weight:700;color:#0f172a;line-height:1.25;">${escapeHtml(agency.name)}</p>
+        ${phone}
+      </div>
+    </div>`;
+}
+
+/** Libellé d'un macro-cluster : le district/commune le plus fréquent parmi les enfants */
+function getClusterLabel(cluster) {
+  const counts = {};
+  cluster.getAllChildMarkers().forEach((marker) => {
+    const key = marker.district || marker.commune;
+    if (key) counts[key] = (counts[key] || 0) + 1;
+  });
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  return entries.length ? entries[0][0] : '';
+}
+
+/** Icône de cluster : macro rouge pulsant avec libellé, ou micro pastille bleue */
+function createClusterIcon(cluster) {
+  const count = cluster.getChildCount();
+
+  if (count > MACRO_CLUSTER_THRESHOLD) {
+    const label = getClusterLabel(cluster);
+    const size = 54;
+    return L.divIcon({
+      className: 'agency-macro-cluster',
+      html: `
+        <div style="position:relative;width:${size}px;height:${size}px;">
+          <span class="cluster-pulse" style="position:absolute;inset:-10px;border-radius:50%;background:rgba(220,38,38,0.35);"></span>
+          <div style="position:absolute;inset:0;border-radius:50%;background:#dc2626;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;border:3px solid #fff;box-shadow:0 4px 12px rgba(220,38,38,0.5);">${count}</div>
+        </div>
+        ${label ? `<div style="text-align:center;margin-top:4px;font-weight:800;font-size:11px;color:#111827;background:#fff;border-radius:999px;padding:2px 10px;border:1px solid #e5e7eb;box-shadow:0 2px 6px rgba(0,0,0,0.15);">${escapeHtml(label)}</div>` : ''}
+      `,
+      iconSize: label ? [size, size + 26] : [size, size],
+      iconAnchor: label ? [size / 2, size / 2 + 6] : [size / 2, size / 2],
+    });
+  }
+
+  const size = count >= 10 ? 46 : 38;
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${count >= 10 ? 14 : 12}px;border:3px solid #fff;box-shadow:0 3px 10px rgba(37,99,235,0.45);">${count}</div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
-    popupAnchor: [0, -(size / 2 + 4)],
   });
+}
+
+/**
+ * Groupe de marqueurs clusterisés (leaflet.markercluster) intégré à react-leaflet.
+ * - Macro-cluster rouge pulsant avec libellé (ex: "24 Abidjan") au-delà du seuil ;
+ * - Micro-clusters bleus chiffrés pour les agences proches ;
+ * - Éclatement au zoom : natif au plugin.
+ */
+function MarkerClusterGroup({ agencies, selectedAgency, onSelectAgency, primaryColor }) {
+  const map = useMap();
+
+  useEffect(() => {
+    // Le plugin s'attache à L (ou à window.L selon le bundler) — garde-fou contre un chargement raté
+    const ClusterGroupFactory =
+      L.markerClusterGroup ||
+      (typeof window !== 'undefined' && window.L && window.L.markerClusterGroup);
+
+    if (!ClusterGroupFactory) {
+      console.error('[MarkerClusterGroup] Plugin leaflet.markercluster non chargé.');
+      return;
+    }
+
+    const clusterGroup = ClusterGroupFactory({
+      showCoverageOnHover: false,
+      maxClusterRadius: 60,
+      zoomToBoundsOnClick: true,
+      iconCreateFunction: createClusterIcon,
+    });
+
+    const markers = agencies
+      .filter((a) => a.lat != null && a.lng != null)
+      .map((agency) => {
+        const marker = L.marker([agency.lat, agency.lng], {
+          icon: createAgencyPin(primaryColor, selectedAgency?.id === agency.id),
+        });
+        marker.district = agency.district;
+        marker.commune = agency.commune;
+        marker.bindTooltip(buildTooltipHtml(agency, primaryColor), {
+          direction: 'top',
+          offset: [0, -12],
+          opacity: 1,
+          className: 'agency-tooltip',
+        });
+        marker.on('click', () => onSelectAgency(agency));
+        return marker;
+      });
+
+    clusterGroup.addLayers(markers);
+    map.addLayer(clusterGroup);
+
+    return () => {
+      map.removeLayer(clusterGroup);
+      clusterGroup.clearLayers();
+    };
+  }, [agencies, selectedAgency, onSelectAgency, primaryColor, map]);
+
+  return null;
 }
 
 /**
@@ -127,7 +266,7 @@ function MapControlsOverlay({
           type="button"
           onClick={() => {
             if (onRefresh) onRefresh(map);
-            else map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate: true });
+            else map.fitBounds(CI_BOUNDS, { padding: [20, 20], animate: true });
           }}
           title="Réinitialiser la carte"
           className="pointer-events-auto w-9 h-9 sm:w-10 sm:h-10 bg-white/95 backdrop-blur-xs text-slate-700 hover:text-primary-500 hover:bg-white rounded-full shadow-md flex items-center justify-center border border-slate-200/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
@@ -241,30 +380,75 @@ function MapRecenter({ lat, lng }) {
 }
 
 /**
+ * Recentre la carte sur les cibles d'une recherche (debouncée côté parent).
+ */
+function MapSearchFocus({ targets }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!targets || !targets.length) return;
+    const withCoords = targets.filter((a) => a.lat != null && a.lng != null);
+    if (withCoords.length === 1) {
+      map.flyTo([withCoords[0].lat, withCoords[0].lng], 13, { duration: 0.8 });
+    } else if (withCoords.length > 1) {
+      const bounds = L.latLngBounds(withCoords.map((a) => [a.lat, a.lng]));
+      map.flyToBounds(bounds, { padding: [40, 40], duration: 0.8 });
+    }
+  }, [targets, map]);
+  return null;
+}
+
+/**
+ * Rapporte les bounds visibles au parent (volet « Résultats » du split-screen).
+ */
+function MapBoundsWatcher({ onBoundsChange }) {
+  const map = useMap();
+  useEffect(() => {
+    onBoundsChange?.(map.getBounds());
+  }, [map, onBoundsChange]);
+  useMapEvents({
+    moveend: () => onBoundsChange?.(map.getBounds()),
+  });
+  return null;
+}
+
+/**
+ * Réinitialise la vue nationale quand le déclencheur change (fiche flottante).
+ */
+function MapResetTrigger({ trigger }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!trigger) return;
+    map.fitBounds(CI_BOUNDS, { padding: [20, 20], animate: true });
+  }, [trigger, map]);
+  return null;
+}
+
+/**
  * Carte Leaflet principale
  */
-export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency, primaryColor = '#008056' }) {
+export default function AgencyMapView({
+  agencies,
+  selectedAgency,
+  onSelectAgency,
+  primaryColor = '#008056',
+  searchTargets,
+  onBoundsChange,
+  resetTrigger,
+}) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = (map) => {
     setIsRefreshing(true);
-    const withCoords = (agencies || []).filter((a) => a.lat != null && a.lng != null);
-    if (withCoords.length === 1) {
-      map.setView([withCoords[0].lat, withCoords[0].lng], 14, { animate: true });
-    } else if (withCoords.length > 1) {
-      const bounds = L.latLngBounds(withCoords.map((a) => [a.lat, a.lng]));
-      map.fitBounds(bounds, { padding: [40, 40], animate: true });
-    } else {
-      map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate: true });
-    }
+    // Réinitialisation : retour à la vue nationale (Côte d'Ivoire)
+    map.fitBounds(CI_BOUNDS, { padding: [20, 20], animate: true });
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
   return (
     <div className="w-full h-full relative">
       <MapContainer
-        center={DEFAULT_CENTER}
-        zoom={DEFAULT_ZOOM}
+        bounds={CI_BOUNDS}
+        boundsOptions={{ padding: [30, 30] }}
         className="w-full h-full"
         zoomControl={false}
         attributionControl={false}
@@ -282,6 +466,15 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
           <MapRecenter lat={selectedAgency.lat} lng={selectedAgency.lng} />
         )}
 
+        {/* Recentre la carte sur les résultats d'une recherche */}
+        <MapSearchFocus targets={searchTargets} />
+
+        {/* Synchronise le volet « Résultats » avec la zone visible */}
+        <MapBoundsWatcher onBoundsChange={onBoundsChange} />
+
+        {/* Réinitialisation déclenchée depuis la fiche flottante */}
+        <MapResetTrigger trigger={resetTrigger} />
+
         {/* Overlay avec les commandes flottantes */}
         <MapControlsOverlay 
           onRefresh={handleRefresh}
@@ -289,31 +482,13 @@ export default function AgencyMapView({ agencies, selectedAgency, onSelectAgency
           primaryColor={primaryColor}
         />
 
-        {/* Markers des agences (coordonnées valides uniquement) */}
-        {agencies
-          .filter((agency) => agency.lat != null && agency.lng != null)
-          .map((agency) => (
-            <Marker
-              key={agency.id}
-              position={[agency.lat, agency.lng]}
-              icon={createMarker(agency.affluence, selectedAgency?.id === agency.id)}
-              eventHandlers={{
-                click: () => onSelectAgency(agency),
-              }}
-            >
-              <Popup className="agency-popup">
-                <div className="text-xs font-bold text-slate-900 leading-snug">
-                  {agency.name}
-                </div>
-                <div className="text-[11px] text-slate-500 mt-0.5">
-                  {agency.commune}
-                </div>
-                <div className="text-xs text-primary-500 font-semibold mt-1">
-                  {agency.currentWaitTime ? `Attente : ${agency.currentWaitTime}` : 'Affluence indisponible'}
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+        {/* Pins clusterisés des agences (macro rouge / micro bleu) */}
+        <MarkerClusterGroup
+          agencies={agencies}
+          selectedAgency={selectedAgency}
+          onSelectAgency={onSelectAgency}
+          primaryColor={primaryColor}
+        />
       </MapContainer>
     </div>
   );

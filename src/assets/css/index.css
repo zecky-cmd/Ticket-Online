@@ -235,3 +235,25 @@ textarea {
   align-items: center;
   justify-content: center;
 }
+
+/* Tooltip survol des pins d'agences (Leaflet) */
+.agency-tooltip {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  padding: 8px 10px;
+}
+.agency-tooltip::before {
+  display: none;
+}
+
+/* Halo pulsant des macro-clusters (leaflet.markercluster) */
+@keyframes cluster-pulse {
+  0%   { transform: scale(0.9); opacity: 0.8; }
+  70%  { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+.cluster-pulse {
+  animation: cluster-pulse 2s ease-out infinite;
+}
