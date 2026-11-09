@@ -58,7 +58,7 @@ export default function HomeMiniMap({
     : defaultCenter;
 
   return (
-    <div className="w-full h-full min-h-[300px] sm:min-h-[340px] relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-slate-100">
+    <div className="w-full h-full min-h-[300px] sm:min-h-[340px] relative rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm bg-slate-100 isolate z-0">
       {/* ── Bouton Flottant en Haut à Droite : "Voir la carte" ── */}
       <div className="absolute top-3.5 right-3.5 z-[1000]">
         <button

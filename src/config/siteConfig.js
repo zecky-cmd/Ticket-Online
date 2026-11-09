@@ -8,8 +8,8 @@
 
 export const SITE_CONFIG = {
   brand: {
-    entreprise: 'Synapse',
-    logo: '/img/logo-beni.png',
+    // entreprise: 'SYNAPSE',
+    logo: '/img/synapse.png',
     logoAlt: 'Synapse',
   },
   contact: {

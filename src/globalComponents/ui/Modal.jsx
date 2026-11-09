@@ -43,7 +43,7 @@ export default function Modal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all ${
+      className={`fixed inset-0 z-[9999] flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 bg-slate-950/70 backdrop-blur-md transition-all ${
         isClosing ? 'animate-out fade-out-0 duration-200 fill-mode-forwards' : ''
       }`}
       onClick={closeOnBackdrop && onClose ? onClose : undefined}

@@ -181,15 +181,28 @@ function MarkerClusterGroup({ agencies, selectedAgency, onSelectAgency, primaryC
 }
 
 /**
- * Force Leaflet à recalculer ses dimensions après le rendu du DOM
+ * Force Leaflet à recalculer ses dimensions après le rendu du DOM et l'animation de la modale
  */
 function MapResizeHandler() {
   const map = useMap();
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Invalide la taille plusieurs fois pour couvrir toute la durée de l'animation modale (duration-300)
+    const t1 = setTimeout(() => {
       map.invalidateSize();
-    }, 150);
-    return () => clearTimeout(timer);
+      map.fitBounds(CI_BOUNDS, { padding: [25, 25], animate: false });
+    }, 100);
+    const t2 = setTimeout(() => {
+      map.invalidateSize();
+    }, 350);
+    const t3 = setTimeout(() => {
+      map.invalidateSize();
+    }, 600);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
   }, [map]);
   return null;
 }
@@ -403,10 +416,30 @@ function MapSearchFocus({ targets }) {
 function MapBoundsWatcher({ onBoundsChange }) {
   const map = useMap();
   useEffect(() => {
-    onBoundsChange?.(map.getBounds());
+    const t = setTimeout(() => {
+      try {
+        const b = map.getBounds();
+        if (b && b.isValid && b.isValid()) {
+          onBoundsChange?.(b);
+        }
+      } catch {
+        // bounds non encore calculables
+      }
+    }, 250);
+    return () => clearTimeout(t);
   }, [map, onBoundsChange]);
+
   useMapEvents({
-    moveend: () => onBoundsChange?.(map.getBounds()),
+    moveend: () => {
+      try {
+        const b = map.getBounds();
+        if (b && b.isValid && b.isValid()) {
+          onBoundsChange?.(b);
+        }
+      } catch {
+        // bounds non encore calculables
+      }
+    },
   });
   return null;
 }
@@ -445,10 +478,10 @@ export default function AgencyMapView({
   };
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative isolate">
       <MapContainer
-        bounds={CI_BOUNDS}
-        boundsOptions={{ padding: [30, 30] }}
+        center={[7.5399, -5.5470]}
+        zoom={7}
         className="w-full h-full"
         zoomControl={false}
         attributionControl={false}

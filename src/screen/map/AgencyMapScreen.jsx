@@ -56,13 +56,17 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
   const searchFiltered = applyFilters(agencies, activeFilter, term);
 
   // Agences dans la zone visible (desktop)
-  const visibleAgencies = visibleBounds
+  const inBounds = visibleBounds
     ? searchFiltered.filter((a) => {
         if (a.lat == null || a.lng == null) return false;
         const [[s, w], [n, e]] = visibleBounds;
         return a.lat >= s && a.lat <= n && a.lng >= w && a.lng <= e;
       })
     : searchFiltered;
+
+  // Fallback initial : si le calcul de bounds pendant l'animation d'ouverture n'a rien capturé
+  // et que la recherche est vide, on affiche la liste complète searchFiltered
+  const visibleAgencies = inBounds.length > 0 || term ? inBounds : searchFiltered;
 
   // Cibles de recentrage après recherche (debounce 400ms)
   const [searchTargets, setSearchTargets] = useState(/** @type {any[]|null} */ (null));
@@ -102,7 +106,7 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
   };
 
   const renderMap = () => (
-    <div className="w-full flex-1 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs border border-slate-200 relative">
+    <div className="w-full h-full min-h-0 flex-1 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs border border-slate-200 relative">
       <AgencyMapView
         agencies={searchFiltered}
         selectedAgency={selectedAgency}
@@ -192,7 +196,7 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
         {isDesktop ? (
           /* ── Split-screen desktop : carte (70%) + résultats (30%) ── */
           <div className="flex-1 min-h-0 flex overflow-hidden">
-            <div className="flex-[7] min-w-0 h-full p-2 sm:p-3">
+            <div className="flex-[7] min-w-0 h-full p-2 sm:p-3 flex flex-col">
               {renderMap()}
             </div>
             <div className="flex-[3] min-w-0 border-l border-slate-200 flex flex-col min-h-0 bg-white">
