@@ -28,13 +28,7 @@ export default function Header({ theme }) {
         {/* ── Menu Central (Desktop uniquement) ── */}
         <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
           {/* Accueil (actif) */}
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="px-3.5 py-1.5 rounded-full bg-black/20 hover:bg-black/30 text-white font-bold text-xs transition-colors cursor-pointer"
-          >
-            Accueil
-          </button>
+
 
           {/* Agences (avec chevron) */}
           <button
@@ -42,8 +36,8 @@ export default function Header({ theme }) {
             onClick={() => dispatch(openModal('map'))}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 text-xs font-semibold transition-colors cursor-pointer"
           >
-            <span>Agences</span>
-            <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+            Agences
+        
           </button>
 
           {/* Mes tickets */}

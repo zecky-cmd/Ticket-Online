@@ -15,12 +15,22 @@
  * @param {string} [className] - Classes additionnelles du conteneur
  */
 const SIZES = {
-  md: { maxWidth: 'sm:max-w-xl', height: 'max-h-[94dvh] sm:max-h-[90vh]' },
-  lg: {
-    maxWidth: 'sm:max-w-xl md:max-w-2xl lg:max-w-3xl',
-    height: 'max-h-[94dvh] sm:max-h-[90vh] md:min-h-[520px]',
+  md: {
+    maxWidth: 'sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl',
+    height: 'max-h-[94dvh] sm:max-h-[90vh]',
   },
-  xl: { maxWidth: 'md:max-w-4xl', height: 'h-[94dvh] md:h-[88vh]' },
+  lg: {
+    maxWidth: 'sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl',
+    height: 'max-h-[94dvh] sm:max-h-[90vh] md:min-h-[560px]',
+  },
+  xl: {
+    maxWidth: 'md:max-w-5xl lg:max-w-6xl xl:max-w-7xl',
+    height: 'h-[94dvh] md:h-[90vh] lg:h-[92vh]',
+  },
+  '2xl': {
+    maxWidth: 'md:max-w-6xl lg:max-w-7xl 2xl:max-w-[1440px]',
+    height: 'h-[94dvh] md:h-[92vh]',
+  },
 };
 
 export default function Modal({
