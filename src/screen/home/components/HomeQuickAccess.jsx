@@ -1,10 +1,10 @@
 import { Zap, MapPin, BarChart3, Star } from 'lucide-react';
 
 /**
- * Barre des Accès Rapides — 4 Piliers Synapse
+ * Barre d'Accès Rapides Flottante — Conforme au découpage de la maquette
  *
- * Desktop : 4 colonnes horizontales avec séparateurs
- * Mobile : Grille 2x2 tactile
+ * Flotte à cheval entre la bannière Hero et la section Fluidité grâce à une marge négative.
+ * Coins très arrondis, ombre portée douce et séparateurs verticaux élégants.
  */
 export default function HomeQuickAccess({
   onOpenTicket,
@@ -45,37 +45,39 @@ export default function HomeQuickAccess({
   ];
 
   return (
-    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100/90 p-3 sm:p-4 md:p-5 mt-4 sm:mt-6 transition-all">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-0 lg:divide-x divide-slate-100">
-        {items.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={item.onClick}
-              className="flex items-center gap-3 sm:gap-3.5 p-2.5 sm:p-3 lg:px-4 rounded-xl hover:bg-slate-50/80 transition-all text-left cursor-pointer group"
-            >
-              {/* Cercle d'icône vert doux */}
-              <div
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105"
-                style={{ backgroundColor: '#E5F5EF', color: primaryColor }}
+    <div className="relative z-20 -mt-9 sm:-mt-12 md:-mt-14 px-3 sm:px-6 w-full max-w-6xl mx-auto">
+      <div className="bg-white/98 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/8 border border-slate-200/90 p-3 sm:p-4 md:p-5 transition-all">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-0 lg:divide-x divide-slate-100">
+          {items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={item.onClick}
+                className="flex items-center gap-3 sm:gap-3.5 p-2.5 sm:p-3 lg:px-5 rounded-2xl hover:bg-slate-50 transition-all text-left cursor-pointer group"
               >
-                <Icon className="w-5 h-5" />
-              </div>
+                {/* Pastille d'icône verte douce */}
+                <div
+                  className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-108"
+                  style={{ backgroundColor: '#E5F5EF', color: primaryColor }}
+                >
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
 
-              {/* Textes */}
-              <div className="min-w-0">
-                <p className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-emerald-800 transition-colors truncate">
-                  {item.title}
-                </p>
-                <p className="text-[11px] sm:text-xs text-slate-500 truncate mt-0.5">
-                  {item.desc}
-                </p>
-              </div>
-            </button>
-          );
-        })}
+                {/* Textes */}
+                <div className="min-w-0">
+                  <p className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-emerald-800 transition-colors truncate">
+                    {item.title}
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-slate-500 truncate mt-0.5">
+                    {item.desc}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

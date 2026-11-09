@@ -1,72 +1,83 @@
 import { ArrowRight, Play, Ticket } from 'lucide-react';
 
 /**
- * Hero Section — Conforme à la maquette BNI Synapse
+ * Hero Banner Immersive — Conforme au découpage de la maquette
  *
- * Desktop : Disposition 2 colonnes (Accroche + CTA à gauche / Photo conseillère à droite)
- * Mobile : Titre, sous-titre, CTA pleine largeur, puis visuel
+ * La photo de l'agence BNI couvre toute la bannière en arrière-plan.
+ * Un fond travaillé (dégradé blanc/lumière doux) à gauche assure
+ * un contraste et une lisibilité parfaits pour le texte et les CTA.
  */
 export default function HomeHero({ onOpenTicket, primaryColor = '#00865D' }) {
   return (
-    <section className="relative pt-4 sm:pt-6 md:pt-8 pb-4 md:pb-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-        {/* ── Colonne Gauche : Accroche & Boutons d'Action ── */}
-        <div className="lg:col-span-6 xl:col-span-7 flex flex-col justify-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black text-slate-900 tracking-tight leading-[1.08]">
-            Votre agence,<br />
-            <span style={{ color: primaryColor }}>à votre rythme.</span>
-          </h1>
+    <section className="relative w-full rounded-3xl sm:rounded-[36px] overflow-hidden shadow-sm border border-slate-200/80 bg-white">
+      {/* ── 1. Image de Fond Couvrant Toute la Bannière ── */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/image.jpg"
+          alt="Accueil en agence BNI"
+          className="w-full h-full object-cover object-[75%_center] sm:object-[center_right]"
+          onError={(e) => {
+            e.currentTarget.src = '/img/img1.jpg';
+          }}
+        />
 
-          <p className="mt-3 sm:mt-4 text-slate-600 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed">
-            Prenez votre ticket en ligne, trouvez une agence et gagnez du temps en toute sérénité.
-          </p>
+        {/* ── 2. Fond Travaillé / Dégradé Doux Multi-Couches ── */}
+        {/* Desktop : Dégradé horizontal puissant à gauche qui s'estompe naturellement vers la droite */}
+        <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-white via-white/92 via-55% to-white/0 z-[1]" />
+        
+        {/* Voile d'ambiance vert d'eau très subtil pour la cohérence de marque */}
+        <div
+          className="hidden sm:block absolute inset-0 opacity-40 z-[2] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at 20% 50%, rgba(229, 245, 239, 0.9) 0%, transparent 60%)',
+          }}
+        />
 
-          {/* Boutons d'action */}
-          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-            {/* CTA Principal : Prendre un ticket */}
-            <button
-              type="button"
-              onClick={onOpenTicket}
-              className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-full text-white font-bold text-sm sm:text-base shadow-lg shadow-emerald-900/15 hover:shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              style={{ backgroundColor: primaryColor }}
-            >
-              <span className="p-1 rounded-md bg-white/20">
-                <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
-              </span>
-              <span>Prendre un ticket en ligne</span>
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" />
-            </button>
+        {/* Mobile : Dégradé vertical pour contraster le texte sur smartphone */}
+        <div className="sm:hidden absolute inset-0 bg-gradient-to-b from-white via-white/95 via-65% to-white/40 z-[1]" />
+      </div>
 
-            {/* Bouton Secondaire : Voir comment ça marche */}
-            <button
-              type="button"
-              onClick={() => alert("Synapse vous permet de choisir votre agence, réserver un créneau ou prendre un ticket en temps réel sans attendre.")}
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 text-slate-700 hover:text-slate-900 text-xs sm:text-sm font-semibold rounded-full hover:bg-slate-100/80 transition-colors cursor-pointer"
-            >
-              <span className="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-slate-600 bg-white">
-                <Play className="w-3 h-3 fill-current ml-0.5" />
-              </span>
-              <span>Voir comment ça marche</span>
-              <span className="text-slate-400 font-normal text-xs">| 2 min</span>
-            </button>
-          </div>
-        </div>
+      {/* ── 3. Contenu Textuel Superposé sur le Fond Travaillé ── */}
+      <div className="relative z-10 px-6 sm:px-10 md:px-12 lg:px-16 pt-8 sm:pt-12 md:pt-16 pb-16 sm:pb-20 md:pb-24 max-w-2xl lg:max-w-3xl">
+        {/* Titre Principal */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[56px] font-black text-slate-900 tracking-tight leading-[1.08]">
+          Votre agence,<br />
+          <span style={{ color: primaryColor }}>à votre rythme.</span>
+        </h1>
 
-        {/* ── Colonne Droite : Photographie Agence BNI ── */}
-        <div className="lg:col-span-6 xl:col-span-5">
-          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-slate-100 bg-emerald-50 aspect-4/3 sm:aspect-16/10 lg:aspect-auto lg:h-[380px] xl:h-[420px]">
-            <img
-              src="/image.jpg"
-              alt="Accueil en agence BNI"
-              className="w-full h-full object-cover object-top"
-              onError={(e) => {
-                // Fallback si l'image n'est pas trouvée
-                e.currentTarget.src = '/img/img1.jpg';
-              }}
-            />
-            {/* Dégradé doux en bas d'image pour l'intégration visuelle */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent pointer-events-none" />
-          </div>
+        {/* Sous-titre */}
+        <p className="mt-3.5 sm:mt-4 text-slate-600 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed font-normal">
+          Prenez votre ticket en ligne, trouvez une agence et gagnez du temps en toute sérénité.
+        </p>
+
+        {/* Boutons d'Action */}
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4">
+          {/* CTA Principal : Prendre un ticket */}
+          <button
+            type="button"
+            onClick={onOpenTicket}
+            className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full text-white font-bold text-sm sm:text-base shadow-xl shadow-emerald-950/20 hover:shadow-2xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            style={{ backgroundColor: primaryColor }}
+          >
+            <span className="p-1 rounded-md bg-white/20">
+              <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
+            </span>
+            <span>Prendre un ticket en ligne</span>
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" />
+          </button>
+
+          {/* Bouton Secondaire : Voir comment ça marche */}
+          <button
+            type="button"
+            onClick={() => alert("Synapse vous permet de choisir votre agence, réserver un créneau ou prendre un ticket en temps réel sans attendre.")}
+            className="inline-flex items-center justify-center gap-2 px-4 py-3 text-slate-800 hover:text-slate-950 text-xs sm:text-sm font-semibold rounded-full hover:bg-white/70 transition-colors cursor-pointer"
+          >
+            <span className="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 bg-white shadow-xs">
+              <Play className="w-3 h-3 fill-current ml-0.5" />
+            </span>
+            <span>Voir comment ça marche</span>
+            <span className="text-slate-400 font-normal text-xs">| 2 min</span>
+          </button>
         </div>
       </div>
     </section>
