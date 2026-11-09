@@ -28,13 +28,13 @@ export default function HomeQuickAccess({
       desc: 'Carte et infos en temps réel',
       onClick: onOpenMap,
     },
-    {
-      id: 'follow',
-      icon: BarChart3,
-      title: 'Suivez votre ticket',
-      desc: 'En temps réel',
-      onClick: onFollowTicket || onOpenTicket,
-    },
+    // {
+    //   id: 'follow',
+    //   icon: BarChart3,
+    //   title: 'Suivez votre ticket',
+    //   desc: 'En temps réel',
+    //   onClick: onFollowTicket || onOpenTicket,
+    // },
     {
       id: 'satisfaction',
       icon: Star,
@@ -45,8 +45,8 @@ export default function HomeQuickAccess({
   ];
 
   return (
-    <div className="relative z-20 -mt-9 sm:-mt-12 md:-mt-14 px-3 sm:px-6 w-full max-w-6xl mx-auto">
-      <div className=" backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/8 border border-slate-200/90 p-3 sm:p-4 md:p-5 transition-all">
+    <div className="relative  z-20 -mt-9 sm:-mt-12 md:-mt-14 px-3 sm:px-6 w-full max-w-6xl mx-auto">
+      <div className="bg-white/98 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-900/8 border border-slate-200/90 p-3 sm:p-4 md:p-5 transition-all">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-0 lg:divide-x divide-slate-100">
           {items.map((item) => {
             const Icon = item.icon;
