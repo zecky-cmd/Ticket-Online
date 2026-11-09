@@ -4,13 +4,13 @@ import Header from '../globalComponents/Header';
 import Footer from '../globalComponents/Footer';
 
 /**
- * Composant Layout Global
+ * Composant Layout Global — BNI Synapse
  *
  * Rôle :
- * - Cadre général 100vh sans scroll (h-screen overflow-hidden)
- * - Header vert officiel en haut
- * - Contenu principal fluide au centre
- * - Footer minimaliste en bas
+ * - Header vert institutionnel sticky
+ * - Fond de page #F8FAFC doux et contemporain
+ * - Corps fluide et scrollable sur tous formats d'écran
+ * - Footer épuré
  * - Synchronise les tokens CSS Tailwind avec le thème Redux actif
  */
 export default function Layout({ children }) {
@@ -35,16 +35,16 @@ export default function Layout({ children }) {
   }, [theme]);
 
   return (
-    <div className="h-screen max-h-screen h-[100dvh] w-full bg-white text-slate-900 font-sans flex flex-col justify-between overflow-hidden selection:bg-primary-500 selection:text-white">
-      {/* 1. Header vert signature */}
+    <div className="min-h-screen w-full bg-[#F8FAFC] text-slate-900 font-sans flex flex-col justify-between selection:bg-primary-500 selection:text-white">
+      {/* 1. Header vert signature sticky */}
       <Header theme={theme} />
 
-      {/* 2. Corps de page : occupe exactement l'espace restant dans les 100vh */}
-      <main className="flex-1 min-h-0 w-full flex flex-col justify-between overflow-hidden">
+      {/* 2. Corps de page scrollable avec marge inférieure pour la barre mobile */}
+      <main className="flex-1 w-full pb-16 md:pb-6">
         {children}
       </main>
 
-      {/* 3. Footer épuré 1 ligne toujours visible à l'écran sans scroll */}
+      {/* 3. Footer épuré */}
       <Footer />
     </div>
   );
