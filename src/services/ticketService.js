@@ -1,5 +1,5 @@
-import { s2qApiClient } from './api';
-import { S2Q_SERVICES } from './serveur';
+import { apiClient } from './api';
+import { API_SERVICES } from './serveur';
 
 /**
  * Service Métier : Gestion des Tickets / Rendez-vous en ligne S2Q
@@ -62,7 +62,7 @@ export const ticketService = {
       str_ticphone: phoneNumber || '',
     };
 
-    const response = await s2qApiClient.post(`/${S2Q_SERVICES.admin}/public/rendezvous`, body);
+    const response = await apiClient.post(`/${API_SERVICES.admin}/public/rendezvous`, body);
     const data = response.data?.data || response.data;
 
     return {

@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Map as MapIcon, ArrowRight, Building2 } from 'lucide-react';
+import { getAffluence } from '../../../theme/affluence';
 
 /**
  * Crée un marker circulaire moderne pour la mini-carte
@@ -92,7 +93,8 @@ export default function HomeMiniMap({
           .filter((a) => a.lat != null && a.lng != null)
           .map((agency) => {
             const isSelected = selectedAgency?.id === agency.id;
-            const color = agency.affluence === 'elevee' ? '#E5484D' : agency.affluence === 'moderee' ? '#F5A623' : primaryColor;
+            const aff = getAffluence(agency.affluence);
+            const color = aff?.color || primaryColor;
             return (
               <Marker
                 key={agency.id}
@@ -107,30 +109,40 @@ export default function HomeMiniMap({
       </MapContainer>
 
       {/* ── Popover Flottant au Centre : Agence Active ── */}
-      {selectedAgency && (
-        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-auto sm:left-1/2 sm:-translate-x-1/2 z-[1000] pointer-events-auto">
-          <button
-            type="button"
-            onClick={onOpenMap}
-            className="w-full sm:w-auto inline-flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 text-left hover:scale-[1.02] transition-transform cursor-pointer"
-          >
-            <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 text-emerald-700">
-              <Building2 className="w-4 h-4" />
-            </div>
-            <div className="min-w-0 pr-2">
-              <p className="text-xs font-bold text-slate-900 truncate">
-                {selectedAgency.name || 'Agence Cocody'}
-              </p>
-              <p className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1.5">
-                <span>Fluide</span>
-                <span className="text-slate-300">•</span>
-                <span className="text-slate-600">{selectedAgency.currentWaitTime || '08 min'}</span>
-              </p>
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
-          </button>
-        </div>
-      )}
+      {selectedAgency && (() => {
+        const selectedAff = getAffluence(selectedAgency.affluence);
+        return (
+          <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-auto sm:left-1/2 sm:-translate-x-1/2 z-[1000] pointer-events-auto">
+            <button
+              type="button"
+              onClick={onOpenMap}
+              className="w-full sm:w-auto inline-flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 text-left hover:scale-[1.02] transition-transform cursor-pointer"
+            >
+              <div
+                className="w-8 h-8 rounded-full border flex items-center justify-center shrink-0"
+                style={{
+                  backgroundColor: selectedAff.color + '18',
+                  borderColor: selectedAff.color + '40',
+                  color: selectedAff.color,
+                }}
+              >
+                <Building2 className="w-4 h-4" />
+              </div>
+              <div className="min-w-0 pr-2">
+                <p className="text-xs font-bold text-slate-900 truncate">
+                  {selectedAgency.name || 'Agence'}
+                </p>
+                <p className="text-[11px] font-semibold flex items-center gap-1.5" style={{ color: selectedAff.color }}>
+                  <span>{selectedAff.label?.split(' ')[0] || 'Fluide'}</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-600">{selectedAgency.currentWaitTime || (selectedAgency.waitMinutes != null ? `${selectedAgency.waitMinutes} min` : '0 min')}</span>
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-slate-400 shrink-0" />
+            </button>
+          </div>
+        );
+      })()}
     </div>
   );
 }

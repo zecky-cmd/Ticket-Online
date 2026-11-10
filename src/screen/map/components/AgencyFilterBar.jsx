@@ -1,9 +1,10 @@
 import { AFFLUENCE } from '../../../theme/affluence';
 
-const FILTERS = ['toutes', 'fluide', 'moderee', 'saturee', 'indisponible'];
+// Conforme aux 3 valeurs réelles de str_ageaffluence (fluide, moyenne, forte)
+const FILTERS = ['toutes', 'fluide', 'moyenne', 'forte'];
 
 /**
- * Barre de filtres affluence (Toutes, Fluides, Modérées, Saturées, Indisponibles)
+ * Barre de filtres affluence temps réel S2Q (Toutes, Fluides, Moyennes, Fortes)
  */
 export default function AgencyFilterBar({ activeFilter, onFilterChange }) {
   return (

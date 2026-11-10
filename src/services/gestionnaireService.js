@@ -1,5 +1,5 @@
-import { s2qApiClient } from './api';
-import { S2Q_SERVICES } from './serveur';
+import { apiClient } from './api';
+import { API_SERVICES } from './serveur';
 
 function normalizeGestionnaire(g) {
   return {
@@ -22,7 +22,7 @@ export const gestionnaireService = {
    * @returns {Promise<Array>}
    */
   async getGestionnaires(lgAgeid, lgPresid) {
-    const response = await s2qApiClient.get(`/${S2Q_SERVICES.admin}/public/gestionnaires`, {
+    const response = await apiClient.get(`/${API_SERVICES.admin}/public/gestionnaires`, {
       params: { lg_ageid: String(lgAgeid), lg_presid: String(lgPresid) },
     });
     const list = response.data?.data || response.data || [];

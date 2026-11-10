@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { S2Q_BASE_URL } from './serveur';
+import { API_BASE_URL } from './serveur';
 
 /**
- * Instance Axios configurée pour communiquer avec le backend S2Q.
+ * Instance Axios configurée pour communiquer avec le backend.
  * Le développeur n'a qu'à ajuster les interceptors ou les headers si besoin.
  */
-export const s2qApiClient = axios.create({
-  baseURL: S2Q_BASE_URL,
+export const apiClient = axios.create({
+  baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -15,8 +15,8 @@ export const s2qApiClient = axios.create({
 });
 
 // Intercepteur pour attacher des tokens de session ou headers spécifiques
-s2qApiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('s2q_session_token');
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('session_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -24,4 +24,4 @@ s2qApiClient.interceptors.request.use((config) => {
 });
 
 // Instance configurée exportée
-export default s2qApiClient;
+export default apiClient;

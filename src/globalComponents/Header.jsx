@@ -10,7 +10,7 @@ import { DEFAULT_THEME } from '../theme/themes';
 //   type 'info'  : provisoire — message informatif en attendant la vraie page
 const NAV_ITEMS = [
   { id: 'agences', label: 'Agences', type: 'modal', value: 'map' },
-  { id: 'tickets', label: 'Mes tickets', type: 'modal', value: 'ticket' },
+  { id: 'tickets', label: 'Tickets', type: 'modal', value: 'ticket' },
   { id: 'avis', label: 'Avis', type: 'modal', value: 'satisfaction' },
   {
     id: 'faq',

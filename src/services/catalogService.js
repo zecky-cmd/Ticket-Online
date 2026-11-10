@@ -1,5 +1,5 @@
-import { s2qApiClient } from './api';
-import { S2Q_SERVICES } from './serveur';
+import { apiClient } from './api';
+import { API_SERVICES } from './serveur';
 
 /**
  * Résout le type de service/prestation : "1" = caisse, sinon gestionnaire.
@@ -39,7 +39,7 @@ export const catalogService = {
    * @returns {Promise<Array>}
    */
   async getAgencyPrestations(lgAgeid) {
-    const response = await s2qApiClient.get(`/${S2Q_SERVICES.parametre}/public/agenceprestations`, {
+    const response = await apiClient.get(`/${API_SERVICES.parametre}/public/agenceprestations`, {
       params: { lg_ageid: String(lgAgeid), lang: 'fr' },
     });
     const list = response.data?.data || response.data || [];

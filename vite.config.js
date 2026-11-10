@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  envPrefix: ['VITE_', 'S2Q_'],
+  envPrefix: ['VITE_', 'SOC_', 'CONTACT_'],
   plugins: [
     tailwindcss(),
     react(),

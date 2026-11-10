@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { SITE_CONFIG } from '../../../config/siteConfig';
 import { CI_BOUNDS, MACRO_CLUSTER_THRESHOLD } from '../mapConfig';
+import { getAffluence } from '../../../theme/affluence';
 
 const BRAND_LETTER = (SITE_CONFIG.brand.entreprise || 'S').charAt(0).toUpperCase();
 
@@ -67,18 +68,41 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
-/** HTML du tooltip de survol d'une agence */
+/** HTML du tooltip de survol d'une agence — affiche le nom, l'affluence, les personnes en attente et le temps estimé */
 function buildTooltipHtml(agency, primaryColor) {
-  const phone = agency.phone
-    ? `<p style="margin:2px 0 0;font-size:11px;color:#64748b;">${escapeHtml(agency.phone)}</p>`
-    : '';
+  // Récupère la config d'affluence S2Q (fluide / moyenne / forte)
+  const aff = getAffluence(agency.affluence);
+
+  // Bloc attente — uniquement si les données sont disponibles
+  const hasWaiting = agency.waitingClients != null && agency.waitingClients !== '';
+  const hasWaitTime = agency.waitMinutes != null && agency.waitMinutes !== '';
+
+  const waitBlock = (hasWaiting || hasWaitTime) ? `
+    <div style="margin-top:8px;padding-top:7px;border-top:1px solid #f1f5f9;display:flex;gap:12px;">
+      ${hasWaiting ? `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+          <span style="font-size:15px;font-weight:900;color:#0f172a;line-height:1;">${escapeHtml(agency.waitingClients)}</span>
+          <span style="font-size:10px;color:#64748b;white-space:nowrap;">en attente</span>
+        </div>` : ''}
+      ${hasWaiting && hasWaitTime ? `<div style="width:1px;background:#e2e8f0;align-self:stretch;"></div>` : ''}
+      ${hasWaitTime ? `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+          <span style="font-size:15px;font-weight:900;color:#0f172a;line-height:1;">${escapeHtml(agency.waitMinutes)} min</span>
+          <span style="font-size:10px;color:#64748b;white-space:nowrap;">attente estimée</span>
+        </div>` : ''}
+    </div>` : '';
+
   return `
-    <div style="display:flex;align-items:center;gap:8px;min-width:130px;">
-      <span style="width:28px;height:28px;border-radius:50%;background:${primaryColor};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;flex-shrink:0;">${escapeHtml(BRAND_LETTER)}</span>
-      <div style="min-width:0;">
-        <p style="margin:0;font-size:12px;font-weight:700;color:#0f172a;line-height:1.25;">${escapeHtml(agency.name)}</p>
-        ${phone}
+    <div style="min-width:160px;max-width:220px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="width:28px;height:28px;border-radius:50%;background:${primaryColor};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;flex-shrink:0;">${escapeHtml(BRAND_LETTER)}</span>
+        <div style="min-width:0;flex:1;">
+          <p style="margin:0;font-size:12px;font-weight:700;color:#0f172a;line-height:1.3;">${escapeHtml(agency.name)}</p>
+          ${agency.commune ? `<p style="margin:2px 0 0;font-size:10px;color:#64748b;">${escapeHtml(agency.commune)}</p>` : ''}
+        </div>
+        <span style="flex-shrink:0;padding:2px 7px;border-radius:999px;background:${aff.color}22;color:${aff.color};font-size:10px;font-weight:800;border:1px solid ${aff.color}44;">${escapeHtml(aff.label)}</span>
       </div>
+      ${waitBlock}
     </div>`;
 }
 
@@ -153,8 +177,10 @@ function MarkerClusterGroup({ agencies, selectedAgency, onSelectAgency, primaryC
     const markers = agencies
       .filter((a) => a.lat != null && a.lng != null)
       .map((agency) => {
+        const aff = getAffluence(agency.affluence);
+        const pinColor = aff?.color || primaryColor;
         const marker = L.marker([agency.lat, agency.lng], {
-          icon: createAgencyPin(primaryColor, selectedAgency?.id === agency.id),
+          icon: createAgencyPin(pinColor, selectedAgency?.id === agency.id),
         });
         marker.district = agency.district;
         marker.commune = agency.commune;

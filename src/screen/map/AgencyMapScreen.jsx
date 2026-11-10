@@ -14,7 +14,14 @@ import { attachAndSortByDistance } from './utils/geoUtils';
 /** Applique le filtre d'affluence puis la recherche textuelle */
 function applyFilters(agencies, activeFilter, term) {
   const base =
-    activeFilter === 'toutes' ? agencies : agencies.filter((a) => a.affluence === activeFilter);
+    activeFilter === 'toutes'
+      ? agencies
+      : agencies.filter((a) => {
+          if (a.affluence === activeFilter) return true;
+          if (activeFilter === 'moyenne' && (a.affluence === 'moderee' || a.affluence === 'moyen')) return true;
+          if (activeFilter === 'forte' && (a.affluence === 'saturee' || a.affluence === 'elevee')) return true;
+          return false;
+        });
   if (!term) return base;
   return base.filter((a) =>
     [a.name, a.commune, a.district, a.address].some(

@@ -1,5 +1,6 @@
-import { Users, Clock, ArrowRight, Check } from 'lucide-react';
+import { Users, Clock, ArrowRight } from 'lucide-react';
 import HomeMiniMap from './HomeMiniMap';
+import { getAffluence } from '../../../theme/affluence';
 
 /**
  * Section Fluidité en Temps Réel
@@ -14,19 +15,20 @@ export default function HomeFluiditySection({
   onOpenMap,
   primaryColor = '#00865D'
 }) {
-  // Agence par défaut : celle sélectionnée ou Cocody / première agence
+  // Agence par défaut : celle sélectionnée ou première agence
   const activeAgency = selectedAgency || agencies[0] || {
-    id: 'cocody',
-    name: 'Agence Cocody',
-    commune: 'Cocody',
-    affluence: 'faible',
-    currentWaitTime: '08 min',
-    waitingClients: 4,
+    id: 'default',
+    name: 'Agence Principale',
+    commune: '',
+    affluence: 'fluide',
+    currentWaitTime: '0 min',
+    waitingClients: 0,
+    waitMinutes: 0,
   };
 
-  const waitTime = activeAgency.currentWaitTime || '08 min';
-  const waitingCount = activeAgency.waitingClients ?? 4;
-  const isFluid = activeAgency.affluence !== 'elevee';
+  const aff = getAffluence(activeAgency.affluence);
+  const waitTime = activeAgency.currentWaitTime || (activeAgency.waitMinutes != null ? `${activeAgency.waitMinutes} min` : '0 min');
+  const waitingCount = activeAgency.waitingClients ?? 0;
 
   return (
     <section className="mt-8 sm:mt-12">
@@ -51,19 +53,19 @@ export default function HomeFluiditySection({
             {/* Nom de l'agence & Statut */}
             <div className="mt-2 flex items-center justify-between gap-3 flex-wrap">
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                {activeAgency.name || 'Agence Cocody'}
+                {activeAgency.name || 'Agence'}
               </h2>
 
               <span
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border"
                 style={{
-                  backgroundColor: isFluid ? '#E5F5EF' : '#FEF3C7',
-                  color: isFluid ? primaryColor : '#D97706',
-                  borderColor: isFluid ? 'rgba(0, 134, 93, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                  backgroundColor: aff.color + '18',
+                  color: aff.color,
+                  borderColor: aff.color + '40',
                 }}
               >
-                <Check className="w-3.5 h-3.5 stroke-[3]" />
-                {isFluid ? 'Fluide' : 'Affluence modérée'}
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: aff.color }} />
+                {aff.label?.split(' ')[0] || 'Fluide'}
               </span>
             </div>
 

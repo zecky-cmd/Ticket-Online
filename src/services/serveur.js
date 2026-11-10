@@ -1,5 +1,5 @@
 /**
- * Configuration des Endpoints Serveur S2Q / GFA
+ * Configuration des Endpoints Serveur / GFA
  * Adapté pour le développement Synapse et le déploiement client.
  */
 const SERVEUR = {
@@ -11,13 +11,13 @@ const SERVEUR = {
   PORT_GFA: '9081',
   RACINE_API: 's2q',
   // Identifiants société (client) — à configurer dans le fichier .env
-  SOCID: import.meta.env.S2Q_SOCID || '',
+  socId: import.meta.env.SOC_ID || '',
 
 };
 
 const MODE_PROD = import.meta.env.MODE;
 
-export const S2Q_BASE_URL =
+export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   (MODE_PROD === 'development'
     ? `${SERVEUR.PROTOCOL}${SERVEUR.SYNAPSE}:${SERVEUR.PORT_GFA}/${SERVEUR.RACINE_API}/`
@@ -25,14 +25,14 @@ export const S2Q_BASE_URL =
     ? `${SERVEUR.REVERSE_PROXY}/${SERVEUR.RACINE_API}/`
     : `${SERVEUR.PROTOCOL}${SERVEUR.HOSTNAME}:${SERVEUR.PORT_GFA}/${SERVEUR.RACINE_API}/`);
 
-console.log('S2Q TICKET EN LIGNE - API BASE URL :', S2Q_BASE_URL);
+console.log('API BASE URL :', API_BASE_URL);
 
 // Identifiants société exposés
-export const S2Q_SOCID = SERVEUR.SOCID;
+export const SOC_ID = SERVEUR.socId;
 
 
-// Préfixes des micro-services backend S2Q
-export const S2Q_SERVICES = {
+// Préfixes des micro-services backend
+export const API_SERVICES = {
   configuration: 'configuration-service',
   parametre: 'parametre-service',
   admin: 'admin-service',

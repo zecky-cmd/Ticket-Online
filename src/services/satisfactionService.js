@@ -1,5 +1,5 @@
-import { s2qApiClient } from './api';
-import { S2Q_BASE_URL, S2Q_SOCID, S2Q_SERVICES } from './serveur';
+import { apiClient } from './api';
+import { API_BASE_URL, SOC_ID, API_SERVICES } from './serveur';
 
 // Les endpoints satisfaction sont désormais publics → appels réels
 const USE_MOCK = false;
@@ -75,7 +75,7 @@ export function buildFallbackJustificatifs(order = 5) {
 export function resolveSatisfactionImageUrl(rawUrl) {
   if (!rawUrl) return '';
   if (/^(https?:|\/\/|data:|blob:)/i.test(rawUrl)) return rawUrl;
-  const base = (S2Q_BASE_URL || '').replace(/\/+$/, '');
+  const base = (API_BASE_URL || '').replace(/\/+$/, '');
   const cleanPath = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
   return `${base}/${cleanPath}`;
 }
@@ -87,8 +87,8 @@ export const satisfactionService = {
    */
   async getSatisfactions() {
     if (!USE_MOCK) {
-      const response = await s2qApiClient.get(`/${S2Q_SERVICES.parametre}/satisfaction/listSatisfaction`, {
-        params: { lg_socid: S2Q_SOCID, search_value: '', start: 0, length: 100, active_group: true },
+      const response = await apiClient.get(`/${API_SERVICES.parametre}/satisfaction/listSatisfaction`, {
+        params: { lg_socid: SOC_ID, search_value: '', start: 0, length: 100, active_group: true },
       });
       const list = response.data?.data || response.data || [];
       const normalized = (Array.isArray(list) ? list : []).map(normalizeSatisfaction).sort((a, b) => a.order - b.order);
@@ -103,8 +103,8 @@ export const satisfactionService = {
    */
   async getJustificatifs(lgSatisid, satisOrder = 5) {
     if (!USE_MOCK) {
-      const response = await s2qApiClient.get(`/${S2Q_SERVICES.parametre}/justificatif/listJustificatif`, {
-        params: { lg_socid: S2Q_SOCID, lg_satisid: String(lgSatisid), length: 10000 },
+      const response = await apiClient.get(`/${API_SERVICES.parametre}/justificatif/listJustificatif`, {
+        params: { lg_socid: SOC_ID, lg_satisid: String(lgSatisid), length: 10000 },
       });
       const list = response.data?.data || response.data || [];
       const normalized = (Array.isArray(list) ? list : []).map(normalizeJustificatif);
@@ -132,7 +132,7 @@ export const satisfactionService = {
   async saveVote(payload = {}) {
     const body = {
       str_satvsource: 'SERVICE_PRESTATION',
-      lg_socid: S2Q_SOCID,
+      lg_socid: SOC_ID,
       lg_ageid: payload.lg_ageid || undefined,
       lg_serid: payload.lg_serid || undefined,
       lg_presid: payload.lg_presid || undefined,
@@ -154,7 +154,7 @@ export const satisfactionService = {
     if (ci.email) body.str_emailcli = ci.email;
 
     if (!USE_MOCK) {
-      const response = await s2qApiClient.post(`/${S2Q_SERVICES.parametre}/satisfaction/saveVote`, body);
+      const response = await apiClient.post(`/${API_SERVICES.parametre}/satisfaction/saveVote`, body);
       const data = response.data?.data || response.data;
       return {
         success: true,
