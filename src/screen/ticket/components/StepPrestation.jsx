@@ -102,25 +102,6 @@ export default function StepPrestation({
         </div>
       )}
 
-      {/* Rappel de la prestation */}
-      {currentPrestation && (
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-primary-50/60 border border-primary-200/70 space-y-2">
-          <div className="flex items-center gap-2 text-primary-700 font-bold text-xs">
-            <FileText className="w-4 h-4 text-primary-500 shrink-0" />
-            <span>À propos de cette opération :</span>
-          </div>
-
-          <p className="text-xs text-slate-700 pl-6 leading-relaxed">
-            {currentPrestation.description || 'Présentez-vous en agence avec une pièce d’identité en cours de validité.'}
-          </p>
-
-          <div className="flex items-center gap-2 text-[11px] text-primary-700 pt-1 border-t border-primary-200/50">
-            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
-            <span>Présentez-vous 5 minutes avant le début de votre passage.</span>
-          </div>
-        </div>
-      )}
-
       {/* Boutons d'action */}
       <div className="flex items-center gap-3 pt-1">
         <Button

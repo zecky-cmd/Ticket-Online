@@ -36,20 +36,6 @@ export default function HomeFluiditySection({
         {/* ── Colonne Gauche : Carte Statistique de l'Agence ── */}
         <div className="lg:col-span-6 bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-slate-100 flex flex-col justify-between">
           <div>
-            {/* Header : Badge Fluidité + Mis à jour */}
-            <div className="flex items-center justify-between gap-2 flex-wrap pb-4">
-              <span
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wide"
-                style={{ backgroundColor: '#E5F5EF', color: primaryColor }}
-              >
-                Fluidité en temps réel
-              </span>
-              <span className="text-xs text-slate-400 flex items-center gap-1.5 font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Mis à jour il y a 1 min
-              </span>
-            </div>
-
             {/* Nom de l'agence & Statut */}
             <div className="mt-2 flex items-center justify-between gap-3 flex-wrap">
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">

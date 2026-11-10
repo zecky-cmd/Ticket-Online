@@ -18,7 +18,7 @@ export default function Container({
   className = '',
   as: Component = 'section',
   maxWidth = 'max-w-7xl',
-  fullWidth = true,
+  fullWidth = false,
   padding = true
 }) {
   const baseClasses = fullWidth ? 'w-full' : `${maxWidth} mx-auto w-full`;

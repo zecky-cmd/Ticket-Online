@@ -1,0 +1,170 @@
+
+
+{
+  "reponse": "success",
+  "message": "Prestations de l'agence groupées par service",
+  "data": [
+    {
+      "service": {
+        "lg_serid": "20261131553457634257",
+        "str_sername": "Caisse",
+        "str_serimageurl": "data:image/svg+xml;base64,PD94bWwgdmV"
+    
+      },
+      "prestations": [
+        {
+          "lg_presid": "20261131558141345457",
+          "str_presname": "Autres Opérations",
+          "str_presdescription": "Autres opérations de la caisse",
+          "str_prestype": "1",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0zIDhIMjFNMyAxMkgyMU0zIDE2SDIxTTMgMjBIMTVNMyA0SDIxIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+DQo8L3N2Zz4="
+        },
+        {
+          "lg_presid": "20261131553401145441",
+          "str_presname": "Change",
+          "str_presdescription": "services de change",
+          "str_prestype": "1",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWw"
+      
+        },
+        {
+          "lg_presid": "20261131555584078082",
+          "str_presname": "Demande de Solde",
+          "str_presdescription": "Connaitre votre Solde",
+          "str_prestype": "1",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        },
+        {
+          "lg_presid": "20261131551729977071",
+          "str_presname": "Retrait / Versement",
+          "str_presdescription": "Retirer ou verser de l'argent",
+          "str_prestype": "1",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        },
+        {
+          "lg_presid": "20261131548214311860",
+          "str_presname": "Retrait En Espèces",
+          "str_presdescription": "Retirer de l'argent en Espèce",
+          "str_prestype": "1",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWw"
+     
+        },
+        {
+          "lg_presid": "20261131554279597381",
+          "str_presname": "Transfert ",
+          "str_presdescription": "Transférer de l'argent",
+          "str_prestype": "1",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWw"
+       
+        },
+        {
+          "lg_presid": "20261131551507917199",
+          "str_presname": "Versement",
+          "str_presdescription": "Change",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWw"
+
+        }
+      ]
+    },
+    {
+      "service": {
+        "lg_serid": "20261131564262788005",
+        "str_sername": "Gestion de compte",
+        "str_serimageurl": "data:image/svg+xml;base64,PD94bWw"
+      },
+      "prestations": [
+        {
+          "lg_presid": "20261131624247383038",
+          "str_presname": "Carte Bancaire",
+          "str_presdescription": "service de la carte bancaire",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWwgdmVyc2"
+        },
+        {
+          "lg_presid": "20261131625499881079",
+          "str_presname": "Chequier / Effet",
+          "str_presdescription": "services relatifs aux chèque",
+          "str_prestype": "2",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        },
+        {
+          "lg_presid": "20261131623465434888",
+          "str_presname": "Compte à Terme",
+          "str_presdescription": "Compte à terme",
+          "str_prestype": "2",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        },
+        {
+          "lg_presid": "20261131629318715357",
+          "str_presname": "Demande d'information",
+          "str_presdescription": "Se renseigner sur son compte",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWwgdmVy"
+
+        },
+        {
+          "lg_presid": "20261131626235172899",
+          "str_presname": "Demande de crédit",
+          "str_presdescription": "Demander du crédit",
+          "str_prestype": "2",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        },
+        {
+          "lg_presid": "20261131628193061556",
+          "str_presname": "Demande de Relévé",
+          "str_presdescription": "Demander un relévé",
+          "str_prestype": "2",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        },
+        {
+          "lg_presid": "20261131630459930709",
+          "str_presname": "Réclamations",
+          "str_presdescription": "Faire des réclamations",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWwgdm"
+    
+        },
+        {
+          "lg_presid": "20261131631558492948",
+          "str_presname": "Virement",
+          "str_presdescription": "Faire des virements",
+          "str_prestype": "1",
+          "str_presimageurl": "/parametre-service/medias/getFile?filename=54008eeb-cdd1-4e02-ab0f-7b9c123f2168.jpg"
+        }
+      ]
+    },
+    {
+      "service": {
+        "lg_serid": "20261131533614457786",
+        "str_sername": "Gestion des produits",
+        "str_serimageurl": "data:image/svg+xml;base64,PD94..."
+   
+      },
+      "prestations": [
+        {
+          "lg_presid": "20261131541258674703",
+          "str_presname": "Assurance ",
+          "str_presdescription": "Prise de ticket pour Assurance",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,P" 
+        },
+        {
+          "lg_presid": "20261131535306235320",
+          "str_presname": "Carte Prépayée",
+          "str_presdescription": "Prise de ticket pour les services de la carte prépayée",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94b"
+        },
+        {
+          "lg_presid": "20261131546495233308",
+          "str_presname": "Produits Digitaux",
+          "str_presdescription": "Ticket pour les services relatifs aux produits digitaux",
+          "str_prestype": "2",
+          "str_presimageurl": "data:image/svg+xml;base64,PD94bWw"
+         
+        }
+      ]
+    }
+  ]
+}

@@ -173,43 +173,7 @@ export default function StepCustomerInfo({
       </div>
 
       {/* Carte Récapitulative du Rendez-Vous */}
-      <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
-        <span className="font-bold text-slate-800 uppercase text-[10px] tracking-wider block">
-          Récapitulatif de votre rendez-vous :
-        </span>
-        <div className="grid grid-cols-2 gap-2 text-slate-600">
-          <div>
-            <span className="text-slate-400 block text-[10px]">Agence :</span>
-            <strong className="text-slate-900 truncate block">{agency?.name}</strong>
-          </div>
-          <div>
-            <span className="text-slate-400 block text-[10px]">Service :</span>
-            <strong className="text-slate-900 truncate block">{service?.name}</strong>
-          </div>
-          <div>
-            <span className="text-slate-400 block text-[10px]">Prestation :</span>
-            <strong className="text-slate-900 truncate block">{prestation?.name}</strong>
-          </div>
-          <div>
-            <span className="text-slate-400 block text-[10px]">Créneau :</span>
-            <strong className="text-primary-500 truncate block">{timeslotText}</strong>
-          </div>
-          {gestionnaire && (
-            <div className="col-span-2 pt-1 border-t border-slate-200/50">
-              <span className="text-slate-400 block text-[10px]">Conseiller / Gestionnaire :</span>
-              <strong className="text-slate-900 truncate block">
-                {gestionnaire?.isAuto ? 'Premier disponible (Attribution auto)' : `${gestionnaire?.name} (${gestionnaire?.role})`}
-              </strong>
-            </div>
-          )}
-          {isClient && accountNumber && (
-            <div className="col-span-2">
-              <span className="text-slate-400 block text-[10px]">Compte client :</span>
-              <strong className="text-slate-900 truncate block font-mono">{accountNumber}</strong>
-            </div>
-          )}
-        </div>
-      </div>
+
 
       {/* Actions */}
       <div className="flex items-center gap-3 pt-2">
