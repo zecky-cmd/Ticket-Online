@@ -3,10 +3,10 @@ import { catalogService } from '../../../services/catalogService';
 import { satisfactionService } from '../../../services/satisfactionService';
 
 /**
- * Hook métier du parcours de satisfaction (adapté de la borne).
+ * Hook métier du parcours de satisfaction.
  *
  * Concentre tout l'état et l'orchestration :
- * - Contexte (Agence → Service → Prestation) via les endpoints déjà publics ;
+ * - Contexte (Agence → Service → Prestation) via les endpoints ;
  * - Avis (émoticônes + justificatif unique + texte « Autre ») ;
  * - Recommandation NPS 0-10 ;
  * - Sauvegarde silencieuse du vote dès l'émoticône (anti-abandon) + update final (lg_satvid) ;

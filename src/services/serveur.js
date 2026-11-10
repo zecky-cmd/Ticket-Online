@@ -1,6 +1,6 @@
 /**
  * Configuration des Endpoints Serveur S2Q / GFA
- * Adapté pour l'environnement de développement Synapse et la production BNI.
+ * Adapté pour le développement Synapse et le déploiement client.
  */
 const SERVEUR = {
   ORIGINE: typeof window !== 'undefined' ? window.location.origin : '',
@@ -12,7 +12,7 @@ const SERVEUR = {
   RACINE_API: 's2q',
   // Identifiants société (client) — à configurer dans le fichier .env
   SOCID: import.meta.env.S2Q_SOCID || '',
-  SOCCODE: import.meta.env.S2Q_SOCCODE || '',
+
 };
 
 const MODE_PROD = import.meta.env.MODE;
@@ -29,7 +29,7 @@ console.log('S2Q TICKET EN LIGNE - API BASE URL :', S2Q_BASE_URL);
 
 // Identifiants société exposés
 export const S2Q_SOCID = SERVEUR.SOCID;
-export const S2Q_SOCCODE = SERVEUR.SOCCODE;
+
 
 // Préfixes des micro-services backend S2Q
 export const S2Q_SERVICES = {

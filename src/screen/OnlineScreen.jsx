@@ -7,7 +7,7 @@ import { openModal, closeModal } from '../features/modalSlice';
 import Layout from '../layout/Layout';
 import Container from '../layout/Container';
 
-// Composants de la nouvelle page d'accueil BNI Synapse
+// Composants de la page d'accueil Synapse S2Q
 import HomeHero from './home/components/HomeHero';
 import HomeQuickAccess from './home/components/HomeQuickAccess';
 import HomeFluiditySection from './home/components/HomeFluiditySection';
@@ -22,13 +22,13 @@ import AgencyMapScreen from './map/AgencyMapScreen';
 export { THEMES, SLIDES };
 
 /**
- * Screen Principal : Portail BNI Synapse (Refonte Maquette Officielle)
+ * Screen Principal : Portail d'Accueil S2Q (Template Multi-Clients)
  *
  * Conforme aux maquettes au pixel près :
- * - Vert officiel BNI (#00865D)
- * - Hero avec photo cliente souriante et double CTA
+ * - Thème couleur configurable via Redux / siteConfig
+ * - Hero avec visuel d'accueil et double CTA
  * - Barre des 4 piliers d'accès rapide
- * - Section Fluidité en direct (statistiques de l'agence Cocody + mini-carte Leaflet interactive)
+ * - Section Fluidité en direct (statistiques en temps réel + mini-carte interactive)
  * - Section Expérience Synapse & Encart promotionnel
  * - Bottom Navigation Bar tactile sur Mobile (Accueil, Agences, Avis, Tickets, Plus)
  * - 100% connecté aux modales existantes (Ticket, Agences, Satisfaction)
@@ -97,7 +97,7 @@ export default function OnlineScreen() {
     <Layout>
       <div className="w-full">
         <Container maxWidth="max-w-7xl" padding={true} className="w-full">
-          {/* 1. Hero Section (Accroche + CTA + Image BNI) */}
+          {/* 1. Hero Section (Accroche + CTA + Bannière) */}
           <HomeHero
             onOpenTicket={() => handleOpenModal('ticket')}
             primaryColor={primaryColor}

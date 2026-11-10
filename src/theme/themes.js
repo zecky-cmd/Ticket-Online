@@ -2,7 +2,7 @@
 // CONFIGURATION DES THÈMES INTERCHANGEABLES — S2Q (Synapse Queue System)
 //
 // Ce fichier est le SEUL endroit à modifier pour changer la couleur d'un client.
-// Le thème "vertBlanc" est configuré avec la palette du client BNI (exemple).
+// Le thème "vertBlanc" est configuré avec la palette corporate par défaut (BNI en exemple démo).
 // Pour un autre client, dupliquer un thème et changer les valeurs de couleur.
 //
 // Usage dans un composant :

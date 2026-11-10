@@ -4,10 +4,10 @@ import Header from '../globalComponents/Header';
 import Footer from '../globalComponents/Footer';
 
 /**
- * Composant Layout Global — BNI Synapse
+ * Composant Layout Global — Template Synapse S2Q
  *
  * Rôle :
- * - Header vert institutionnel sticky
+ * - Header institutionnel sticky aux couleurs de la marque
  * - Fond de page #F8FAFC doux et contemporain
  * - Corps fluide et scrollable sur tous formats d'écran
  * - Footer épuré

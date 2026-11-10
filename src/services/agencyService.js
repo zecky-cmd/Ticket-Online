@@ -21,21 +21,21 @@ function parseCoord(v, isLat) {
  */
 function normalizeAgency(a) {
   return {
-    id: String(a.lg_ageid ?? a.id ?? ''),
-    name: a.str_agedescription || a.name || '',
-    district: a.str_agedistrict || a.district || '',
-    commune: a.str_agecommune || a.commune || '',
-    address: a.str_agelocalisation || a.address || null,
-    hours: a.str_agehours || a.hours || '',
-    openUntil: a.str_ageopenuntil || a.openUntil || null,
-    phone: a.str_agephone || a.phone || '',
-    status: a.str_agestatus || a.status || '',
-    waitMinutes: a.int_agewaitminutes ?? a.waitMinutes ?? null,
-    currentWaitTime: a.str_agecurrentwaittime || a.currentWaitTime || '',
-    countersActive: a.int_agecountersactive ?? a.countersActive ?? 0,
-    affluence: a.str_ageaffluence || a.affluence || 'indisponible',
-    lat: parseCoord(a.str_agelatitude ?? a.lat, true),
-    lng: parseCoord(a.str_agelongitude ?? a.lng, false),
+    id: String(a.lg_ageid ?? ''),
+    name: a.str_agedescription || '',
+    district: a.str_agedistrict || '',
+    commune: a.str_agecommune || '',
+    address: a.str_agelocalisation || null,
+    hours: a.str_agehours || '',
+    openUntil: a.str_ageopenuntil || null,
+    phone: a.str_agephone || '',
+    status: a.str_agestatus || '',
+    waitMinutes: a.int_agewaitminutes ?? null,
+    currentWaitTime: a.str_agecurrentwaittime || '',
+    countersActive: a.int_agecountersactive ?? 0,
+    affluence: a.str_ageaffluence || 'indisponible',
+    lat: parseCoord(a.str_agelatitude, true),
+    lng: parseCoord(a.str_agelongitude, false),
   };
 }
 

@@ -214,7 +214,7 @@ function MapResizeHandler() {
 function MapControlsOverlay({ 
   onRefresh, 
   isRefreshing,
-  primaryColor = '#008056'
+  onLocationFound,
 }) {
   const map = useMap();
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -224,27 +224,37 @@ function MapControlsOverlay({
   // Action "Me localiser" : centre la carte et pose un marqueur sur la position
   const handleLocate = () => {
     setIsLocating(true);
-    map.locate({ setView: true, maxZoom: 14 });
+    map.locate({ setView: false, maxZoom: 15 });
 
     const handleFound = (e) => {
       setIsLocating(false);
       if (locationMarkerRef.current) {
         locationMarkerRef.current.remove();
       }
-      const marker = L.circleMarker(e.latlng, {
-        radius: 8,
-        color: '#ffffff',
-        weight: 3,
-        fillColor: primaryColor,
-        fillOpacity: 1,
-      }).addTo(map);
-      marker.bindPopup('<div class="font-bold text-xs text-slate-800">Votre position actuelle</div>').openPopup();
+
+      // Point bleu vibrant avec halo radar pulsant
+      const userIcon = L.divIcon({
+        className: 'user-location-pin',
+        html: `
+          <div style="position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+            <span style="position:absolute;width:36px;height:36px;border-radius:50%;background:rgba(37,99,235,0.35);animation:ping 2s cubic-bezier(0,0,0.2,1) infinite;"></span>
+            <div style="position:relative;z-index:2;width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);"></div>
+          </div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
+
+      const marker = L.marker(e.latlng, { icon: userIcon }).addTo(map);
+      marker.bindPopup('<div class="font-bold text-xs text-slate-900">📍 Votre position actuelle</div>').openPopup();
       locationMarkerRef.current = marker;
+
+      // Déclenche la détection de proximité dans le composant parent
+      onLocationFound?.(e.latlng, map);
     };
 
     const handleError = () => {
       setIsLocating(false);
-      alert("Impossible d'accéder à votre position actuelle.");
+      alert("Impossible d'accéder à votre position actuelle. Vérifiez que la géolocalisation est autorisée dans votre navigateur.");
     };
 
     map.once('locationfound', handleFound);
@@ -467,6 +477,7 @@ export default function AgencyMapView({
   searchTargets,
   onBoundsChange,
   resetTrigger,
+  onLocationFound,
 }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -512,7 +523,7 @@ export default function AgencyMapView({
         <MapControlsOverlay 
           onRefresh={handleRefresh}
           isRefreshing={isRefreshing}
-          primaryColor={primaryColor}
+          onLocationFound={onLocationFound}
         />
 
         {/* Pins clusterisés des agences (macro rouge / micro bleu) */}

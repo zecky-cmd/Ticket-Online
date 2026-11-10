@@ -1,20 +1,46 @@
 import { useDispatch } from 'react-redux';
-import { ChevronDown } from 'lucide-react';
 import HeaderBrand from './header/HeaderBrand';
 import HeaderContact from './header/HeaderContact';
 import { openModal } from '../features/modalSlice';
 import { DEFAULT_THEME } from '../theme/themes';
 
+// ── Configuration déclarative du menu central (module-level : créée une seule fois) ──
+// Pour ajouter une entrée, ajouter un objet ici — aucun JSX à dupliquer.
+//   type 'modal' : ouvre une modale existante via modalSlice
+//   type 'info'  : provisoire — message informatif en attendant la vraie page
+const NAV_ITEMS = [
+  { id: 'agences', label: 'Agences', type: 'modal', value: 'map' },
+  { id: 'tickets', label: 'Mes tickets', type: 'modal', value: 'ticket' },
+  { id: 'avis', label: 'Avis', type: 'modal', value: 'satisfaction' },
+  {
+    id: 'faq',
+    label: 'FAQ',
+    type: 'info',
+    message:
+      "Besoin d'aide ? Contactez notre assistance téléphonique ou adressez-vous directement à votre agence.",
+  },
+];
+
+// Style unique des boutons du menu central
+const NAV_BUTTON_CLASS =
+  'px-3 py-1.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 text-xs font-semibold transition-colors cursor-pointer';
+
 /**
- * Composant Header — Conforme à la maquette BNI Synapse
+ * Composant Header — Template Synapse S2Q
  *
- * - Gauche : Identité de Marque (Logo BNI + Synapse)
- * - Centre (Desktop) : Menu de navigation (Accueil, Agences, Mes tickets, Avis, FAQ)
+ * - Gauche : Identité de Marque (Logo entreprise + Synapse)
+ * - Centre (Desktop) : Menu de navigation (Agences, Mes tickets, Avis, FAQ)
  * - Droite : Bouton téléphone d'assistance
  */
 export default function Header({ theme }) {
   const dispatch = useDispatch();
   const primaryColor = theme?.colors?.primary || DEFAULT_THEME.colors.primary;
+
+  /** Résout l'action d'une entrée du menu central */
+  const handleNav = (item) => {
+    if (item.type === 'modal') dispatch(openModal(item.value));
+    else if (item.type === 'info') alert(item.message);
+  };
 
   return (
     <header
@@ -26,46 +52,17 @@ export default function Header({ theme }) {
         <HeaderBrand />
 
         {/* ── Menu Central (Desktop uniquement) ── */}
-        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
-          {/* Accueil (actif) */}
-
-
-          {/* Agences (avec chevron) */}
-          <button
-            type="button"
-            onClick={() => dispatch(openModal('map'))}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 text-xs font-semibold transition-colors cursor-pointer"
-          >
-            Agences
-        
-          </button>
-
-          {/* Mes tickets */}
-          <button
-            type="button"
-            onClick={() => dispatch(openModal('ticket'))}
-            className="px-3 py-1.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 text-xs font-semibold transition-colors cursor-pointer"
-          >
-            Mes tickets
-          </button>
-
-          {/* Avis */}
-          <button
-            type="button"
-            onClick={() => dispatch(openModal('satisfaction'))}
-            className="px-3 py-1.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 text-xs font-semibold transition-colors cursor-pointer"
-          >
-            Avis
-          </button>
-
-          {/* FAQ */}
-          <button
-            type="button"
-            onClick={() => alert("Besoin d'aide ? Contactez notre assistance téléphonique ou adressez-vous directement à votre agence.")}
-            className="px-3 py-1.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 text-xs font-semibold transition-colors cursor-pointer"
-          >
-            FAQ
-          </button>
+        <nav className="hidden md:flex items-center gap-1.5 lg:gap-2" aria-label="Navigation principale">
+          {NAV_ITEMS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => handleNav(item)}
+              className={NAV_BUTTON_CLASS}
+            >
+              {item.label}
+            </button>
+          ))}
         </nav>
 
         {/* ── Pilule d'assistance Droite ── */}

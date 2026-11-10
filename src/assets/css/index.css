@@ -2,9 +2,9 @@
 @plugin "tailwindcss-animate";
 
 /* ============================================================================
-   🎨 THÈME PERSONNALISÉ BNI — TAILWIND v4 CSS-FIRST CONFIG
+   🎨 CONFIGURATION DU THÈME — TAILWIND v4 CSS-FIRST CONFIG
    Configuration via la directive @theme (aucun tailwind.config.js nécessaire)
-   Palette extraite de la charte graphique BNI (Banque Nationale d'Investissement)
+   Palette corporate par défaut configurable par client (exemple démo BNI)
    ============================================================================ */
 @theme {
 
@@ -24,7 +24,7 @@
 
   /* --------------------------------------------------------------------------
      2. COULEURS CLIENT — Palette primaire configurable par client
-     Ces valeurs sont les défauts du template (vert BNI en exemple).
+     Ces valeurs sont les défauts du template (exemple corporate).
      Pour un autre client, il suffit de changer ces 8 variables ici.
      -------------------------------------------------------------------------- */
 
@@ -174,7 +174,7 @@ textarea {
   }
 }
 
-/* Wave divider SVG — courbe verte BNI séparant les sections */
+/* Wave divider SVG — courbe de séparation entre les sections */
 .wave-divider {
   display: block;
   width: 100%;

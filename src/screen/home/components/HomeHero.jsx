@@ -3,7 +3,7 @@ import { ArrowRight, Play, Ticket } from 'lucide-react';
 /**
  * Hero Banner Immersive — Conforme au découpage de la maquette
  *
- * La photo de l'agence BNI couvre toute la bannière en arrière-plan.
+ * La photo de l'agence couvre toute la bannière en arrière-plan.
  * Un fond travaillé (dégradé blanc/lumière doux) à gauche assure
  * un contraste et une lisibilité parfaits pour le texte et les CTA.
  */
@@ -14,7 +14,7 @@ export default function HomeHero({ onOpenTicket, primaryColor = '#00865D' }) {
       <div className="absolute inset-0 z-0">
         <img
           src="/image.jpg"
-          alt="Accueil en agence BNI"
+          alt="Accueil en agence"
           className="w-full h-full object-cover object-[75%_center] sm:object-[center_right]"
           onError={(e) => {
             e.currentTarget.src = '/img/img1.jpg';
@@ -22,19 +22,19 @@ export default function HomeHero({ onOpenTicket, primaryColor = '#00865D' }) {
         />
 
         {/* ── 2. Fond Travaillé / Dégradé Doux Multi-Couches ── */}
-        {/* Desktop : Dégradé horizontal puissant à gauche qui s'estompe naturellement vers la droite */}
-        <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-white via-white/92 via-55% to-white/0 z-[1]" />
-        
-        {/* Voile d'ambiance vert d'eau très subtil pour la cohérence de marque */}
+        {/* Desktop : Dégradé confiné au quart gauche — droite entièrement nette */}
+        <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-white/98 via-white/50 via-28% to-transparent z-[1]" />
+
+        {/* Voile vert d'eau très subtil à gauche uniquement — cohérence de marque */}
         <div
-          className="hidden sm:block absolute inset-0 opacity-40 z-[2] pointer-events-none"
+          className="hidden sm:block absolute inset-0 z-[2] pointer-events-none"
           style={{
-            background: 'radial-gradient(circle at 20% 50%, rgba(229, 245, 239, 0.9) 0%, transparent 60%)',
+            background: 'radial-gradient(circle at 10% 50%, rgba(229, 245, 239, 0.4) 0%, transparent 32%)',
           }}
         />
 
         {/* Mobile : Dégradé vertical pour contraster le texte sur smartphone */}
-        <div className="sm:hidden absolute inset-0 bg-gradient-to-b from-white via-white/95 via-65% to-white/40 z-[1]" />
+        <div className="sm:hidden absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 via-55% to-white/20 z-[1]" />
       </div>
 
       {/* ── 3. Contenu Textuel Superposé sur le Fond Travaillé ── */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { X, MapPin, Map, List, Search } from 'lucide-react';
+import { X, MapPin, Map, List, Search, Navigation } from 'lucide-react';
+import L from 'leaflet';
 import { openModal } from '../../features/modalSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
 import AgencyFilterBar from './components/AgencyFilterBar';
@@ -8,6 +9,7 @@ import AgencyCard from './components/AgencyCard';
 import AgencyFloatingCard from './components/AgencyFloatingCard';
 import AgencyMapView from './components/AgencyMapView';
 import Modal from '../../globalComponents/ui/Modal';
+import { attachAndSortByDistance } from './utils/geoUtils';
 
 /** Applique le filtre d'affluence puis la recherche textuelle */
 function applyFilters(agencies, activeFilter, term) {
@@ -49,24 +51,30 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
   // Bounds visibles sur la carte (volet « Résultats » desktop)
   const [visibleBounds, setVisibleBounds] = useState(/** @type {[[number,number],[number,number]]|null} */ (null));
 
+  // Position utilisateur détectée par le bouton GPS (lat, lng)
+  const [userLocation, setUserLocation] = useState(/** @type {{lat:number, lng:number}|null} */ (null));
+
   // Déclencheur de réinitialisation de la vue nationale (fiche flottante)
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const term = searchTerm.trim().toLowerCase();
   const searchFiltered = applyFilters(agencies, activeFilter, term);
 
+  // Agences enrichies avec calcul de distance et triées par proximité si géolocalisé
+  const agenciesWithDistance = attachAndSortByDistance(searchFiltered, userLocation);
+
   // Agences dans la zone visible (desktop)
   const inBounds = visibleBounds
-    ? searchFiltered.filter((a) => {
+    ? agenciesWithDistance.filter((a) => {
         if (a.lat == null || a.lng == null) return false;
         const [[s, w], [n, e]] = visibleBounds;
         return a.lat >= s && a.lat <= n && a.lng >= w && a.lng <= e;
       })
-    : searchFiltered;
+    : agenciesWithDistance;
 
   // Fallback initial : si le calcul de bounds pendant l'animation d'ouverture n'a rien capturé
-  // et que la recherche est vide, on affiche la liste complète searchFiltered
-  const visibleAgencies = inBounds.length > 0 || term ? inBounds : searchFiltered;
+  // et que la recherche est vide, on affiche la liste complète
+  const visibleAgencies = inBounds.length > 0 || term ? inBounds : agenciesWithDistance;
 
   // Cibles de recentrage après recherche (debounce 400ms)
   const [searchTargets, setSearchTargets] = useState(/** @type {any[]|null} */ (null));
@@ -95,6 +103,28 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
     ]);
   };
 
+  /**
+   * Action déclenchée quand l'utilisateur clique sur "Me localiser" :
+   * 1. Stocke la position
+   * 2. Zoome sur les 3 à 4 agences les plus proches autour de lui
+   */
+  const handleLocationFound = (/** @type {any} */ latlng, /** @type {any} */ map) => {
+    const loc = { lat: latlng.lat, lng: latlng.lng };
+    setUserLocation(loc);
+
+    // Détecte les agences les plus proches disposant de coordonnées
+    const sorted = attachAndSortByDistance(agencies, loc).filter(
+      (a) => a.lat != null && a.lng != null
+    );
+    const closest = sorted.slice(0, 4);
+
+    if (closest.length > 0 && map) {
+      const points = [[loc.lat, loc.lng], ...closest.map((a) => [a.lat, a.lng])];
+      const bounds = L.latLngBounds(points);
+      map.flyToBounds(bounds, { padding: [60, 60], maxZoom: 15, duration: 1.2 });
+    }
+  };
+
   const handleTakeTicket = (/** @type {any} */ agency) => {
     dispatch(setReduxAgency(agency));
     dispatch(openModal('ticket'));
@@ -102,19 +132,21 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
 
   const handleResetView = () => {
     setResetTrigger((n) => n + 1);
+    setUserLocation(null);
     setShowDetail(false);
   };
 
   const renderMap = () => (
     <div className="w-full h-full min-h-0 flex-1 rounded-xl sm:rounded-2xl overflow-hidden shadow-xs border border-slate-200 relative">
       <AgencyMapView
-        agencies={searchFiltered}
+        agencies={agenciesWithDistance}
         selectedAgency={selectedAgency}
         onSelectAgency={handleSelectOnMap}
         primaryColor={theme?.colors?.primary}
         searchTargets={searchTargets}
         onBoundsChange={handleBoundsChange}
         resetTrigger={resetTrigger}
+        onLocationFound={handleLocationFound}
       />
       {showDetail && selectedAgency && (
         <AgencyFloatingCard
@@ -201,7 +233,25 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
             </div>
             <div className="flex-[3] min-w-0 border-l border-slate-200 flex flex-col min-h-0 bg-white">
               <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100 shrink-0">
-                <p className="text-xs font-bold text-slate-700">Résultats ({visibleAgencies.length})</p>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <p className="text-xs font-bold text-slate-700">Résultats ({visibleAgencies.length})</p>
+                  {userLocation && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-extrabold border border-emerald-200">
+                      <Navigation className="w-2.5 h-2.5" />
+                      <span>Proximité</span>
+                    </span>
+                  )}
+                </div>
+                {userLocation && (
+                  <button
+                    type="button"
+                    onClick={() => setUserLocation(null)}
+                    className="text-[11px] text-slate-400 hover:text-slate-600 underline cursor-pointer"
+                    title="Désactiver le tri par proximité"
+                  >
+                    Réinitialiser
+                  </button>
+                )}
               </div>
               <div className="flex-1 overflow-y-auto overscroll-contain p-3 space-y-2">
                 {visibleAgencies.length === 0 ? (
@@ -251,7 +301,7 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
                 <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
                   activeTab === 'list' ? 'bg-primary-500 text-white' : 'bg-slate-200 text-slate-500'
                 }`}>
-                  {searchFiltered.length}
+                  {visibleAgencies.length}
                 </span>
               </button>
             </div>
@@ -265,19 +315,26 @@ export default function AgencyMapScreen({ isOpen, isClosing = false, onClose, th
             {activeTab === 'list' && (
               <div className="flex-1 overflow-y-auto overscroll-contain">
                 <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100 bg-white sticky top-0 z-[1]">
-                  <p className="text-xs font-bold text-slate-700">Agences à proximité</p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-xs font-bold text-slate-700">Agences</p>
+                    {userLocation && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
+                        <span>À proximité</span>
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs text-slate-400">
-                    {searchFiltered.length} point{searchFiltered.length > 1 ? 's' : ''} d'accueil
+                    {visibleAgencies.length} point{visibleAgencies.length > 1 ? 's' : ''} d'accueil
                   </p>
                 </div>
 
                 <div className="px-3 py-2.5 grid grid-cols-1 gap-2 pb-6">
-                  {searchFiltered.length === 0 ? (
+                  {visibleAgencies.length === 0 ? (
                     <div className="text-center py-10 text-slate-400 text-sm">
                       Aucune agence pour cette recherche.
                     </div>
                   ) : (
-                    searchFiltered.map((agency) => (
+                    visibleAgencies.map((agency) => (
                       <AgencyCard
                         key={agency.id}
                         agency={agency}

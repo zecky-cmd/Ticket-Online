@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Map as MapIcon, ArrowRight } from 'lucide-react';
+import { Map as MapIcon, ArrowRight, Building2 } from 'lucide-react';
 
 /**
  * Crée un marker circulaire moderne pour la mini-carte
@@ -115,7 +115,7 @@ export default function HomeMiniMap({
             className="w-full sm:w-auto inline-flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 text-left hover:scale-[1.02] transition-transform cursor-pointer"
           >
             <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 text-emerald-700">
-              <span className="text-xs font-black">BNI</span>
+              <Building2 className="w-4 h-4" />
             </div>
             <div className="min-w-0 pr-2">
               <p className="text-xs font-bold text-slate-900 truncate">

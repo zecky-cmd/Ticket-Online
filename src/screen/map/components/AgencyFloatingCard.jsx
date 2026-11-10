@@ -1,7 +1,8 @@
-import { MapPin, Phone, Clock, X, RotateCcw, Compass, Ticket } from 'lucide-react';
+import { MapPin, Phone, Clock, X, RotateCcw, Compass, Ticket, Navigation } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
 import Link from '../../../globalComponents/ui/Link';
 import { SITE_CONFIG } from '../../../config/siteConfig';
+import { formatDistance } from '../utils/geoUtils';
 
 const BRAND_LETTER = (SITE_CONFIG.brand.entreprise || 'S').charAt(0).toUpperCase();
 
@@ -34,6 +35,12 @@ export default function AgencyFloatingCard({ agency, theme, onClose, onReset, on
             <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-primary-500' : 'bg-slate-400'}`} />
             {agency.status || 'Ouvert'}
           </span>
+          {formatDistance(agency.distance) && (
+            <span className="inline-flex items-center gap-1 mt-1 ml-1.5 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <Navigation className="w-2.5 h-2.5" />
+              <span>à {formatDistance(agency.distance)}</span>
+            </span>
+          )}
         </div>
         <button
           type="button"

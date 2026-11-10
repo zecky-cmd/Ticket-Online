@@ -1,12 +1,14 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Navigation } from 'lucide-react';
 import { getAffluence } from '../../../theme/affluence';
+import { formatDistance } from '../utils/geoUtils';
 
 /**
  * Card horizontale d'agence — style maquette
- * Affiche : pastille affluence, nom, quartier · horaire, temps d'attente, flèche
+ * Affiche : pastille affluence, nom, quartier · horaire, distance GPS si géolocalisé, temps d'attente, flèche
  */
 export default function AgencyCard({ agency, isSelected, onClick }) {
   const affluence = getAffluence(agency.affluence);
+  const distanceFormatted = formatDistance(agency.distance);
 
   return (
     <button
@@ -25,9 +27,17 @@ export default function AgencyCard({ agency, isSelected, onClick }) {
           style={{ backgroundColor: affluence.color }}
         />
         <div className="min-w-0">
-          <p className="font-bold text-slate-900 text-sm leading-snug truncate">
-            {agency.name}
-          </p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-bold text-slate-900 text-sm leading-snug truncate">
+              {agency.name}
+            </p>
+            {distanceFormatted && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold">
+                <Navigation className="w-2.5 h-2.5" />
+                <span>{distanceFormatted}</span>
+              </span>
+            )}
+          </div>
           <p className="text-xs text-slate-500 mt-0.5 truncate">
             {agency.commune}
             {agency.openUntil && (

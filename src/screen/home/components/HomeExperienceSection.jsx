@@ -3,7 +3,7 @@ import { MessageSquareHeart, Ticket, Bell, Clock, ArrowRight } from 'lucide-reac
 /**
  * Section "L'expérience Synapse, c'est aussi..."
  *
- * 3 Cartes de raccourcis indépendantes + 1 Encart promotionnel BNI
+ * 3 Cartes de raccourcis indépendantes + 1 Encart promotionnel
  * Chaque élément est strictement indépendant, avec coins très arrondis et ombre douce.
  */
 export default function HomeExperienceSection({
@@ -89,11 +89,11 @@ export default function HomeExperienceSection({
           </div>
         </button>
 
-        {/* ── Bloc 4 : Encart Promo Vert BNI ── */}
+        {/* ── Bloc 4 : Encart Promotionnel ── */}
         <div
           className="lg:col-span-3 rounded-2xl sm:rounded-3xl p-5 text-white flex items-center justify-between gap-3 shadow-md relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #006B4C 0%, #00865D 100%)',
+            background: `linear-gradient(135deg, ${primaryColor} 0%, #004D34 100%)`,
           }}
         >
           <div className="min-w-0 z-10">
@@ -110,7 +110,7 @@ export default function HomeExperienceSection({
           <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shrink-0 border border-white/25 shadow-md">
             <img
               src="/img/img1.jpg"
-              alt="BNI Agence"
+              alt="Accueil en agence"
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';

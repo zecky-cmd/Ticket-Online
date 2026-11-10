@@ -1,4 +1,4 @@
-import { Zap, MapPin, BarChart3, Star } from 'lucide-react';
+import { Zap, MapPin, Star } from 'lucide-react';
 
 /**
  * Barre d'Accès Rapides Flottante — Conforme au découpage de la maquette
@@ -10,7 +10,6 @@ export default function HomeQuickAccess({
   onOpenTicket,
   onOpenMap,
   onOpenSatisfaction,
-  onFollowTicket,
   primaryColor = '#00865D'
 }) {
   const items = [
