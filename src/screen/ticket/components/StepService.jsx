@@ -22,6 +22,7 @@ export default function StepService({
   onBack,
   onNext,
   theme,
+  hideActions = false,
 }) {
   const currentService = services.find((s) => s.id === selectedServiceId) || null;
   const prestationCount = currentService?.prestations?.length || 0;
@@ -71,30 +72,32 @@ export default function StepService({
       )}
 
       {/* Boutons d'action : Précédent & Suivant */}
-      <div className="flex items-center gap-3 pt-2">
-        <Button
-          type="button"
-          size="lg"
-          variant="secondary"
-          iconStart={ArrowLeft}
-          onClick={onBack}
-          className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
-        >
-          Retour
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="primary"
-          primaryColor={theme?.colors?.primary || '#008056'}
-          iconEnd={ArrowRight}
-          onClick={onNext}
-          disabled={!currentService || isLoading}
-          className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
-        >
-          Valider le service
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="flex items-center gap-3 pt-2">
+          <Button
+            type="button"
+            size="lg"
+            variant="secondary"
+            iconStart={ArrowLeft}
+            onClick={onBack}
+            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
+          >
+            Retour
+          </Button>
+          <Button
+            type="button"
+            size="lg"
+            variant="primary"
+            primaryColor={theme?.colors?.primary || '#008056'}
+            iconEnd={ArrowRight}
+            onClick={onNext}
+            disabled={!currentService || isLoading}
+            className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
+          >
+            Valider le service
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

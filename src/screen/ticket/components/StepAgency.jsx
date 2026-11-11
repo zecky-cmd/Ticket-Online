@@ -19,6 +19,7 @@ export default function StepAgency({
   isLoading = false,
   onNext,
   theme,
+  hideActions = false,
 }) {
   const currentAgency = agencies.find((a) => String(a.id) === String(selectedAgencyId)) || null;
 
@@ -60,20 +61,22 @@ export default function StepAgency({
       )}
 
       {/* Bouton d'action */}
-      <div className="pt-2">
-        <Button
-          type="button"
-          size="lg"
-          variant="primary"
-          primaryColor={theme?.colors?.primary || '#008056'}
-          iconEnd={ArrowRight}
-          onClick={onNext}
-          disabled={!currentAgency}
-          className={`w-full min-h-[50px] font-bold text-sm sm:text-base ${currentAgency ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
-        >
-          Valider l'agence et continuer
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="pt-2">
+          <Button
+            type="button"
+            size="lg"
+            variant="primary"
+            primaryColor={theme?.colors?.primary || '#008056'}
+            iconEnd={ArrowRight}
+            onClick={onNext}
+            disabled={!currentAgency}
+            className={`w-full min-h-[50px] font-bold text-sm sm:text-base ${currentAgency ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+          >
+            Valider l'agence et continuer
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

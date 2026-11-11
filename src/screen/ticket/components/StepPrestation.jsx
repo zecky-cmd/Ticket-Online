@@ -1,4 +1,4 @@
-import { FileText, CheckCircle2, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 import Button from '../../../globalComponents/ui/Button';
 import SearchSelect from '../../../globalComponents/ui/SearchSelect';
 
@@ -30,6 +30,7 @@ export default function StepPrestation({
   onBack,
   onNext,
   theme,
+  hideActions = false,
 }) {
   const currentPrestation = prestations.find((p) => p.id === selectedPrestationId) || null;
   const isGestionnaireService = currentPrestation?.serviceType === 'gestionnaire';
@@ -103,30 +104,32 @@ export default function StepPrestation({
       )}
 
       {/* Boutons d'action */}
-      <div className="flex items-center gap-3 pt-1">
-        <Button
-          type="button"
-          size="lg"
-          variant="secondary"
-          iconStart={ArrowLeft}
-          onClick={onBack}
-          className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
-        >
-          Retour
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="primary"
-          primaryColor={theme?.colors?.primary || '#008056'}
-          iconEnd={ArrowRight}
-          onClick={onNext}
-          disabled={!currentPrestation || (isGestionnaireService && isLoadingGestionnaires)}
-          className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
-        >
-          Valider et choisir le créneau
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="flex items-center gap-3 pt-1">
+          <Button
+            type="button"
+            size="lg"
+            variant="secondary"
+            iconStart={ArrowLeft}
+            onClick={onBack}
+            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
+          >
+            Retour
+          </Button>
+          <Button
+            type="button"
+            size="lg"
+            variant="primary"
+            primaryColor={theme?.colors?.primary || '#008056'}
+            iconEnd={ArrowRight}
+            onClick={onNext}
+            disabled={!currentPrestation || (isGestionnaireService && isLoadingGestionnaires)}
+            className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
+          >
+            Valider et choisir le créneau
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

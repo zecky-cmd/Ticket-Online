@@ -228,7 +228,7 @@ export default function SearchSelect({
   const mobileOverlay = isOpen && isMobile
     ? createPortal(
         <div
-          className={`fixed inset-x-0 top-0 h-[100dvh] z-[90] bg-slate-50 flex flex-col ${
+          className={`fixed inset-x-0 top-0 h-[100dvh] z-[10001] bg-slate-50 flex flex-col ${
             overlayClosing
               ? 'animate-out fade-out-0 slide-out-to-bottom-8 duration-200 fill-mode-forwards'
               : 'animate-in fade-in-0 slide-in-from-bottom-8 duration-250'

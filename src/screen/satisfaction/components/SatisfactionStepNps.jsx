@@ -12,7 +12,7 @@ const NPS_OPTIONS = Array.from({ length: 11 }, (_, score) => {
 /**
  * Étape Recommandation — NPS de 0 à 10 (skippable)
  */
-export default function SatisfactionStepNps({ npsNote, setNpsNote, onBack, onNext, theme }) {
+export default function SatisfactionStepNps({ npsNote, setNpsNote, onBack, onNext, theme, hideActions = false }) {
   return (
     <div className="space-y-5">
       <div>
@@ -51,40 +51,42 @@ export default function SatisfactionStepNps({ npsNote, setNpsNote, onBack, onNex
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-1">
-        <Button
-          type="button"
-          size="lg"
-          variant="secondary"
-          iconStart={ArrowLeft}
-          onClick={onBack}
-          className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
-        >
-          Retour
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="secondary"
-          iconStart={SkipForward}
-          onClick={onNext}
-          className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4"
-        >
-          Passer
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="primary"
-          primaryColor={theme?.colors?.primary || '#008056'}
-          iconEnd={ArrowRight}
-          onClick={onNext}
-          disabled={npsNote === null}
-          className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
-        >
-          Continuer
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="flex items-center gap-3 pt-1">
+          <Button
+            type="button"
+            size="lg"
+            variant="secondary"
+            iconStart={ArrowLeft}
+            onClick={onBack}
+            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
+          >
+            Retour
+          </Button>
+          <Button
+            type="button"
+            size="lg"
+            variant="secondary"
+            iconStart={SkipForward}
+            onClick={onNext}
+            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4"
+          >
+            Passer
+          </Button>
+          <Button
+            type="button"
+            size="lg"
+            variant="primary"
+            primaryColor={theme?.colors?.primary || '#008056'}
+            iconEnd={ArrowRight}
+            onClick={onNext}
+            disabled={npsNote === null}
+            className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
+          >
+            Continuer
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

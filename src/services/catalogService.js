@@ -1,5 +1,6 @@
 import { apiClient } from './api';
-import { API_SERVICES } from './serveur';
+import { API_SERVICES, USE_MOCK, MOCK_DELAY } from './serveur';
+import { MOCK_AGENCY_PRESTATIONS } from '../mocks/catalogMock';
 
 /**
  * Résout le type de service/prestation : "1" = caisse, sinon gestionnaire.
@@ -39,6 +40,15 @@ export const catalogService = {
    * @returns {Promise<Array>}
    */
   async getAgencyPrestations(lgAgeid) {
+    // ── MODE DÉMONSTRATION : backend indisponible → catalogue local ──
+    if (USE_MOCK) {
+      await MOCK_DELAY(350);
+      return MOCK_AGENCY_PRESTATIONS.map((group) => ({
+        ...normalizeService(group.service || {}),
+        prestations: (group.prestations || []).map(normalizePrestation),
+      }));
+    }
+
     const response = await apiClient.get(`/${API_SERVICES.parametre}/public/agenceprestations`, {
       params: { lg_ageid: String(lgAgeid), lang: 'fr' },
     });

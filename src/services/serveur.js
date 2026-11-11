@@ -1,4 +1,18 @@
 /**
+ * ⚠️ MODE DÉMONSTRATION — le backend n'est pas disponible.
+ *
+ * true  → tous les services retournent des données mock locales
+ *         (aucun appel réseau ; sources dans src/mocks/).
+ * false → appels réels vers l'API (backend requis).
+ *
+ * À repasser sur false dès que le backend est de nouveau joignable.
+ */
+export const USE_MOCK = true;
+
+/** Simule la latence réseau des appels mock (ms). */
+export const MOCK_DELAY = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
  * Configuration des Endpoints Serveur / GFA
  * Adapté pour le développement Synapse et le déploiement client.
  */

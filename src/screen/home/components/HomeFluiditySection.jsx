@@ -1,6 +1,7 @@
-import { Users, Clock, ArrowRight } from 'lucide-react';
+import { Users, Clock, ArrowRight, AlertTriangle } from 'lucide-react';
 import HomeMiniMap from './HomeMiniMap';
 import { getAffluence } from '../../../theme/affluence';
+import { USE_MOCK } from '../../../services/serveur';
 
 /**
  * Section Fluidité en Temps Réel
@@ -36,6 +37,16 @@ export default function HomeFluiditySection({
         {/* ── Colonne Gauche : Carte Statistique de l'Agence ── */}
         <div className="lg:col-span-6 bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-slate-100 flex flex-col justify-between">
           <div>
+            {/* Badge transparence : données de démonstration (backend indisponible) */}
+            {USE_MOCK && (
+              <div className="flex items-center gap-2 pb-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-warning-light text-warning border border-warning/25">
+                  <AlertTriangle className="w-3 h-3" />
+                  Données de démonstration
+                </span>
+              </div>
+            )}
+
             {/* Nom de l'agence & Statut */}
             <div className="mt-2 flex items-center justify-between gap-3 flex-wrap">
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">

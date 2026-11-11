@@ -1,8 +1,11 @@
 import { apiClient } from './api';
-import { API_BASE_URL, SOC_ID, API_SERVICES } from './serveur';
+import { API_BASE_URL, SOC_ID, API_SERVICES, USE_MOCK } from './serveur';
 
-// Les endpoints satisfaction sont désormais publics → appels réels
-const USE_MOCK = false;
+// ── MODE DÉMONSTRATION ──────────────────────────────────────────────────────
+// USE_MOCK (voir src/services/serveur.js) pilote les données de repli ci-dessous :
+// true  → émoticônes, justificatifs et vote simulés localement ;
+// false → appels réels aux endpoints publics (backend requis).
+// ============================================================================
 
 /**
  * Émoticônes de repli (identiques au fallback de la borne) si l'API

@@ -1,5 +1,6 @@
 import { apiClient } from './api';
-import { API_SERVICES } from './serveur';
+import { API_SERVICES, USE_MOCK, MOCK_DELAY } from './serveur';
+import { MOCK_GESTIONNAIRES } from '../mocks/gestionnairesMock';
 
 function normalizeGestionnaire(g) {
   return {
@@ -22,6 +23,12 @@ export const gestionnaireService = {
    * @returns {Promise<Array>}
    */
   async getGestionnaires(lgAgeid, lgPresid) {
+    // ── MODE DÉMONSTRATION : backend indisponible → gestionnaires locaux ──
+    if (USE_MOCK) {
+      await MOCK_DELAY(250);
+      return MOCK_GESTIONNAIRES.map(normalizeGestionnaire);
+    }
+
     const response = await apiClient.get(`/${API_SERVICES.admin}/public/gestionnaires`, {
       params: { lg_ageid: String(lgAgeid), lg_presid: String(lgPresid) },
     });

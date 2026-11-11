@@ -18,6 +18,7 @@ export default function SatisfactionStepContext({
   onSelectPrestationId,
   onNext,
   theme,
+  hideActions = false,
 }) {
   const currentService = services.find((s) => s.id === selectedServiceId) || null;
   const prestations = currentService?.prestations || [];
@@ -69,20 +70,22 @@ export default function SatisfactionStepContext({
         disabled={!selectedServiceId}
       />
 
-      <div className="pt-2">
-        <Button
-          type="button"
-          size="lg"
-          variant="primary"
-          primaryColor={theme?.colors?.primary || '#008056'}
-          iconEnd={ArrowRight}
-          onClick={onNext}
-          disabled={!canContinue}
-          className="w-full min-h-[50px] font-bold text-sm sm:text-base"
-        >
-          Continuer
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="pt-2">
+          <Button
+            type="button"
+            size="lg"
+            variant="primary"
+            primaryColor={theme?.colors?.primary || '#008056'}
+            iconEnd={ArrowRight}
+            onClick={onNext}
+            disabled={!canContinue}
+            className="w-full min-h-[50px] font-bold text-sm sm:text-base"
+          >
+            Continuer
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

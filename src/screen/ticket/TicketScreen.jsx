@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AlertCircle, X } from 'lucide-react';
+import { X, ArrowLeft, ArrowRight, Ticket, Loader2 } from 'lucide-react';
 import { catalogService } from '../../services/catalogService';
 import { gestionnaireService } from '../../services/gestionnaireService';
 import { ticketService } from '../../services/ticketService';
 import { setCreatedTicket as setReduxTicket } from '../../features/ticketSlice';
 import { setSelectedAgency as setReduxAgency } from '../../features/agencySlice';
 
-import TicketStepperHeader from './components/TicketStepperHeader';
+import TicketSidebarStepper from './components/TicketSidebarStepper';
+import TicketFeedbackBanner from './components/TicketFeedbackBanner';
 import StepAgency from './components/StepAgency';
 import StepService from './components/StepService';
 import StepPrestation from './components/StepPrestation';
@@ -16,16 +17,28 @@ import StepCustomerInfo from './components/StepCustomerInfo';
 import TicketReceipt from './components/TicketReceipt';
 import Modal from '../../globalComponents/ui/Modal';
 
-/** Formate une date ISO (YYYY-MM-DD) en libellé lisible fr. */
+/** Formate une date ISO (YYYY-MM-DD) en libellé lisible fr (ex: Mercredi 12 Novembre). */
 function formatDateLabel(iso) {
   if (!iso) return '';
   const [y, m, d] = iso.split('-');
-  return new Date(Number(y), Number(m) - 1, Number(d)).toLocaleDateString('fr-FR', {
-    weekday: 'short',
+  const date = new Date(Number(y), Number(m) - 1, Number(d));
+  const text = date.toLocaleDateString('fr-FR', {
+    weekday: 'long',
     day: 'numeric',
-    month: 'short',
+    month: 'long',
     year: 'numeric',
   });
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Calcule l'heure de fin à partir d'une heure de début et d'une durée (ex: 07:15 + 15 min = 07:30) */
+function calculateEndTime(timeStr, durationMinutes = 15) {
+  if (!timeStr) return '';
+  const [h, m] = timeStr.split(':').map(Number);
+  const totalMin = h * 60 + m + durationMinutes;
+  const endH = String(Math.floor(totalMin / 60)).padStart(2, '0');
+  const endM = String(totalMin % 60).padStart(2, '0');
+  return `${endH}:${endM}`;
 }
 
 /** Jour court pour le payload de rendez-vous (ex: "Mer"). */
@@ -38,18 +51,26 @@ function formatShortDay(iso) {
 }
 
 /**
- * Screen / Modal Prise de Ticket Multi-Étapes S2Q (5 Étapes)
- * Flux : Agence -> Service -> Prestation & Gestionnaire -> Créneau -> Vos infos -> Reçu
- *
- * @param {Object} props
- * @param {boolean} props.isOpen
- * @param {() => void} props.onClose
- * @param {any} [props.theme]
- * @param {any[]} [props.agencies]
+ * Screen / Modal Prise de Ticket S2Q — Layout Strict Conforme Maquette
+ * 
+ * - Sidebar collapsible avec stepper dynamique à gauche
+ * - Carte blanche intérieure pour le contenu de l'étape
+ * - Zone bleue (Currently Selected ou Erreur) sous la carte
+ * - Boutons Back & Next en bas à droite
  */
-export default function TicketScreen({ isOpen, isClosing = false, onClose, theme, agencies = [], agenciesLoading = false }) {
+export default function TicketScreen({
+  isOpen,
+  isClosing = false,
+  onClose,
+  theme,
+  agencies = [],
+  agenciesLoading = false,
+}) {
   const dispatch = useDispatch();
   const reduxSelectedAgency = useSelector((state) => /** @type {any} */ (state)?.agency?.selectedAgency);
+
+  // État de réduction de la sidebar gauche
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Navigation (1: Agence, 2: Service, 3: Prestation, 4: Créneau, 5: Vos infos, 6: Reçu)
   const [currentStep, setCurrentStep] = useState(1);
@@ -58,7 +79,7 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
   const [selectedAgencyIdOverride, setSelectedAgencyIdOverride] = useState(/** @type {string | null} */ (null));
   const selectedAgencyId = selectedAgencyIdOverride ?? reduxSelectedAgency?.id ?? null;
 
-  // 2. Catalogue services + prestations (chargé depuis l'API pour l'agence)
+  // 2. Catalogue services + prestations
   const [services, setServices] = useState(/** @type {any[]} */ ([]));
   const [servicesLoading, setServicesLoading] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState(/** @type {string | null} */ (null));
@@ -69,11 +90,11 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
   const [gestionnairesLoading, setGestionnairesLoading] = useState(false);
   const [selectedGestionnaireId, setSelectedGestionnaireId] = useState('auto');
 
-  // 4. Créneau (date + heure simples)
+  // 4. Créneau (date + heure)
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
 
-  // 5. Coordonnées & Statut Client (nplan.md)
+  // 5. Coordonnées & Statut Client
   const [isClient, setIsClient] = useState(false);
   const [accountNumber, setAccountNumber] = useState('');
   const [lastName, setLastName] = useState('');
@@ -93,13 +114,23 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
   const needsGestionnaire = currentPrestation?.serviceType === 'gestionnaire';
   const currentGestionnaire = gestionnaires.find((g) => g.id === selectedGestionnaireId) || gestionnaires[0] || null;
 
-  const currentTimeslotText = selectedDate && selectedTime
-    ? `${formatDateLabel(selectedDate)} à ${selectedTime}`
-    : 'À définir';
+  // Étapes dynamiques épurées façon maquette (Service, Personal details, etc.)
+  const steps = useMemo(() => {
+    return [
+      { id: 1, key: 'agency', label: 'Agence' },
+      { id: 2, key: 'service', label: 'Service' },
+      { id: 3, key: 'prestation', label: 'Prestation' },
+      { id: 4, key: 'timeslot', label: 'Créneau' },
+      { id: 5, key: 'customer', label: 'Vos informations' },
+    ];
+  }, []);
 
   // Chargement du catalogue à la validation de l'agence (étape 1 → 2)
   const handleAgencyValidated = async () => {
-    if (!selectedAgencyId) return;
+    if (!selectedAgencyId) {
+      setErrorMessage('Veuillez sélectionner une agence avant de poursuivre.');
+      return;
+    }
     setErrorMessage('');
     setServicesLoading(true);
     try {
@@ -118,15 +149,16 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
     }
   };
 
-  // Changement de service : réinitialise prestation + gestionnaires (aucune pré-sélection)
+  // Changement de service
   const handleSelectService = (/** @type {string} */ serviceId) => {
     setSelectedServiceId(serviceId);
     setSelectedPrestationId(null);
     setSelectedGestionnaireId('auto');
     setGestionnaires([]);
+    setErrorMessage('');
   };
 
-  // Chargement des gestionnaires pour une prestation (si type gestionnaire)
+  // Chargement des gestionnaires pour une prestation
   const loadGestionnaires = async (/** @type {string} */ prestationId) => {
     if (!selectedAgencyId || !prestationId) return;
     const prestation = currentService?.prestations?.find((p) => p.id === prestationId);
@@ -148,10 +180,11 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
     }
   };
 
-  // Changement de prestation : réinitialise le gestionnaire et recharge la liste
+  // Changement de prestation
   const handleSelectPrestation = (/** @type {string} */ id) => {
     setSelectedPrestationId(id);
     setSelectedGestionnaireId('auto');
+    setErrorMessage('');
     loadGestionnaires(id);
   };
 
@@ -171,7 +204,7 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
     onClose();
   };
 
-  // Soumission finale
+  // Soumission finale du ticket
   const handleGenerateTicket = async (/** @type {any} */ e) => {
     if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
@@ -245,53 +278,157 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
     }
   };
 
+  // Résumé d'étape pour la zone bleue
+  const currentSummary = useMemo(() => {
+    if (currentStep === 4 && selectedDate && selectedTime) {
+      const endTime = calculateEndTime(selectedTime, 15);
+      return `${formatDateLabel(selectedDate)}, ${selectedTime} - ${endTime}`;
+    }
+    if (currentStep === 3 && currentPrestation) {
+      return `${currentPrestation.name}${needsGestionnaire && currentGestionnaire ? ` (Conseiller : ${currentGestionnaire.name})` : ''}`;
+    }
+    if (currentStep === 2 && currentService) {
+      return `Service : ${currentService.name}`;
+    }
+    if (currentStep === 1 && currentAgency) {
+      return `Agence : ${currentAgency.name}`;
+    }
+    return null;
+  }, [currentStep, selectedDate, selectedTime, currentPrestation, currentService, currentAgency, needsGestionnaire, currentGestionnaire]);
+
+  // Logique de navigation unifiée (boutons Back et Next)
+  const canGoBack = currentStep > 1 && currentStep <= 5;
+  const isLastStep = currentStep === 5;
+
+  const handleBack = () => {
+    setErrorMessage('');
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const handleNext = () => {
+    setErrorMessage('');
+
+    if (currentStep === 1) {
+      handleAgencyValidated();
+      return;
+    }
+
+    if (currentStep === 2) {
+      if (!selectedServiceId) {
+        setErrorMessage('Veuillez sélectionner un service pour continuer.');
+        return;
+      }
+      setCurrentStep(3);
+      loadGestionnaires(selectedPrestationId);
+      return;
+    }
+
+    if (currentStep === 3) {
+      if (!selectedPrestationId) {
+        setErrorMessage('Veuillez sélectionner une prestation pour continuer.');
+        return;
+      }
+      setCurrentStep(4);
+      return;
+    }
+
+    if (currentStep === 4) {
+      if (!selectedDate || !selectedTime) {
+        setErrorMessage('Veuillez sélectionner une date et un créneau horaire.');
+        return;
+      }
+      setCurrentStep(5);
+      return;
+    }
+
+    if (currentStep === 5) {
+      handleGenerateTicket(null);
+    }
+  };
+
+  const isNextDisabled = useMemo(() => {
+    if (currentStep === 1) return !selectedAgencyId || servicesLoading;
+    if (currentStep === 2) return !selectedServiceId;
+    if (currentStep === 3) return !selectedPrestationId || (needsGestionnaire && gestionnairesLoading);
+    if (currentStep === 4) return !selectedDate || !selectedTime;
+    if (currentStep === 5) return isSubmitting;
+    return false;
+  }, [
+    currentStep,
+    selectedAgencyId,
+    servicesLoading,
+    selectedServiceId,
+    selectedPrestationId,
+    needsGestionnaire,
+    gestionnairesLoading,
+    selectedDate,
+    selectedTime,
+    isSubmitting,
+  ]);
+
+  const primaryColor = theme?.colors?.primary || '#008056';
+
   return (
-    <Modal isOpen={isOpen} isClosing={isClosing} onClose={onClose} size="lg">
-        {/* En-tête Stepper conforme à la maquette (Étapes 1 à 5) */}
-        {currentStep <= 5 && (
-          <TicketStepperHeader
-            currentStep={currentStep}
-            onStepClick={(stepId) => setCurrentStep(stepId)}
-            onClose={handleReset}
-          />
-        )}
+    <Modal
+      isOpen={isOpen}
+      isClosing={isClosing}
+      onClose={onClose}
+      size="xl"
+      className="p-0 overflow-hidden flex flex-col md:flex-row h-[94dvh] sm:h-[90vh] md:min-h-[640px] bg-[#fbfdfc]"
+    >
+      {/* ── COLONNE GAUCHE : SIDEBAR STEPPER COLLAPSIBLE (ÉTAPES 1 À 5) ── */}
+      {currentStep <= 5 && (
+        <TicketSidebarStepper
+          steps={steps}
+          activeStepId={currentStep}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+          onStepClick={(stepId) => {
+            setErrorMessage('');
+            setCurrentStep(Number(stepId));
+          }}
+          primaryColor={primaryColor}
+        />
+      )}
 
-        {/* Bouton fermer discret pour l'écran de reçu final (Étape 6) */}
-        {currentStep === 6 && (
-          <div className="px-6 pt-4 flex justify-end shrink-0">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="p-1.5 rounded-full hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600 cursor-pointer"
-              aria-label="Fermer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+      {/* ── COLONNE DROITE : CONTENEUR STRICT MAQUETTE ── */}
+      <div className="flex-1 flex flex-col justify-between overflow-hidden p-4 sm:p-5 bg-[#fbfdfc]">
+        {/* Header avec bouton Fermer X discret en haut à droite */}
+        <div className="flex items-center justify-between pb-2 shrink-0">
+          <div>
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              {currentAgency ? currentAgency.name : 'Rendez-vous en ligne'}
+            </span>
           </div>
-        )}
 
-        {/* Corps défilable avec inertie tactile fluide */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8">
-          {errorMessage && (
-            <div className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-2.5 text-xs text-rose-700">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
+          <button
+            type="button"
+            onClick={handleReset}
+            className="p-1 rounded-full hover:bg-slate-200/60 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            aria-label="Fermer"
+          >
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+        </div>
 
+        {/* ── CARTE BLANCHE INTÉRIEURE (ZONE ENCADRÉE EN ROUGE DANS LA MAQUETTE) ── */}
+        <div className="flex-1 overflow-y-auto overscroll-contain bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs">
           {/* Étape 1 : Choix Agence */}
           {currentStep === 1 && (
             <StepAgency
               agencies={agencies}
               selectedAgencyId={selectedAgencyId}
-              isLoading={agenciesLoading}
               onSelectAgencyId={(id) => {
                 setSelectedAgencyIdOverride(id);
-                const a = agencies.find((ag) => String(ag.id) === String(id));
-                if (a) dispatch(setReduxAgency(a));
+                const ag = agencies.find((a) => String(a.id) === String(id));
+                if (ag) dispatch(setReduxAgency(ag));
               }}
+              isLoading={agenciesLoading}
               onNext={handleAgencyValidated}
               theme={theme}
+              hideActions={true}
             />
           )}
 
@@ -303,11 +440,9 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
               onSelectServiceId={handleSelectService}
               isLoading={servicesLoading}
               onBack={() => setCurrentStep(1)}
-              onNext={() => {
-                setCurrentStep(3);
-                loadGestionnaires(selectedPrestationId);
-              }}
+              onNext={handleNext}
               theme={theme}
+              hideActions={true}
             />
           )}
 
@@ -323,20 +458,25 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
               onSelectGestionnaireId={(id) => setSelectedGestionnaireId(id)}
               isLoadingGestionnaires={gestionnairesLoading}
               onBack={() => setCurrentStep(2)}
-              onNext={() => setCurrentStep(4)}
+              onNext={handleNext}
               theme={theme}
+              hideActions={true}
             />
           )}
 
-          {/* Étape 4 : Choix Créneau */}
+          {/* Étape 4 : Choix Créneau (Nouvelle interface interactive) */}
           {currentStep === 4 && (
             <StepTimeslot
               selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
+              setSelectedDate={(d) => {
+                setSelectedDate(d);
+                setErrorMessage('');
+              }}
               selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
-              onBack={() => setCurrentStep(3)}
-              onNext={() => setCurrentStep(5)}
+              setSelectedTime={(t) => {
+                setSelectedTime(t);
+                setErrorMessage('');
+              }}
               theme={theme}
             />
           )}
@@ -360,11 +500,16 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
               service={currentService}
               prestation={currentPrestation}
               gestionnaire={needsGestionnaire ? currentGestionnaire : null}
-              timeslotText={currentTimeslotText}
+              timeslotText={
+                selectedDate && selectedTime
+                  ? `${formatDateLabel(selectedDate)} à ${selectedTime}`
+                  : 'À définir'
+              }
               isSubmitting={isSubmitting}
               onSubmit={handleGenerateTicket}
               onBack={() => setCurrentStep(4)}
               theme={theme}
+              hideActions={true}
             />
           )}
 
@@ -377,6 +522,63 @@ export default function TicketScreen({ isOpen, isClosing = false, onClose, theme
             />
           )}
         </div>
+
+        {/* ── ZONE BLEUE : BANDEAU FEEDBACK OU ERREUR (SOUS LA CARTE BLANCHE) ── */}
+        {currentStep <= 5 && (
+          <div className="pt-2 shrink-0">
+            <TicketFeedbackBanner
+              errorMessage={errorMessage}
+              onClearError={() => setErrorMessage('')}
+              summary={currentSummary}
+              summaryTitle="Currently Selected:"
+            />
+          </div>
+        )}
+
+        {/* ── BOUTONS D'ACTION (BACK & NEXT) : ALIGNÉS EN BAS À DROITE ── */}
+        {currentStep <= 5 && (
+          <div className="pt-2 flex items-center justify-end gap-2.5 shrink-0">
+            {canGoBack && (
+              <button
+                type="button"
+                onClick={handleBack}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-bold text-xs sm:text-sm tracking-tight border border-slate-200/60 shadow-2xs cursor-pointer transition-colors"
+              >
+                Back
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={isNextDisabled}
+              className={`px-7 py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-tight text-white shadow-md transition-all flex items-center gap-1.5 select-none ${
+                isNextDisabled
+                  ? 'opacity-50 cursor-not-allowed shadow-none'
+                  : 'hover:opacity-95 active:scale-[0.98] cursor-pointer'
+              }`}
+              style={{
+                backgroundColor: isNextDisabled ? '#94a3b8' : primaryColor,
+              }}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>En cours...</span>
+                </>
+              ) : isLastStep ? (
+                <>
+                  <Ticket className="w-3.5 h-3.5" />
+                  <span>Confirmer le ticket</span>
+                </>
+              ) : (
+                <span>Next</span>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
     </Modal>
   );
 }

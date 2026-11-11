@@ -1,5 +1,6 @@
 import { apiClient } from './api';
-import { API_SERVICES } from './serveur';
+import { API_SERVICES, USE_MOCK } from './serveur';
+import { buildMockTicketResponse } from '../mocks/rendezvousMock';
 
 /**
  * Service Métier : Gestion des Tickets / Rendez-vous en ligne S2Q
@@ -62,8 +63,14 @@ export const ticketService = {
       str_ticphone: phoneNumber || '',
     };
 
-    const response = await apiClient.post(`/${API_SERVICES.admin}/public/rendezvous`, body);
-    const data = response.data?.data || response.data;
+    // ── MODE DÉMONSTRATION : backend indisponible → réponse simulée ──
+    let data;
+    if (USE_MOCK) {
+      data = await buildMockTicketResponse(payload);
+    } else {
+      const response = await apiClient.post(`/${API_SERVICES.admin}/public/rendezvous`, body);
+      data = response.data?.data || response.data;
+    }
 
     return {
       id: data.lg_ticid || null,

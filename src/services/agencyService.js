@@ -1,5 +1,6 @@
 import { apiClient } from './api';
-import { SOC_ID, API_SERVICES } from './serveur';
+import { SOC_ID, API_SERVICES, USE_MOCK, MOCK_DELAY } from './serveur';
+import { MOCK_AGENCIES } from '../mocks/agenciesMock';
 
 /**
  * Parse une coordonnée : null si absente, non numérique ou hors plage
@@ -78,6 +79,21 @@ export const agencyService = {
    * @returns {Promise<Array>}
    */
   async getAgencies({ searchValue = '', start = 0, length = 100 } = {}) {
+    // ── MODE DÉMONSTRATION : backend indisponible → données locales ──
+    if (USE_MOCK) {
+      await MOCK_DELAY(450);
+      const normalized = MOCK_AGENCIES.map(normalizeAgency);
+      const term = String(searchValue || '').trim().toLowerCase();
+      const filtered = term
+        ? normalized.filter((a) =>
+            [a.name, a.commune, a.district, a.address].some(
+              (v) => v && String(v).toLowerCase().includes(term)
+            )
+          )
+        : normalized;
+      return filtered.slice(start, start + length);
+    }
+
     const response = await apiClient.get(`/${API_SERVICES.admin}/public/agencesLive`, {
       params: {
         lg_socid: SOC_ID,

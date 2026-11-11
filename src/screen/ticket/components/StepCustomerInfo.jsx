@@ -42,15 +42,11 @@ export default function StepCustomerInfo({
   setIsClient,
   accountNumber,
   setAccountNumber,
-  agency,
-  service,
-  prestation,
-  gestionnaire,
-  timeslotText,
   isSubmitting,
   onSubmit,
   onBack,
   theme,
+  hideActions = false,
 }) {
   return (
     <form onSubmit={onSubmit} className="space-y-4 animate-in fade-in-50 duration-200">
@@ -176,30 +172,32 @@ export default function StepCustomerInfo({
 
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-2">
-        <Button
-          type="button"
-          size="lg"
-          variant="secondary"
-          iconStart={ArrowLeft}
-          onClick={onBack}
-          disabled={isSubmitting}
-          className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
-        >
-          Retour
-        </Button>
-        <Button
-          type="submit"
-          size="lg"
-          variant="primary"
-          isLoading={isSubmitting}
-          primaryColor={theme?.colors?.primary || '#008056'}
-          iconStart={Ticket}
-          className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
-        >
-          {isSubmitting ? 'Génération en cours...' : 'Valider et Obtenir le Ticket'}
-        </Button>
-      </div>
+      {!hideActions && (
+        <div className="flex items-center gap-3 pt-2">
+          <Button
+            type="button"
+            size="lg"
+            variant="secondary"
+            iconStart={ArrowLeft}
+            onClick={onBack}
+            disabled={isSubmitting}
+            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
+          >
+            Retour
+          </Button>
+          <Button
+            type="submit"
+            size="lg"
+            variant="primary"
+            isLoading={isSubmitting}
+            primaryColor={theme?.colors?.primary || '#008056'}
+            iconStart={Ticket}
+            className="flex-1 min-h-[50px] font-bold text-sm sm:text-base cursor-pointer"
+          >
+            {isSubmitting ? 'Génération en cours...' : 'Valider et Obtenir le Ticket'}
+          </Button>
+        </div>
+      )}
 
       <p className="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1.5 pt-1">
         <CheckCircle2 className="w-3.5 h-3.5 text-primary-500" />

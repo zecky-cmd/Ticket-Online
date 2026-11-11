@@ -13,6 +13,7 @@ export default function SatisfactionStepClientInfo({
   onFinish,
   onBack,
   theme,
+  hideActions = false,
 }) {
   const update = (/** @type {string} */ key) => (/** @type {React.ChangeEvent<HTMLInputElement>} */ e) => {
     setClientInfo((prev) => ({ ...prev, [key]: e.target.value }));
@@ -74,45 +75,47 @@ export default function SatisfactionStepClientInfo({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-3 pt-1 flex-wrap sm:flex-nowrap">
-        <Button
-          type="button"
-          size="lg"
-          variant="secondary"
-          iconStart={ArrowLeft}
-          onClick={onBack}
-          disabled={isSubmitting}
-          className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
-        >
-          Retour
-        </Button>
-
-        <div className="flex items-center gap-2 ml-auto">
+      {!hideActions && (
+        <div className="flex items-center gap-3 pt-1 flex-wrap sm:flex-nowrap">
           <Button
             type="button"
             size="lg"
             variant="secondary"
-            iconStart={SkipForward}
-            onClick={() => onFinish(false)}
+            iconStart={ArrowLeft}
+            onClick={onBack}
             disabled={isSubmitting}
-            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4"
+            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4 sm:px-6"
           >
-            Passer et terminer
+            Retour
           </Button>
-          <Button
-            type="button"
-            size="lg"
-            variant="primary"
-            primaryColor={theme?.colors?.primary || '#008056'}
-            iconStart={Send}
-            isLoading={isSubmitting}
-            onClick={() => onFinish(true)}
-            className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-5"
-          >
-            {isSubmitting ? 'Validation…' : 'Valider mon avis'}
-          </Button>
+
+          <div className="flex items-center gap-2 ml-auto">
+            <Button
+              type="button"
+              size="lg"
+              variant="secondary"
+              iconStart={SkipForward}
+              onClick={() => onFinish(false)}
+              disabled={isSubmitting}
+              className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-4"
+            >
+              Passer et terminer
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              variant="primary"
+              primaryColor={theme?.colors?.primary || '#008056'}
+              iconStart={Send}
+              isLoading={isSubmitting}
+              onClick={() => onFinish(true)}
+              className="min-h-[50px] font-bold text-sm sm:text-base cursor-pointer px-5"
+            >
+              {isSubmitting ? 'Validation…' : 'Valider mon avis'}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
